@@ -235,9 +235,32 @@ export class WebSession {
           st.id = id;
           st.textContent = '[data-foldproof-mask],[data-foldproof-mask] *{visibility:hidden !important}' + (cssRules.length ? `\n${cssRules.join(',')}{visibility:hidden !important}` : '');
           document.documentElement.appendChild(st);
+          // belt and braces: an opaque fixed box over each masked rect, so a descendant forcing itself visible is still covered
+          for (const e of els) {
+            const r = e.getBoundingClientRect();
+            const box = document.createElement('div');
+            box.setAttribute('data-foldproof-mask-box', '');
+            box.style.cssText = `position:fixed !important;left:${r.left}px !important;top:${r.top}px !important;width:${r.width}px !important;height:${r.height}px !important;background:#000 !important;z-index:2147483647 !important;pointer-events:none !important;display:block !important;visibility:visible !important;opacity:1 !important;`;
+            document.documentElement.appendChild(box);
+          }
         }
-        const hidden = els.every((e) => e.hasAttribute('data-foldproof-mask') && getComputedStyle(e).visibility === 'hidden');
-        return { ok: hidden, reason: hidden ? '' : 'a masked element is not hidden', count: els.length };
+        // confirm: every masked element is hidden, every descendant is hidden, and any on-screen part of its rect
+        // hit-tests to a mask box (not to page content)
+        const boxes = Array.from(document.querySelectorAll('[data-foldproof-mask-box]'));
+        for (const e of els) {
+          if (!e.hasAttribute('data-foldproof-mask') || getComputedStyle(e).visibility !== 'hidden') return { ok: false, reason: 'a masked element is not hidden', count: els.length };
+          for (const d of Array.from(e.querySelectorAll('*'))) if (getComputedStyle(d).visibility !== 'hidden' && getComputedStyle(d).display !== 'none') {
+            // a descendant overrides visibility: the box must cover it
+            const r = d.getBoundingClientRect();
+            const onScreen = r.width > 0 && r.height > 0 && r.right > 0 && r.bottom > 0 && r.left < innerWidth && r.top < innerHeight;
+            if (!onScreen) continue;
+            const cx = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1);
+            const cy = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
+            const hit = document.elementFromPoint(cx, cy);
+            if (!hit || !boxes.includes(hit)) return { ok: false, reason: 'a descendant of a masked element is still visible and uncovered', count: els.length };
+          }
+        }
+        return { ok: true, reason: '', count: els.length };
       };
       let before: { ok: boolean; reason: string; count?: number } = { ok: true, reason: '' };
       if (mask.length) {
@@ -260,6 +283,7 @@ export class WebSession {
           .evaluate((id) => {
             document.getElementById(id)?.remove();
             for (const e of Array.from(document.querySelectorAll('[data-foldproof-mask]'))) e.removeAttribute('data-foldproof-mask');
+            for (const b of Array.from(document.querySelectorAll('[data-foldproof-mask-box]'))) b.remove();
           }, STYLE_ID)
           .catch(() => undefined);
       }

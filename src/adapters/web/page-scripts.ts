@@ -169,19 +169,25 @@ export function geometryScript(locators: string[]): GeometryReport {
     if (el.scrollTop > 0 || el.scrollLeft > 0) savedContainers.push({ el, top: el.scrollTop, left: el.scrollLeft });
     if (savedContainers.length > 50) break;
   }
+  // pages with `scroll-behavior: smooth` would animate; force instant scrolling for probes and restoration
+  const prevBehavior = document.documentElement.style.scrollBehavior;
+  document.documentElement.style.setProperty('scroll-behavior', 'auto', 'important');
   const restore = () => {
     for (const c of savedContainers) {
-      c.el.scrollTop = c.top;
-      c.el.scrollLeft = c.left;
+      (c.el as HTMLElement).style.setProperty('scroll-behavior', 'auto', 'important');
+      c.el.scrollTo({ top: c.top, left: c.left, behavior: 'instant' as ScrollBehavior });
+      (c.el as HTMLElement).style.removeProperty('scroll-behavior');
     }
-    window.scrollTo(savedWindow.x, savedWindow.y);
+    window.scrollTo({ left: savedWindow.x, top: savedWindow.y, behavior: 'instant' as ScrollBehavior });
+    if (prevBehavior) document.documentElement.style.scrollBehavior = prevBehavior;
+    else document.documentElement.style.removeProperty('scroll-behavior');
   };
   const controls: ControlGeometry[] = locators.map((locator) => {
     const els = f.query(locator);
     const base: ControlGeometry = { locator, count: els.length, key: null, role: null, name: '', rect: null, visible: false, disabled: false, inert: false, pointerEvents: '', clipped: false, inViewport: false, hits: [] };
     if (els.length !== 1) return base;
     const el = els[0] as HTMLElement;
-    el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    el.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' as ScrollBehavior });
     const r = el.getBoundingClientRect();
     const cs = getComputedStyle(el);
     base.key = f.key(el);
@@ -266,16 +272,25 @@ export function saveScrollScript(): SavedScroll {
   return { window: { x: scrollX, y: scrollY }, containers };
 }
 
-export function restoreScrollScript(saved: SavedScroll): void {
+/** Restore instantly (overriding `scroll-behavior: smooth`) and report whether every position was reached. */
+export function restoreScrollScript(saved: SavedScroll): { restored: boolean; mismatches: string[] } {
   const f = (window as unknown as { __foldproof: FP }).__foldproof;
+  const mismatches: string[] = [];
+  const prev = document.documentElement.style.scrollBehavior;
+  document.documentElement.style.setProperty('scroll-behavior', 'auto', 'important');
   for (const c of saved.containers) {
     const el = (c.key.startsWith('#') ? document.querySelector(c.key) : f.query(c.key, true)[0]) as HTMLElement | null;
-    if (el) {
-      el.scrollTop = c.top;
-      el.scrollLeft = c.left;
-    }
+    if (!el) continue;
+    el.style.setProperty('scroll-behavior', 'auto', 'important');
+    el.scrollTo({ top: c.top, left: c.left, behavior: 'instant' as ScrollBehavior });
+    el.style.removeProperty('scroll-behavior');
+    if (Math.abs(el.scrollTop - c.top) > 1 || Math.abs(el.scrollLeft - c.left) > 1) mismatches.push(`${c.key}: wanted ${c.top}, got ${el.scrollTop}`);
   }
-  window.scrollTo(saved.window.x, saved.window.y);
+  window.scrollTo({ left: saved.window.x, top: saved.window.y, behavior: 'instant' as ScrollBehavior });
+  if (Math.abs(scrollY - saved.window.y) > 1 || Math.abs(scrollX - saved.window.x) > 1) mismatches.push(`window: wanted ${saved.window.y}, got ${scrollY}`);
+  if (prev) document.documentElement.style.scrollBehavior = prev;
+  else document.documentElement.style.removeProperty('scroll-behavior');
+  return { restored: mismatches.length === 0, mismatches };
 }
 
 export function overflowingElementsScript(): { key: string; right: number }[] {

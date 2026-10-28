@@ -177,6 +177,16 @@ export async function execute(
     await browser.close();
   }
   const coverage = reconcileCoverage(manifest, results);
+  // an expectation is only met with COMPLETE required coverage: rows that were never executed (runner stopped early)
+  // or ended open/review disqualify the match, exactly like an observed open finding would
+  const DIAG = new Set(['no-horizontal-overflow', 'target-size', 'straddles-fold-line']);
+  for (const r of results) {
+    const incomplete = coverage.some((c) => c.scenarioId === r.scenarioId && c.profileId === r.profileId && !DIAG.has(c.rule) && (c.kind === 'open' || c.kind === 'review'));
+    if (incomplete && r.matchedExpectation) {
+      r.matchedExpectation = false;
+      if (r.verdict === 'pass' || r.verdict === 'fail') r.verdict = 'open';
+    }
+  }
   const { redactUrl } = await import('../oracles/index.js');
   // the original base URL is used for execution only; the report carries a redacted form (no query/fragment)
   const partial = { tool: { name: TOOL_NAME, version, oracleVersion: ORACLE_VERSION }, startedAt: new Date().toISOString(), baseUrl: redactUrl(opts.baseUrl), appBuild: opts.appBuild, results, coverage };
