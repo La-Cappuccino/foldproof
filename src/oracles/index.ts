@@ -188,7 +188,7 @@ function mask(_v: unknown): string {
 /** Replace every URL inside free text with its origin + path (query and fragment carry tokens). */
 export function redactUrlsInText(s: string): string {
   // any scheme (case-insensitive), consume everything up to whitespace so a query containing )]'" cannot leak its tail
-  return s.replace(/\b[a-z][a-z0-9+.-]*:\/\/\S+/gi, (m) => {
+  return s.replace(/(?<![a-z0-9+.-])[a-z][a-z0-9+.-]*:\/\/\S+/gi, (m) => {
     const cut = m.search(/[?#]/);
     const head = cut === -1 ? m : m.slice(0, cut);
     const redacted = redactUrl(head.replace(/[)\]'".,;]+$/, ''));
