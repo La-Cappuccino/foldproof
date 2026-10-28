@@ -14,8 +14,9 @@ Rank is by usefulness to *this* project (proving an interface works across displ
 
 | # | Package | Stars | License | Last push | Commit inspected | What it actually checks | Tests of the package | Transitions? |
 |---|---|---|---|---|---|---|---|---|
-| 1 | [android/skills `jetpack-compose/adaptive`](https://github.com/android/skills/blob/main/jetpack-compose/adaptive/SKILL.md) | 9,954 | Apache-2.0 | 2026-10-26 | `45fd173` (skill `last-updated: 2026-10-24`) | 8-step Compose workflow: form-factor screenshot previews (PHONE/FOLDABLE/TABLET/DESKTOP), adaptive nav, Nav3 multi-pane, adaptive grids, **state preservation across configuration changes** (`rememberSaveable`, scroll state, `rememberNavBackStack`, ExoPlayer position + `playWhenReady`), desktop input, **tabletop posture using real hinge bounds** | None for the skill itself; instructs running the app's screenshot tests and forbids updating goldens | **Yes, as code rules** for fold/unfold/rotate/resize (Step 6), and posture layout (Step 8). No harness executes the transition. |
-| 2 | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | 91,193 | Apache-2.0 | 2026-10-28 | `8409a56`, v4.8.0 | `adapt.md` (web) and `adapt.native.md`: context assessment, breakpoints, input-method queries, safe areas, custom-control gesture checks with **evidence honesty** ("say what produced the evidence… name what stayed untested"); `audit.md`: 5 dimensions scored 0–4 incl. Responsive (fixed widths, 24/44 px targets, horizontal scroll, text scaling); `android.md`/`ios.md`: capture via `adb exec-out screencap` / `xcrun simctl io`, dark theme + font scale passes | 56 test files; `tests/skill-workflow/browser.mjs` renders exactly two viewports (1440×1000 desktop, 390×844 mobile); LLM workflow suites are opt-in and billed | **No.** Native reference says "test folded, unfolded, and tabletop" but nothing drives a fold, rotation, keyboard or resize. |
+| 1 | [android/skills `jetpack-compose/adaptive`](https://github.com/android/skills/blob/main/jetpack-compose/adaptive/SKILL.md) | 9,954 (re-checked 9,955) | Apache-2.0 | 2026-10-26 | `45fd173` (skill `last-updated: 2026-10-24`) | 8-step Compose workflow: form-factor screenshot previews (PHONE/FOLDABLE/TABLET/DESKTOP), adaptive nav, Nav3 multi-pane, adaptive grids, **state preservation across configuration changes** (`rememberSaveable`, scroll state, `rememberNavBackStack`, ExoPlayer position + `playWhenReady`), desktop input, **tabletop posture using real hinge bounds** | None for the skill itself; instructs running the app's screenshot tests and forbids updating goldens | **Yes, as code rules** for fold/unfold/rotate/resize (Step 6), and posture layout (Step 8). No harness executes the transition. |
+| 1b | **Apple `app-resizability`** (ships inside Xcode 27.1; read via mirrors, see §1.3) | n/a (Apple toolchain) | **Unstated**; mirrors say "check Apple's terms" | Xcode 27.1 (2026-10-15 RC build); unchanged in 27.2 RC | mirror `artemnovichkov/xcode-skills` | 19 KB SKILL.md + 5 task references (123 KB): read-only Info.plist prerequisites (launch screen, iPad orientations, `UIRequiresFullScreen`), then 5 migration tasks for UIKit: `UIScreen.main`, orientation→size classes + `didUpdateEffectiveGeometry`, scene lifecycle, asymmetric/changing safe areas + `keyboardLayoutGuide`, `userInterfaceIdiom`→size classes | None visible in exports | **Yes, as code rules**: insets "can change at any time… a window is dragged… a bar appears", guard expensive work during interactive resize, keyboard tracked by layout guide. No harness; Apple's page says "Test resizing" manually in the Duo simulator. UIKit only. |
+| 2 | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | 91,193 (re-checked 91,208 later the same day) | Apache-2.0 | 2026-10-28 | `8409a56`, v4.8.0 | `adapt.md` (web) and `adapt.native.md`: context assessment, breakpoints, input-method queries, safe areas, custom-control gesture checks with **evidence honesty** ("say what produced the evidence… name what stayed untested"); `audit.md`: 5 dimensions scored 0–4 incl. Responsive (fixed widths, 24/44 px targets, horizontal scroll, text scaling); `android.md`/`ios.md`: capture via `adb exec-out screencap` / `xcrun simctl io`, dark theme + font scale passes | 56 test files; `tests/skill-workflow/browser.mjs` renders exactly two viewports (1440×1000 desktop, 390×844 mobile); LLM workflow suites are opt-in and billed | **No.** Native reference says "test folded, unfolded, and tabletop" but nothing drives a fold, rotation, keyboard or resize. |
 | 3 | [OpenAI `playwright-interactive`](https://github.com/openai/skills/blob/main/skills/.curated/playwright-interactive/SKILL.md) | 28,359 (repo) | Apache-2.0 (skill-level `LICENSE.txt` + `NOTICE.txt`; repo root has no license file) | 2026-09-08 | `49f948f` | 693-line persistent `js_repl` Playwright workflow: desktop context 1600×900, mobile context 390×844 `isMobile`, native-window pass (`viewport: null`), Electron; **"Viewport Fit Checks (Required)"**: every required region must fit the startup viewport, plus a separate pass at the product's minimum supported size; one screenshot per user-visible claim | None | **Partial.** Explicit-viewport vs native-window are separate passes with a context reset; no fold/rotate/keyboard. |
 | 4 | [jezweb/claude-skills `responsiveness-check`](https://github.com/jezweb/claude-skills/blob/main/plugins/dev-tools/skills/responsiveness-check/SKILL.md) | 1,084 | MIT | 2026-10-09 | API read | Resizes **one browser session** through 8 widths (320→2560) or a 160 px sweep; 8-check matrix (overflow, text, nav switch, stacking, media, touch targets, whitespace, CTA); **reports the exact width range where layout transitions happen**; severity levels; Markdown report template | None | **Width-resize only.** "Transition" here means layout change between widths, not device/posture/keyboard transitions. |
 | 5 | [erkamyaman/capacitor-foldable](https://github.com/erkamyaman/capacitor-foldable) (+ bundled skill) | 54 | MIT | 2026-10-27 | `8f153cd`, npm v8.4.2 | Runtime plugin + **polyfill for Device Posture and Viewport Segments APIs** (`src/polyfill.ts`, `src/segments.ts`, `src/css.ts`); bundled `skills/capacitor-foldable` with `references/testing.md` giving concrete fold-testing commands for iPhone Duo (DeviceHub, `hinge` CLI, `simctl --display=3`) and Android (`adb emu fold/unfold`, `cmd device_state`, `sensor set hinge-angle0`) and a "what to actually check" list (both displays, nothing in the fold band, survives fold-shut-and-reopen) | 5 unit test files (`css`, `fold-state`, `keyboard`, `segments`, `size-class`) | **Yes, as runtime + manual recipe.** Best transition knowledge found. Capacitor-specific. |
@@ -50,7 +51,46 @@ Directory signal (skills.sh Algolia search for "responsive", 28 Oct 2026, instal
 
 **orchestkit responsive-patterns**: `SKILL.md`, `references/{container-queries,fluid-typography}.md`, `rules/` (10 incl. `responsive-foldables.md`, `touch-interaction.md`), `test-cases.json`. Frontmatter uses `compatibility`, `allowed-tools`, `user-invocable: false`, `disable-model-invocation: true`, `metadata.owner-agent`.
 
-### 1.3 Platform primitives inspected alongside the packages
+### 1.3 Apple's App Resizability agent skill (Xcode 27.1)
+
+**Verification status.** Apple's own page [Three steps to make your app shine on iPhone Duo](https://developer.apple.com/iphone-duo/prepare/) confirms the skill exists: "Step 1: Run the app resizability skill… In Xcode, ask the coding assistant to 'get my app ready for iPhone Duo.'… If you use a different coding agent, export the skill by running this in Terminal: `xcrun agent skills export`… The skill finds most issues, but not all of them." The Xcode 27.1 release notes (DocC JSON) do **not** mention agent skills at all. Neither the Studio nor the Mini has a full Xcode (both report Command Line Tools only, `xcrun agent` not found), so the skill content was read from three independent GitHub exports whose `SKILL.md` and references are byte-identical in size (19,267 B SKILL.md; references 16,067 / 11,381 / 22,497 / 10,069 / 63,080 B): [artemnovichkov/xcode-skills](https://github.com/artemnovichkov/xcode-skills) (63 stars, no license, pushed 2026-10-15), [mariusfanu/xcode-skills](https://github.com/mariusfanu/xcode-skills) (50 stars, exported from Xcode 27.2 RC, README states "Xcode 27.1 beta 1 replaces `uikit-app-modernization` with `app-resizability`… 27.2 RC skill content is unchanged from beta 3"), and [funsiyuan/iPhone-Duo-Skill-apple-app-resizability](https://github.com/funsiyuan/apple-app-resizability-skill) (13 stars, "extracted from Xcode 27.1"). The codewithbeto Instagram reel named in the lead could not be fetched and is **unverified**; nothing above depends on it. Export syntax from [sarunw.com](https://sarunw.com/posts/export-xcode-agent-skills/): `xcrun agent skills export [--output-dir <abs path>] [--replace-existing]`, optionally with `DEVELOPER_DIR=` to pick an Xcode; SwiftLee recommends exporting to `~/.agents/skills`.
+
+**File structure (as exported):**
+
+```
+app-resizability/
+├── SKILL.md                         # 19 KB: when-to-use, 14 core principles, prerequisites, 6-phase workflow, task registry
+└── references/
+    ├── uiscreen-task.md             # 63 KB: UIScreen.main → traitCollection.displayScale / window scene
+    ├── orientation-task.md          # 11 KB: orientation checks → size classes or bounds; didUpdateEffectiveGeometry
+    ├── scene-lifecycle-task.md      # 10 KB: AppDelegate → SceneDelegate
+    ├── safe-area-task.md            # 22 KB: asymmetric + changing insets, keyboardLayoutGuide
+    └── idiom-task.md                # 16 KB: userInterfaceIdiom → size classes
+```
+
+Frontmatter is the minimal spec form (`name`, `description` only; no `license`, `metadata` or `compatibility`). No scripts, assets or evals.
+
+**What it actually checks.** It is a *code-migration* skill, not a test skill. Phase 0 fast-path substitutions; Phase 1 detection per task; Phase 3b "process EVERY file… an empty diff for a file containing the target API is a failure"; Phase 5 file-coverage audit with subagents. Prerequisites are three read-only Info.plist/build-setting checks (launch screen keys, all four iPad orientations, `UIRequiresFullScreen` vs `UIRequiresFullScreenIgnoredStartingWithVersion`) with the explicit warning "Confirming that means running the app and resizing it. One view controller can break while the rest is correct."
+
+**Transition coverage.** Strong *as rules*, absent *as execution*:
+- `safe-area-task.md`: "An inset can change at any time, including with no change in size. A scene resizes while the app runs… a window is dragged, display dimensions change, a split view collapses, or a bar appears or disappears"; asymmetric horizontal insets "change with the orientation and with the display in use"; use `safeAreaInsetsDidChange()` to invalidate, and `view.keyboardLayoutGuide` instead of keyboard-frame notifications.
+- `orientation-task.md`: replace the deprecated `windowScene(_:didUpdate:interfaceOrientation:traitCollection:)` with `windowScene(_:didUpdateEffectiveGeometry:)`, and guard expensive work because "the callback arrives far more often than the size changes during an interactive resize".
+- No step drives a fold, rotation, resize or keyboard and asserts the outcome. Apple's page delegates that to "Step 3: Test resizing" in the iOS resizable simulator, the iPhone Duo simulator (Xcode 27.1) and iPhone Mirroring on macOS 27 ("Resize the window to extreme sizes in both directions").
+
+**Companion found while verifying:** [WhitenWhiten/iphone-duo-simulator-skill](https://github.com/WhitenWhiten/iphone-duo-simulator-skill) (1 star, MIT, pushed 2026-10-16) drives the Duo simulator from the CLI: `duo.py fold close|open|book|laptop|0..180`, `orient`, timed hinge `path`, `shot`, `record`, plus measured safe areas and crease per pose. It posts the same vendor-defined HID events as Device Hub's hinge slider through a compiled `duo_fold.c`, uses private simulator interfaces verified only against Xcode 27.1 (27A9275), and documents hard limits: no hinge-angle readback, hinge hysteresis, Xcode's device-interaction tools tap only the cover display, and `simctl io screenConfig` crash-loops SpringBoard. This is the closest thing found to scripted fold transitions on iOS, and it narrows gap G10 from "impossible" to "fragile, private-API, one-Xcode-build".
+
+**Implication for us.** Apple's skill is the authoritative list of *UIKit code patterns that break under resize*; it should be linked (not vendored) from our iOS reference as the migration step that precedes proof, and its prerequisite checks (orientation declarations, `UIRequiresFullScreen`) are cheap static pre-flight checks we can mirror for iOS targets. Its license is unstated, so we point users at `xcrun agent skills export` rather than redistributing.
+
+### 1.4 Star counts re-confirmed on request
+
+| Repo | First read (morning) | Re-check (`gh api repos/<o>/<r> --jq .stargazers_count`, later 2026-10-28) |
+|---|---|---|
+| pbakaus/impeccable | 91,193 | **91,208** |
+| android/skills | 9,954 | **9,955** |
+
+Both claims in the brief ("~91k", "~10k") hold.
+
+### 1.5 Platform primitives inspected alongside the packages
 
 | Primitive | Source (license) | What it gives us | Limit |
 |---|---|---|---|
@@ -181,6 +221,8 @@ Target license for our package: **MIT or Apache-2.0** (both permissive; Apache-2
 | wshobson responsive-design, ui-ux-pro-max CSVs, platform-design-skills, flutter-adaptive-ui, Axiom | MIT | Reuse with attribution (low value to copy) | Keep MIT notice |
 | awesome-cursor-skills responsive-testing | CC0-1.0 | Free | None |
 | foldable-sim `devices.js` (Duo measurements) | MIT | Reuse data with attribution; **measurements are from one simulator build, re-verify** | Keep MIT notice |
+| **Apple `app-resizability`** (via `xcrun agent skills export`) | **Unstated**; third-party mirrors carry no license and warn to check Apple's terms | **Do not vendor.** Link to Apple's page and the export command; re-derive the three Info.plist pre-flight checks from Apple's public TN3192/TN3208 technotes | — |
+| WhitenWhiten/iphone-duo-simulator-skill (`duo.py`, `duo_fold.c`) | MIT | Reuse with attribution as an *optional* iOS fold driver; mark as private-API and Xcode-build-specific | Keep MIT notice |
 | **responsive-craft** | **none** | **Do not copy.** Ideas (drag-resize, keyboard-open edge case) can be re-derived from first principles | — |
 | **vercel-labs/agent-skills** | **no LICENSE at root** | **Do not copy** until a license is confirmed; the skill only fetches an external doc anyway | — |
 | Anthropic `docx/pdf/pptx/xlsx` | source-available, not open source | Not relevant; do not copy | — |
@@ -202,7 +244,7 @@ Must build ourselves: the device-profile corpus with provenance (no permissive s
 | G7 | **Car and TV scenarios** (parked-app restrictions, focus/D-pad navigation, 10-foot sizing) | Android cars + TV skills (policy/migration, Android-only) | No web/test-oriented scenario; no Tesla/AAOS browser profile |
 | G8 | **Posture emulation portable across tools** | orchestkit points at the DevTools UI; capacitor-foldable polyfills at run time | No script that sets posture + display feature for Playwright/CDP and verifies `navigator.devicePosture`/`viewport.segments` respond |
 | G9 | **Evals for responsiveness skills validated against ground truth** | orchestkit prompt-level cases; wshobson snapshot (judge unvalidated) | No dataset of real breakages with expected detections |
-| G10 | **iOS foldable automation** | iphone-duo-skills + capacitor-foldable document that scripted drivers cannot tap the Duo | A real limit to state in the report, not to paper over |
+| G10 | **iOS foldable automation** | iphone-duo-skills + capacitor-foldable document that scripted drivers cannot tap the Duo; `iphone-duo-simulator-skill` folds/rotates/screenshots via private HID events (Xcode 27.1 only); Apple's `app-resizability` is migration-only and defers testing to manual simulator use | Fragile and build-specific; a real limit to state in the report, not to paper over |
 | G11 | **Cross-harness script paths** | Impeccable's build pipeline | Claude-only `${CLAUDE_SKILL_DIR}` vs Codex relative paths; needs one convention plus a build or a launcher |
 
 ---
@@ -230,6 +272,13 @@ Must build ourselves: the device-profile corpus with provenance (no permissive s
 - https://github.com/getpopcraft/foldable-sim (README)
 - https://github.com/currents-dev/playwright-best-practices-skill (`playwright-best-practices/advanced/mobile-testing.md`)
 - https://github.com/expo/skills (code search only)
+- https://developer.apple.com/iphone-duo/prepare/ (Apple: "Step 1: Run the app resizability skill", `xcrun agent skills export`)
+- https://developer.apple.com/tutorials/data/documentation/xcode-release-notes/xcode-27_1-release-notes.json (no mention of agent skills)
+- https://github.com/artemnovichkov/xcode-skills (`skills/app-resizability/SKILL.md`, `references/{uiscreen,orientation,scene-lifecycle,safe-area,idiom}-task.md`)
+- https://github.com/mariusfanu/xcode-skills (README version history of Apple skill renames; export from Xcode 27.2 RC)
+- https://github.com/funsiyuan/apple-app-resizability-skill (README, tree)
+- https://github.com/WhitenWhiten/iphone-duo-simulator-skill (README, `scripts/`)
+- https://sarunw.com/posts/export-xcode-agent-skills/ and https://www.avanderlee.com/ai-development/using-xcode-27s-agent-skills-in-claude-codex-and-cursor/ (export syntax and `~/.agents/skills` convention; secondary)
 - https://github.com/microsoft/playwright (`packages/playwright/src/agents/`, `packages/isomorphic/deviceDescriptors.ts`, `packages/isomorphic/deviceDescriptorsSource.json`; issue search "device posture", "viewport segments", "foldable")
 - https://playwright.dev/docs/test-agents
 - https://github.com/agentskills/agentskills (commit `69ef37e`; `skills-ref/README.md`, `docs/`)
@@ -256,7 +305,7 @@ Must build ourselves: the device-profile corpus with provenance (no permissive s
 - https://developer.android.com/studio/run/emulator-console
 - https://developer.android.com/studio/run/emulator-commandline
 
-**Verification limits.** Local execution was limited to `claude plugin validate` on Impeccable's plugin directory and parsing of the device corpora; no package was run against an application. Install counts are from skills.sh on the inspection date and change daily. The iPhone Duo and Android `cmd device_state`/`hinge-angle0` commands come from capacitor-foldable's reference file and were not checked against Apple or Google documentation.
+**Verification limits.** Apple's skill was read from three byte-identical third-party exports because no full Xcode is installed on either Mac; the codewithbeto reel was not retrievable. Local execution was limited to `claude plugin validate` on Impeccable's plugin directory and parsing of the device corpora; no package was run against an application. Install counts are from skills.sh on the inspection date and change daily. The iPhone Duo and Android `cmd device_state`/`hinge-angle0` commands come from capacitor-foldable's reference file and were not checked against Apple or Google documentation.
 
 ## Addendum (2026-10-28, verified via Perplexity against Apple primary sources) — Apple "App Resizability" skill
 
