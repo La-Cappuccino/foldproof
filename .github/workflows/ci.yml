@@ -55,7 +55,7 @@ jobs:
           path: test-results/fixtures/**/*
       - name: upload SARIF to code scanning
         if: always() && matrix.os == 'ubuntu-latest'
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: test-results/fixtures/run-0/foldproof.sarif
           category: foldproof-fixtures
