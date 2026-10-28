@@ -76,6 +76,7 @@
     {
       "name": "closed",
       "panel": "outer",
+      "orientation": "portrait",
       "web": {
         "posture": "continuous",
         "segments": 1
@@ -86,6 +87,7 @@
     {
       "name": "flat",
       "panel": "inner",
+      "orientation": "portrait",
       "web": {
         "posture": "continuous",
         "segments": 1

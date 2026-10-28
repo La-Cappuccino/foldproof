@@ -53,7 +53,7 @@
       "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
       "publisher": "foldproof (this corpus)",
       "inspected": "2026-10-28",
-      "licence": "CC-BY-4.0",
+      "licence": "CDLA-Permissive-2.0",
       "kind": "derived",
       "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
     }
@@ -242,6 +242,7 @@
     {
       "name": "closed",
       "panel": "outer",
+      "orientation": "portrait",
       "web": {
         "posture": "continuous",
         "segments": 1
@@ -252,6 +253,7 @@
     {
       "name": "flat",
       "panel": "inner",
+      "orientation": "portrait",
       "web": {
         "posture": "continuous",
         "segments": 1
@@ -262,6 +264,7 @@
     {
       "name": "half_opened",
       "panel": "inner",
+      "orientation": "portrait",
       "web": {
         "posture": "folded",
         "segments": 2
@@ -273,6 +276,7 @@
     {
       "name": "book",
       "panel": "inner",
+      "orientation": "portrait",
       "web": {
         "posture": "folded",
         "segments": 2
@@ -284,6 +288,7 @@
     {
       "name": "tabletop",
       "panel": "inner",
+      "orientation": "landscape",
       "web": {
         "posture": "folded",
         "segments": 2

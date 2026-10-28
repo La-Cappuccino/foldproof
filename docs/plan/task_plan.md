@@ -14,9 +14,9 @@ profiles and reproducible failure fixtures, not in a screenshot at one size.
 - [x] P2 Synthesis → docs/SPEC-v1.md (goal, non-goals, slices, acceptance) — working name foldproof
 - [x] P3 Quad-council review (4/4 seats: ship with changes) → docs/plan/council-2026-10-28.md → SPEC v1.1
 - [x] P4 Slice 1 (vertical) DONE 2026-10-28 12:25: fixture draft-lost-on-unfold broken fails exactly state-preserved+no-remount on Surface Duo + Pixel 9 Pro Fold; fixed passes incl. hinge + operate; exit 0
-  - open item: Duo portrait-spanned (720×1114) path observed 726×1124 once before the orientation fix — re-check when tabletop scenarios land
+  - open item CLOSED 2026-10-28 12:40: Duo tabletop (720×1114, horizontal hinge y=540) self-checks exactly after posture.orientation landed; the 726×1124 drift came from the pre-migration profile
 - [x] P5 Slice 2 DONE: rotate/resize/keyboard(shrink+overlay)/fold/unfold/posture, operate, steps + per-step settle (min_ms), coverage manifest, exit codes 0–3, JUnit, masking, axe target-size, SARIF validated against OASIS schema
-- [~] P6 Slice 3: fixtures orientation-locked-layout, control-under-hinge, stale-async-round-trip DONE (all match); keyboard-covers-primary-action, rotate-loses-scroll, tabbar-missing, positives → build-fixtures agent in flight; CI matrix (3 runs) in ci.yml (CPU throttle TODO)
+- [x] P6 Slice 3 DONE: 9 fixtures / 25 scenarios all match (7 broken fail only their named rules, 2 positives + all fixed pass); CI matrix 3 runs + 4× CPU throttle in ci.yml; `npm run test:fixtures` green locally
 - [x] P7 Slice 4 DONE: SKILL.md (98 lines) + launcher + plugin manifests + evals (6) + codex metadata + templates; `skills-ref validate` ✓, `claude plugin validate --strict` ✓; `quick <url>` works (3 controls discovered, pass ×2)
 - [ ] P8 Slice 5: corpus (agent, parallel), engines from BCD, README/CONTRIBUTING/NOTICE/licences, GitHub repo + CI + SARIF Action, npm pack; Codex review; council score
 - [ ] P9 Commit/push, Brain persist, final mark-it-down, report

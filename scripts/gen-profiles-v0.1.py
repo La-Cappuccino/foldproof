@@ -467,7 +467,8 @@ profiles.append(profile(
     usable=[dt_usable('inner', 'landscape', 1706, 1280), dt_usable('inner', 'portrait', 1280, 1706), dt_usable('single', 'portrait', 853, 1280), dt_usable('single', 'landscape', 1280, 853)],
     display_features=[
         dt_hinge('zenbook-fold-vertical', 'inner', 'vertical', 800, 0, 107, 1280, 'none', 'landscape coordinates (1706x1280 span): DevTools hinge {x:800,y:0,width:107,height:1280} drawn with contentColor alpha 0.2 (translucent) unlike Surface Duo alpha 1.0; single flexible OLED so occlusion none, width 107 css_px kept as the registry fold region'),
-        dt_hinge('zenbook-fold-horizontal', 'inner', 'horizontal', 0, 800, 1706, 107, 'none', 'portrait coordinates (1280x1706 span): DevTools hinge {x:0,y:800,width:1706,height:107}, alpha 0.2'),
+        {**dt_hinge('zenbook-fold-horizontal', 'inner', 'horizontal', 0, 800, 1280, 107, 'none', ''), 'kind': 'derived',
+         'derivation': 'portrait coordinates (1280x1706 span): DevTools publishes hinge {x:0,y:800,width:1706,height:107}, but width 1706 exceeds the 1280-wide horizontal-spanned screen (it repeats the vertical-spanned width); clipped to the span width 1280. y=800 and height 107 are as published, alpha 0.2'},
     ],
     postures=[
         posture('closed', 'single', 'continuous', None, 'w3c-device-posture'),
@@ -480,7 +481,7 @@ profiles.append(profile(
     unknowns=[
         U('inputs', 'DevTools lists capabilities ["touch"] only; the detachable hardware keyboard, touchpad and pen are not in the registry, so inputs record touch-only. A Windows session with a mouse would be pointer fine / hover.'),
         U('panels.physical_px', 'Vendor panel resolution and diagonal not verified; physical_px derived from DevTools css_px x 1.5.'),
-        U('display_features.bounds', 'Fold region 107 css_px is the DevTools drawing, not a measured fold; whether Chrome on Windows exposes a 107 px segment gap is unmeasured.'),
+        U('display_features.bounds', 'Fold region 107 css_px is the DevTools drawing, not a measured fold; whether Chrome on Windows exposes a 107 px segment gap is unmeasured. The DevTools horizontal-spanned hinge width (1706) exceeds the 1280 px span and was clipped; the registry value looks like a copy of the vertical-spanned width.'),
         U('postures.web', 'Windows posture reporting (continuous vs folded) on this device is unmeasured.'),
         U_KEYBOARD,
     ],
