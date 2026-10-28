@@ -1,0 +1,43 @@
+# foldproof scenario template — copy, rename, delete what you do not need.
+# Validate: node scripts/foldproof.mjs scenarios validate my-scenario.yaml
+# Run:      node scripts/foldproof.mjs run my-scenario.yaml --base-url http://localhost:3000
+foldproof: 1
+id: unfold-keeps-draft                       # lowercase, digits, hyphens
+title: "Unfolding mid-draft keeps the draft and Send stays operable"
+profiles: [google-pixel-9-pro-fold, microsoft-surface-duo]   # ids from `profiles list`; or { class: foldable }
+start: { posture: closed }                   # names must exist in the profile; omit for the profile's natural start
+task:
+  url: /compose                              # resolved against --base-url
+  ready: { selector: "#send" }               # the task is "available" when this is visible
+  controls: ["#send", "role=button[name='Save draft']"]   # each must resolve to exactly ONE element
+  landmarks: ["role=navigation"]             # checked by no-element-loss
+  state:                                     # preservation policies (shown with defaults)
+    form: all                                # exact equality; or a list of locators; or none
+    focus: same-element
+    selection: exact
+    scroll: anchor                           # the first visible element stays visible (± scroll_tolerance_px)
+    scroll_tolerance_px: 0
+    storage: ["draft"]                       # declared keys only: present before ⇒ present after, equal; additions allowed
+    history: no-loss
+    media: progress                          # not paused unless paused before; never rewinds
+    # custom: "window.__app.state()"         # JS expression, deep-equal
+  setup:                                     # small vocabulary; use `script:` for real apps (auth, seeding)
+    - { fill: "#body", value: "Hei, vedlagt er avtalen." }
+    - { focus: "#body", select: [4, 7] }
+    - { scrollTo: "#para-12" }
+  # script: ./setup.mjs                      # exports setup(page, { profile, scenario })
+steps:
+  - transition: unfold                       # fold | unfold | posture | rotate | resize | split | keyboard-open | keyboard-close
+    assert: preset@1                         # = reachable, state-preserved, no-remount, not-occluded-by-hinge, no-element-loss
+  - transition: { kind: keyboard-open, to: { keyboard: { height: 300 } } }
+    assert: [reachable]
+    settle: { min_ms: 0, max_ms: 1500 }      # per-step override
+  - transition: keyboard-close
+    assert: [reachable, state-preserved]
+  - operate: { target: "#send", expect: { visible: ".sent" } }   # the only real click; declares the outcome
+settle: { quiet_frames: 2, min_ms: 0, max_ms: 3000 }   # raise min_ms to catch debounced handlers
+static: []                                   # opt-in diagnostics: no-horizontal-overflow, target-size (warning level)
+transient: [".toast"]                        # excluded from no-element-loss
+mask: []                                     # locators hidden in screenshots; each must match ≥1 element or the screenshot is skipped (fail-closed)
+expect: { verdict: pass }                    # fixtures: { verdict: fail, rules: [state-preserved] }
+tags: []

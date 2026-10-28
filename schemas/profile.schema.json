@@ -1,0 +1,802 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foldproof.dev/schemas/profile.schema.json",
+  "title": "foldproof device / configuration profile",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,80}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "supersedes": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "device",
+        "emulator-profile",
+        "registry-entry"
+      ]
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "web",
+        "android",
+        "ios",
+        "ipados",
+        "windows",
+        "automotive",
+        "tv"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "vendor": {
+      "type": "string"
+    },
+    "released": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "sources": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{1,80}$"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "publisher": {
+            "type": "string",
+            "minLength": 1
+          },
+          "inspected": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "licence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "SPDX id, \"vendor-fact\" for quoted specifications, or \"measured\""
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "published",
+              "derived",
+              "measured"
+            ]
+          },
+          "revision": {
+            "description": "upstream version / commit / page revision the value was read from",
+            "type": "string"
+          },
+          "quote": {
+            "description": "verbatim text the value was taken from",
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "publisher",
+          "inspected",
+          "licence",
+          "kind"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "panels": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "inner",
+              "outer",
+              "single"
+            ]
+          },
+          "physical_px": {
+            "type": "object",
+            "properties": {
+              "w": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "h": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            },
+            "required": [
+              "w",
+              "h"
+            ],
+            "additionalProperties": false
+          },
+          "diagonal_in": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "ppi": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "density_dpi": {
+            "description": "Android density bucket, e.g. 420",
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "source_ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "physical_px",
+          "source_ref"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "logical": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "panel": {
+            "type": "string",
+            "enum": [
+              "inner",
+              "outer",
+              "single"
+            ]
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "css_px",
+              "dp",
+              "pt"
+            ]
+          },
+          "w": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "h": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scale": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "devicePixelRatio / density factor / iOS scale"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "published",
+              "derived",
+              "measured"
+            ]
+          },
+          "derivation": {
+            "type": "string"
+          },
+          "source_ref": {
+            "type": "string"
+          },
+          "registry": {
+            "description": "e.g. \"playwright deviceDescriptorsSource.json: Galaxy Z Fold 7\"",
+            "type": "string"
+          }
+        },
+        "required": [
+          "panel",
+          "orientation",
+          "unit",
+          "w",
+          "h",
+          "scale",
+          "kind",
+          "source_ref"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "usable": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "panel": {
+            "type": "string",
+            "enum": [
+              "inner",
+              "outer",
+              "single"
+            ]
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "css_px",
+              "dp",
+              "pt"
+            ]
+          },
+          "layout_viewport": {
+            "type": "object",
+            "properties": {
+              "w": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "h": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            },
+            "required": [
+              "w",
+              "h"
+            ],
+            "additionalProperties": false
+          },
+          "visual_viewport": {
+            "type": "object",
+            "properties": {
+              "w": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "h": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            },
+            "required": [
+              "w",
+              "h"
+            ],
+            "additionalProperties": false
+          },
+          "insets": {
+            "type": "object",
+            "properties": {
+              "top": {
+                "type": "number",
+                "minimum": 0
+              },
+              "right": {
+                "type": "number",
+                "minimum": 0
+              },
+              "bottom": {
+                "type": "number",
+                "minimum": 0
+              },
+              "left": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "top",
+              "right",
+              "bottom",
+              "left"
+            ],
+            "additionalProperties": false
+          },
+          "cutouts": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "y": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "published",
+              "derived",
+              "measured"
+            ]
+          },
+          "derivation": {
+            "type": "string"
+          },
+          "source_ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "panel",
+          "orientation",
+          "unit",
+          "layout_viewport",
+          "insets",
+          "kind",
+          "source_ref"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "display_features": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{1,80}$"
+          },
+          "panel": {
+            "type": "string",
+            "enum": [
+              "inner",
+              "outer",
+              "single"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "fold",
+              "hinge"
+            ]
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "vertical",
+              "horizontal"
+            ],
+            "description": "vertical = splits left/right"
+          },
+          "bounds": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0
+              },
+              "w": {
+                "type": "number",
+                "minimum": 0
+              },
+              "h": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "x",
+              "y",
+              "w",
+              "h"
+            ],
+            "additionalProperties": false
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "css_px",
+              "dp",
+              "pt"
+            ]
+          },
+          "occlusion": {
+            "type": "string",
+            "enum": [
+              "none",
+              "full"
+            ]
+          },
+          "is_separating": {
+            "type": "boolean"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "published",
+              "derived",
+              "measured"
+            ]
+          },
+          "derivation": {
+            "type": "string"
+          },
+          "source_ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "panel",
+          "type",
+          "orientation",
+          "bounds",
+          "unit",
+          "occlusion",
+          "kind",
+          "source_ref"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "postures": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "closed",
+              "half_opened",
+              "flat",
+              "book",
+              "tabletop",
+              "tent"
+            ]
+          },
+          "panel": {
+            "type": "string",
+            "enum": [
+              "inner",
+              "outer",
+              "single"
+            ]
+          },
+          "orientation": {
+            "description": "the orientation this posture (and its display feature) is expressed in; the resolver prefers it when a scenario gives none",
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ]
+          },
+          "web": {
+            "type": "object",
+            "properties": {
+              "posture": {
+                "type": "string",
+                "enum": [
+                  "continuous",
+                  "folded"
+                ]
+              },
+              "segments": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "const": 1
+                  },
+                  {
+                    "type": "number",
+                    "const": 2
+                  }
+                ],
+                "description": "expected viewport segment count the self-check asserts"
+              }
+            },
+            "required": [
+              "posture",
+              "segments"
+            ],
+            "additionalProperties": false
+          },
+          "android_state": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "FLAT",
+                  "HALF_OPENED"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "hinge_angle_range_deg": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "display_feature": {
+            "description": "id of the display feature active in this posture",
+            "type": "string"
+          },
+          "source_ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "panel",
+          "web",
+          "source_ref"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "properties": {
+        "pointer": {
+          "type": "string",
+          "enum": [
+            "fine",
+            "coarse",
+            "none"
+          ]
+        },
+        "hover": {
+          "type": "string",
+          "enum": [
+            "hover",
+            "none"
+          ]
+        },
+        "touch": {
+          "type": "boolean"
+        },
+        "keyboard": {
+          "type": "string",
+          "enum": [
+            "hardware",
+            "soft",
+            "both",
+            "none"
+          ]
+        },
+        "remote_dpad": {
+          "type": "boolean"
+        },
+        "rotary": {
+          "type": "boolean"
+        },
+        "voice": {
+          "type": "boolean"
+        },
+        "source_ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "pointer",
+        "hover",
+        "touch",
+        "keyboard",
+        "source_ref"
+      ],
+      "additionalProperties": false
+    },
+    "keyboard_height": {
+      "description": "only from a cited measurement; otherwise absent and listed in unknowns",
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string",
+          "const": "css_px"
+        },
+        "min": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "max": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "published",
+            "derived",
+            "measured"
+          ]
+        },
+        "derivation": {
+          "type": "string"
+        },
+        "source_ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit",
+        "min",
+        "max",
+        "kind",
+        "source_ref"
+      ],
+      "additionalProperties": false
+    },
+    "operating_states": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "parked",
+              "driving"
+            ]
+          },
+          "requires_distraction_optimization": {
+            "type": "boolean"
+          },
+          "ux_restrictions_mask": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "source_ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "requires_distraction_optimization",
+          "source_ref"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "conflicts_with": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "profile_id",
+          "field",
+          "note"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "field",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "description": "required even if empty: keeps gaps visible"
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "revision",
+    "kind",
+    "platform",
+    "name",
+    "sources",
+    "panels",
+    "inputs",
+    "unknowns"
+  ],
+  "additionalProperties": false
+}

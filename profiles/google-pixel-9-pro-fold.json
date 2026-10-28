@@ -1,0 +1,436 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "google-pixel-9-pro-fold",
+  "revision": 1,
+  "kind": "device",
+  "platform": "android",
+  "name": "Google Pixel 9 Pro Fold",
+  "vendor": "Google",
+  "sources": [
+    {
+      "id": "chrome-devtools",
+      "url": "https://github.com/ChromeDevTools/devtools-frontend/blob/main/front_end/models/emulation/EmulatedDevices.ts",
+      "publisher": "Chromium (DevTools)",
+      "inspected": "2026-10-28",
+      "licence": "BSD-3-Clause",
+      "kind": "published",
+      "revision": "main 89605581639d434b16692f9dec9482e443a45973 (file last changed 4c3993d1 2026-08-27)",
+      "note": "screen.vertical/horizontal in CSS px, device-pixel-ratio, spanned modes with hinge rect {x,y,width,height} in CSS px."
+    },
+    {
+      "id": "google-pixel-specs",
+      "url": "https://support.google.com/pixelphone/answer/7158570",
+      "publisher": "Google (Pixel Phone Help)",
+      "inspected": "2026-10-28",
+      "licence": "vendor-fact",
+      "kind": "published"
+    },
+    {
+      "id": "aosp-nexus-xml",
+      "url": "https://android.googlesource.com/platform/tools/base/+/mirror-goog-studio-main/sdklib/src/main/resources/com/android/sdklib/devices/nexus.xml",
+      "publisher": "AOSP (platform/tools/base sdklib)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "revision": "mirror-goog-studio-main b143674a31236684a225ec6d6d19a5c9b1ecef51 (2026-10-28)",
+      "note": "Google device emulator profiles (Pixel Fold, Pixel 9 Pro Fold, Pixel 10 Pro Fold, Pixel Tablet, Pixel 10 Pro). One pixel-density per profile, applied to the folded region too."
+    },
+    {
+      "id": "android-screen-densities",
+      "url": "https://developer.android.com/training/multiscreen/screendensities",
+      "publisher": "Google (Android Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "px = dp * (dpi / 160)",
+      "note": "mdpi 160 = 1.0 baseline; xhdpi 320 = 2.0; xxhdpi 480 = 3.0; 420dpi = 2.625; 390dpi = 2.4375."
+    },
+    {
+      "id": "androidx-foldingfeature",
+      "url": "https://android.googlesource.com/platform/frameworks/support/+/androidx-main/window/window/src/main/java/androidx/window/layout/FoldingFeature.kt",
+      "publisher": "AOSP (androidx.window)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "revision": "androidx-main (read 2026-10-28)",
+      "note": "State FLAT | HALF_OPENED; Orientation VERTICAL | HORIZONTAL; OcclusionType NONE (flexible screen, treat as guideline) | FULL (hinge is part of the window); isSeparating true for hinges always and for folds when not FLAT."
+    },
+    {
+      "id": "w3c-device-posture",
+      "url": "https://www.w3.org/TR/device-posture/",
+      "publisher": "W3C Devices and Sensors WG",
+      "inspected": "2026-10-28",
+      "licence": "W3C-document-licence",
+      "kind": "published",
+      "revision": "Candidate Recommendation Draft 2026-10-26",
+      "quote": "continuous | folded",
+      "note": "continuous = flat or fully closed; folded = book or laptop posture."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CDLA-Permissive-2.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "inner",
+      "physical_px": {
+        "w": 2076,
+        "h": 2152
+      },
+      "diagonal_in": 8,
+      "ppi": 373,
+      "density_dpi": 390,
+      "source_ref": "google-pixel-specs"
+    },
+    {
+      "name": "outer",
+      "physical_px": {
+        "w": 1080,
+        "h": 2424
+      },
+      "diagonal_in": 6.3,
+      "ppi": 422,
+      "density_dpi": 390,
+      "source_ref": "google-pixel-specs"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 836,
+      "h": 842,
+      "scale": 2.625,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend EmulatedDevices.ts: Pixel 9 Pro Fold vertical-spanned"
+    },
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 842,
+      "h": 836,
+      "scale": 2.625,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend EmulatedDevices.ts: Pixel 9 Pro Fold horizontal-spanned"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 412,
+      "h": 922,
+      "scale": 2.625,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend EmulatedDevices.ts: Pixel 9 Pro Fold vertical"
+    },
+    {
+      "panel": "outer",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 922,
+      "h": 412,
+      "scale": 2.625,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend EmulatedDevices.ts: Pixel 9 Pro Fold horizontal"
+    },
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "dp",
+      "w": 851.69,
+      "h": 882.87,
+      "scale": 2.4375,
+      "kind": "derived",
+      "derivation": "dp = px / (390 / 160): 2076 / 2.4375 = 851.69; 2152 / 2.4375 = 882.87 (AOSP nexus.xml pixel-density 390dpi; vendor px from Google)",
+      "source_ref": "aosp-nexus-xml"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "dp",
+      "w": 443.08,
+      "h": 994.46,
+      "scale": 2.4375,
+      "kind": "derived",
+      "derivation": "dp = px / 2.4375 using the single AOSP profile density (390dpi): 1080 / 2.4375 = 443.08; 2424 / 2.4375 = 994.46. The retail outer panel is 422 ppi, so the real density may differ",
+      "source_ref": "aosp-nexus-xml"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 836,
+        "h": 842
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 842,
+        "h": 836
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 412,
+        "h": 922
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "outer",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 922,
+        "h": 412
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    }
+  ],
+  "display_features": [
+    {
+      "id": "p9pf-fold-vertical",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "vertical",
+      "bounds": {
+        "x": 418,
+        "y": 0,
+        "w": 0,
+        "h": 842
+      },
+      "unit": "css_px",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "published",
+      "derivation": "portrait coordinates (836x842 span): DevTools hinge {x:418,y:0,width:0,height:842}, contentColor alpha 0.2 (translucent) = flexible fold",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "id": "p9pf-fold-horizontal",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "horizontal",
+      "bounds": {
+        "x": 0,
+        "y": 418,
+        "w": 842,
+        "h": 0
+      },
+      "unit": "css_px",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "published",
+      "derivation": "landscape coordinates (842x836 span): DevTools hinge {x:0,y:418,width:842,height:0}, alpha 0.2",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "id": "p9pf-fold-vertical-dp",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "vertical",
+      "bounds": {
+        "x": 425.85,
+        "y": 0,
+        "w": 0,
+        "h": 882.87
+      },
+      "unit": "dp",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "derived",
+      "derivation": "AOSP nexus.xml hinge areas \"1038-0-0-2152\" (x-y-w-h device px) / 2.4375 = x 425.85, w 0, h 882.87",
+      "source_ref": "aosp-nexus-xml"
+    }
+  ],
+  "postures": [
+    {
+      "name": "closed",
+      "panel": "outer",
+      "orientation": "portrait",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
+      "android_state": null,
+      "hinge_angle_range_deg": [
+        0,
+        30
+      ],
+      "source_ref": "aosp-nexus-xml"
+    },
+    {
+      "name": "flat",
+      "panel": "inner",
+      "orientation": "portrait",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
+      "android_state": "FLAT",
+      "hinge_angle_range_deg": [
+        150,
+        180
+      ],
+      "source_ref": "aosp-nexus-xml"
+    },
+    {
+      "name": "half_opened",
+      "panel": "inner",
+      "orientation": "portrait",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
+      "android_state": "HALF_OPENED",
+      "hinge_angle_range_deg": [
+        30,
+        150
+      ],
+      "display_feature": "p9pf-fold-vertical",
+      "source_ref": "aosp-nexus-xml"
+    },
+    {
+      "name": "book",
+      "panel": "inner",
+      "orientation": "portrait",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
+      "android_state": "HALF_OPENED",
+      "hinge_angle_range_deg": [
+        30,
+        150
+      ],
+      "display_feature": "p9pf-fold-vertical",
+      "source_ref": "aosp-nexus-xml"
+    },
+    {
+      "name": "tabletop",
+      "panel": "inner",
+      "orientation": "landscape",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
+      "android_state": "HALF_OPENED",
+      "hinge_angle_range_deg": [
+        30,
+        150
+      ],
+      "display_feature": "p9pf-fold-horizontal",
+      "source_ref": "aosp-nexus-xml"
+    }
+  ],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "source_ref": "aosp-nexus-xml"
+  },
+  "operating_states": [],
+  "conflicts_with": [
+    {
+      "profile_id": "aosp-pixel-9-pro-fold",
+      "field": "logical.inner",
+      "note": "DevTools spanned 836x842 @2.625 implies 2194.5x2210.25 device px; Google and AOSP publish 2076x2152 at 390dpi (851.69x882.87 dp). DevTools entry matches neither the hardware px count nor the AOSP density. Kept side by side."
+    }
+  ],
+  "unknowns": [
+    {
+      "field": "logical.inner.css_px",
+      "reason": "Hardware CSS px for the inner panel in Chrome is unmeasured; the DevTools value conflicts with vendor px (see conflicts_with)."
+    },
+    {
+      "field": "display_features.bounds",
+      "reason": "Real fold bounds on hardware unmeasured; DevTools x=418 css_px and AOSP x=1038 device px are registry/emulator values."
+    },
+    {
+      "field": "panels.outer.density_dpi",
+      "reason": "Outer panel density on hardware unknown; AOSP applies one density (390dpi) to both regions."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "System insets (status bar, navigation bar) and cutout geometry are not published; insets recorded as 0, meaning \"not published\", not \"none\"."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
+  ],
+  "tags": [
+    "foldable",
+    "phone"
+  ]
+}

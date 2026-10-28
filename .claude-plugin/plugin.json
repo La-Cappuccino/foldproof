@@ -1,0 +1,11 @@
+{
+  "name": "foldproof",
+  "version": "0.1.0",
+  "description": "Reproducible, emulated evidence that a web task survives the fold, the rotate, the resize and the keyboard. Sourced device profiles, transition scenarios, state-preservation oracles, SARIF evidence.",
+  "author": { "name": "Allan Kisuule", "url": "https://github.com/La-Cappuccino" },
+  "homepage": "https://github.com/La-Cappuccino/foldproof",
+  "repository": "https://github.com/La-Cappuccino/foldproof",
+  "license": "Apache-2.0",
+  "keywords": ["responsive", "adaptive", "foldable", "viewport-segments", "device-posture", "playwright", "testing", "accessibility"],
+  "skills": ["./skills"]
+}

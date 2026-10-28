@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notes (positive control: autosave rewrites the draft and adds a timestamp key)</title>
+<style>
+  body { margin: 0; font: 16px/1.4 system-ui, sans-serif; color: #111; }
+  main { max-width: 680px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 24px; margin: 0 0 16px; }
+  label { display: block; margin-bottom: 6px; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 160px; font: inherit; padding: 8px; }
+  #status { margin: 8px 0; color: #444; min-height: 1.4em; }
+  button { min-height: 44px; padding: 0 16px; font: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Notes</h1>
+  <label for="body">Note</label>
+  <textarea id="body" name="body" placeholder="Write a note"></textarea>
+  <p id="status" aria-live="polite"></p>
+  <button id="save" type="button">Save now</button>
+</main>
+<script>
+  // Legitimate behaviour: the editor autosaves on input AND on resize. Each save rewrites localStorage
+  // "draft" with the same text and adds/updates "draft:savedAt" (a key the scenario did not declare).
+  // The storage policy compares declared keys only and allows additions, so this must pass.
+  const body = document.getElementById('body');
+  const status = document.getElementById('status');
+  function save(reason) {
+    localStorage.setItem('draft', body.value);
+    localStorage.setItem('draft:savedAt', String(Date.now()));
+    status.textContent = `Saved (${reason})`;
+  }
+  const existing = localStorage.getItem('draft');
+  if (existing !== null) body.value = existing;
+  body.addEventListener('input', () => save('input'));
+  window.addEventListener('resize', () => save('resize'));
+  document.getElementById('save').addEventListener('click', () => save('manual'));
+</script>
+</body>
+</html>

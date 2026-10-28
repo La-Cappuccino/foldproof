@@ -1,0 +1,18 @@
+foldproof: 1
+id: rotate-loses-scroll-and-selection-fixed
+title: "Fixed: rotating mid-read keeps the paragraph in view and the focus and selection in the margin note"
+profiles: [google-pixel-10-pro, google-pixel-tablet]
+task:
+  url: /rotate-loses-scroll-and-selection/fixed/
+  ready: { selector: "#save" }
+  controls: ["#save"]
+  state: { form: all, focus: same-element, selection: exact, scroll: anchor }
+  setup:
+    - { scrollTo: "#p10" }
+    - { fill: "#note", value: "draft" }
+    - { focus: "#note", select: [1, 3] }
+steps:
+  - transition: rotate
+    assert: [reachable, state-preserved, no-remount]
+expect: { verdict: pass }
+tags: [fixture, rotation, phone, tablet]

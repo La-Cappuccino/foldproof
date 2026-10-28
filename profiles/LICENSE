@@ -1,0 +1,18 @@
+foldproof device and scenario profile corpus (profiles/)
+
+The profile files in this directory are licensed under the Community Data License Agreement –
+Permissive – Version 2.0 (CDLA-Permissive-2.0): https://cdla.dev/permissive-2-0/
+
+In short: you may use, modify, and share this data for any purpose, including commercially, with no
+attribution requirement beyond keeping this notice with copies of the data files. The licence explicitly
+covers database rights (including the EU sui generis database right) as well as copyright.
+
+Each value in a profile carries its own provenance in `sources[]` (url, publisher, inspection date,
+licence, upstream revision). Values quoted from third-party registries remain subject to those
+registries' terms, listed in the repository NOTICE file:
+  Chrome DevTools emulated devices (BSD-3-Clause), Playwright device descriptors (Apache-2.0),
+  AOSP SDK device definitions (Apache-2.0), MDN browser-compat-data (CC0-1.0),
+  vendor technical specifications quoted as facts.
+
+Values marked `kind: derived` were computed by this project from cited inputs with the formula stated.
+No value is marked `measured` unless this project measured it with the named tool on the named date.

@@ -1,0 +1,20 @@
+{
+  "name": "foldproof",
+  "owner": { "name": "Allan Kisuule", "url": "https://github.com/La-Cappuccino" },
+  "metadata": {
+    "description": "foldproof: verify that a web task survives display configurations and transitions (fold, rotate, resize, keyboard) with reproducible emulated evidence.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "foldproof",
+      "source": "./",
+      "description": "Agent skill + CLI: sourced device profiles, transition scenarios, state-preservation oracles, SARIF evidence record.",
+      "version": "0.1.0",
+      "category": "testing",
+      "keywords": ["responsive", "foldable", "playwright", "accessibility"],
+      "strict": false,
+      "skills": ["./skills/foldproof"]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout (fixed: works in both orientations)</title>
+<style>
+  body { margin: 0; font: 16px/1.4 system-ui, sans-serif; }
+  #app { padding: 16px; display: grid; gap: 12px; }
+  label { display: block; }
+  input { width: 100%; box-sizing: border-box; font: inherit; padding: 10px; min-height: 44px; }
+  button { font: inherit; padding: 10px 16px; min-height: 44px; }
+  /* FIXED: landscape gets a two-column form; the task is available in every orientation. */
+  @media (orientation: landscape) and (min-width: 640px) {
+    #app { grid-template-columns: 1fr 1fr; align-items: end; }
+    h1, #pay, #paid { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>Checkout</h1>
+  <div><label for="card">Card number</label><input id="card" name="card" inputmode="numeric" autocomplete="cc-number"></div>
+  <div><label for="name">Name on card</label><input id="name" name="name" autocomplete="cc-name"></div>
+  <button id="pay" type="button">Pay 1 250 kr</button>
+  <div id="paid" hidden>Paid.</div>
+</div>
+<script>
+  document.getElementById('pay').addEventListener('click', () => { document.getElementById('paid').hidden = false; });
+</script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "microsoft-surface-duo",
+  "revision": 1,
+  "kind": "device",
+  "platform": "android",
+  "name": "Microsoft Surface Duo (dual-screen)",
+  "vendor": "Microsoft",
+  "sources": [
+    {
+      "id": "chrome-devtools",
+      "url": "https://github.com/ChromeDevTools/devtools-frontend/blob/main/front_end/models/emulation/EmulatedDevices.ts",
+      "publisher": "Chromium (DevTools)",
+      "inspected": "2026-10-28",
+      "licence": "BSD-3-Clause",
+      "kind": "published",
+      "revision": "main 89605581639d434b16692f9dec9482e443a45973 (file last changed 4c3993d1 2026-08-27)",
+      "note": "screen.vertical/horizontal in CSS px, device-pixel-ratio, spanned modes with hinge rect {x,y,width,height} in CSS px."
+    },
+    {
+      "id": "microsoft-surface-duo-dimensions",
+      "url": "https://learn.microsoft.com/en-us/previous-versions/dual-screen/android/surface-duo-dimensions",
+      "publisher": "Microsoft Learn (archived)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "revision": "ms.date 2021-09-22, updated 2024-12-17, gitcommit e0dbafc31d8dd8882913c9fdea490f960ca85d2e",
+      "quote": "Density Class: xxhdpiDensity; Factor: 2.5x; Full screen width including hinge mask: Surface Duo: 1,114dp / 2,784px",
+      "note": "Page is archived (is_archived: true)."
+    },
+    {
+      "id": "androidx-foldingfeature",
+      "url": "https://android.googlesource.com/platform/frameworks/support/+/androidx-main/window/window/src/main/java/androidx/window/layout/FoldingFeature.kt",
+      "publisher": "AOSP (androidx.window)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "revision": "androidx-main (read 2026-10-28)",
+      "note": "State FLAT | HALF_OPENED; Orientation VERTICAL | HORIZONTAL; OcclusionType NONE (flexible screen, treat as guideline) | FULL (hinge is part of the window); isSeparating true for hinges always and for folds when not FLAT."
+    },
+    {
+      "id": "w3c-device-posture",
+      "url": "https://www.w3.org/TR/device-posture/",
+      "publisher": "W3C Devices and Sensors WG",
+      "inspected": "2026-10-28",
+      "licence": "W3C-document-licence",
+      "kind": "published",
+      "revision": "Candidate Recommendation Draft 2026-10-26",
+      "quote": "continuous | folded",
+      "note": "continuous = flat or fully closed; folded = book or laptop posture."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CDLA-Permissive-2.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "inner",
+      "physical_px": {
+        "w": 2784,
+        "h": 1800
+      },
+      "density_dpi": 400,
+      "source_ref": "microsoft-surface-duo-dimensions"
+    },
+    {
+      "name": "single",
+      "physical_px": {
+        "w": 1350,
+        "h": 1800
+      },
+      "density_dpi": 400,
+      "source_ref": "chrome-devtools"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 1114,
+      "h": 720,
+      "scale": 2.5,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend EmulatedDevices.ts: Surface Duo vertical-spanned (both screens side by side)"
+    },
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 720,
+      "h": 1114,
+      "scale": 2.5,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend EmulatedDevices.ts: Surface Duo horizontal-spanned (both screens stacked)"
+    },
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 540,
+      "h": 720,
+      "scale": 2.5,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend EmulatedDevices.ts: Surface Duo vertical (one screen)"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 720,
+      "h": 540,
+      "scale": 2.5,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend EmulatedDevices.ts: Surface Duo horizontal (one screen)"
+    },
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "dp",
+      "w": 1114,
+      "h": 720,
+      "scale": 2.5,
+      "kind": "published",
+      "source_ref": "microsoft-surface-duo-dimensions",
+      "registry": "Microsoft Learn archived dimensions page: 1,114dp / 2,784px full width including hinge mask, 2.5x; height 720 dp from DevTools"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 1114,
+        "h": 720
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 720,
+        "h": 1114
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 540,
+        "h": 720
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 720,
+        "h": 540
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    }
+  ],
+  "display_features": [
+    {
+      "id": "duo-hinge-vertical",
+      "panel": "inner",
+      "type": "hinge",
+      "orientation": "vertical",
+      "bounds": {
+        "x": 540,
+        "y": 0,
+        "w": 34,
+        "h": 720
+      },
+      "unit": "css_px",
+      "occlusion": "full",
+      "is_separating": true,
+      "kind": "published",
+      "derivation": "landscape coordinates (1114x720 span): DevTools hinge {x:540,y:0,width:34,height:720} contentColor alpha 1.0 (opaque); 34 css_px x 2.5 = 85 device px, consistent with Microsoft 2,784 px total minus two 1,350 px screens = 84 px",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "id": "duo-hinge-horizontal",
+      "panel": "inner",
+      "type": "hinge",
+      "orientation": "horizontal",
+      "bounds": {
+        "x": 0,
+        "y": 540,
+        "w": 720,
+        "h": 34
+      },
+      "unit": "css_px",
+      "occlusion": "full",
+      "is_separating": true,
+      "kind": "published",
+      "derivation": "portrait coordinates (720x1114 span): DevTools hinge {x:0,y:540,width:720,height:34}, opaque",
+      "source_ref": "chrome-devtools"
+    }
+  ],
+  "postures": [
+    {
+      "name": "closed",
+      "panel": "single",
+      "orientation": "portrait",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
+      "android_state": null,
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "flat",
+      "panel": "inner",
+      "orientation": "landscape",
+      "web": {
+        "posture": "continuous",
+        "segments": 2
+      },
+      "android_state": "FLAT",
+      "display_feature": "duo-hinge-vertical",
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "book",
+      "panel": "inner",
+      "orientation": "landscape",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
+      "android_state": "HALF_OPENED",
+      "display_feature": "duo-hinge-vertical",
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "tabletop",
+      "panel": "inner",
+      "orientation": "portrait",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
+      "android_state": "HALF_OPENED",
+      "display_feature": "duo-hinge-horizontal",
+      "source_ref": "w3c-device-posture"
+    }
+  ],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "source_ref": "chrome-devtools"
+  },
+  "operating_states": [],
+  "conflicts_with": [],
+  "unknowns": [
+    {
+      "field": "panels.single.physical_px",
+      "reason": "Derived from DevTools 540x720 @2.5; the Microsoft page only publishes the spanned total width."
+    },
+    {
+      "field": "postures.closed",
+      "reason": "Means single-screen use (one display active). Microsoft publishes a 360-degree hinge with no posture angle ranges."
+    },
+    {
+      "field": "panels.density_dpi",
+      "reason": "400 is implied by Factor 2.5x (160 x 2.5); the page names the class xxhdpi."
+    },
+    {
+      "field": "usable.layout_viewport",
+      "reason": "Browser UI height not in the registry; layout viewport equals the screen."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "System insets (status bar, navigation bar) and cutout geometry are not published; insets recorded as 0, meaning \"not published\", not \"none\"."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
+  ],
+  "tags": [
+    "foldable",
+    "phone"
+  ]
+}

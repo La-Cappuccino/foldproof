@@ -1,0 +1,858 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foldproof.dev/schemas/scenario.schema.json",
+  "title": "foldproof scenario (startup + transition)",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "foldproof": {
+      "type": "number",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,80}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profiles": {
+      "anyOf": [
+        {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{1,80}$"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "class": {
+              "type": "string",
+              "enum": [
+                "foldable",
+                "phone",
+                "tablet",
+                "desktop",
+                "all"
+              ]
+            }
+          },
+          "required": [
+            "class"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "start": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "panel": {
+          "type": "string",
+          "enum": [
+            "inner",
+            "outer",
+            "single"
+          ]
+        },
+        "posture": {
+          "type": "string",
+          "enum": [
+            "closed",
+            "half_opened",
+            "flat",
+            "book",
+            "tabletop",
+            "tent"
+          ]
+        },
+        "orientation": {
+          "type": "string",
+          "enum": [
+            "portrait",
+            "landscape"
+          ]
+        },
+        "viewport": {
+          "description": "explicit CSS px viewport, for resize/split",
+          "type": "object",
+          "properties": {
+            "w": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "h": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": [
+            "w",
+            "h"
+          ],
+          "additionalProperties": false
+        },
+        "keyboard": {
+          "type": "object",
+          "properties": {
+            "height": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": [
+            "height"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "task": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "absolute, or a path resolved against --base-url"
+        },
+        "ready": {
+          "type": "object",
+          "properties": {
+            "selector": {
+              "type": "string",
+              "minLength": 1,
+              "description": "CSS selector, or role=<role>[name=<accessible name>]"
+            }
+          },
+          "required": [
+            "selector"
+          ],
+          "additionalProperties": false
+        },
+        "controls": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "CSS selector, or role=<role>[name=<accessible name>]"
+          },
+          "description": "each must resolve to exactly one element"
+        },
+        "landmarks": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "CSS selector, or role=<role>[name=<accessible name>]"
+          }
+        },
+        "state": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "form": {
+              "default": "all",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "all"
+                },
+                {
+                  "type": "string",
+                  "const": "none"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  }
+                }
+              ]
+            },
+            "focus": {
+              "default": "same-element",
+              "type": "string",
+              "enum": [
+                "same-element",
+                "none"
+              ]
+            },
+            "selection": {
+              "default": "exact",
+              "type": "string",
+              "enum": [
+                "exact",
+                "none"
+              ]
+            },
+            "scroll": {
+              "default": "anchor",
+              "type": "string",
+              "enum": [
+                "anchor",
+                "none"
+              ]
+            },
+            "scroll_tolerance_px": {
+              "default": 0,
+              "type": "number",
+              "minimum": 0
+            },
+            "storage": {
+              "default": [],
+              "description": "declared local/session storage keys; empty = not checked",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "history": {
+              "default": "no-loss",
+              "type": "string",
+              "enum": [
+                "no-loss",
+                "none"
+              ]
+            },
+            "media": {
+              "default": "progress",
+              "type": "string",
+              "enum": [
+                "progress",
+                "none"
+              ]
+            },
+            "custom": {
+              "description": "JS expression evaluated in page returning JSON-serialisable state; deep-equal",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "setup": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "goto": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "goto"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "click": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  }
+                },
+                "required": [
+                  "click"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "fill": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "fill",
+                  "value"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "value"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "press": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  },
+                  "key": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "press",
+                  "key"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  }
+                },
+                "required": [
+                  "check"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "selectOption": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "selectOption",
+                  "value"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "focus": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  },
+                  "select": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "focus"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "scrollTo": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  }
+                },
+                "required": [
+                  "scrollTo"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "play": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  },
+                  "seek": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "play"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "waitFor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  },
+                  "state": {
+                    "default": "visible",
+                    "type": "string",
+                    "enum": [
+                      "visible",
+                      "hidden",
+                      "attached"
+                    ]
+                  }
+                },
+                "required": [
+                  "waitFor"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "pushState": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "pushState"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "wait": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  }
+                },
+                "required": [
+                  "wait"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "evaluate": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "evaluate"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "script": {
+          "description": "ESM module exporting setup(page, ctx) for real apps",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "controls"
+      ],
+      "additionalProperties": false
+    },
+    "steps": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "transition": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "fold",
+                      "unfold",
+                      "posture",
+                      "rotate",
+                      "resize",
+                      "split",
+                      "keyboard-open",
+                      "keyboard-close"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "fold",
+                          "unfold",
+                          "posture",
+                          "rotate",
+                          "resize",
+                          "split",
+                          "keyboard-open",
+                          "keyboard-close"
+                        ]
+                      },
+                      "to": {
+                        "default": {},
+                        "type": "object",
+                        "properties": {
+                          "panel": {
+                            "type": "string",
+                            "enum": [
+                              "inner",
+                              "outer",
+                              "single"
+                            ]
+                          },
+                          "posture": {
+                            "type": "string",
+                            "enum": [
+                              "closed",
+                              "half_opened",
+                              "flat",
+                              "book",
+                              "tabletop",
+                              "tent"
+                            ]
+                          },
+                          "orientation": {
+                            "type": "string",
+                            "enum": [
+                              "portrait",
+                              "landscape"
+                            ]
+                          },
+                          "viewport": {
+                            "description": "explicit CSS px viewport, for resize/split",
+                            "type": "object",
+                            "properties": {
+                              "w": {
+                                "type": "number",
+                                "exclusiveMinimum": 0
+                              },
+                              "h": {
+                                "type": "number",
+                                "exclusiveMinimum": 0
+                              }
+                            },
+                            "required": [
+                              "w",
+                              "h"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "keyboard": {
+                            "type": "object",
+                            "properties": {
+                              "height": {
+                                "type": "number",
+                                "exclusiveMinimum": 0
+                              }
+                            },
+                            "required": [
+                              "height"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "additionalProperties": false
+                      },
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "assert": {
+                "default": "preset@1",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "preset@1"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "reachable",
+                        "state-preserved",
+                        "no-remount",
+                        "not-occluded-by-hinge",
+                        "no-element-loss",
+                        "fills-viewport",
+                        "no-horizontal-overflow",
+                        "target-size"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "settle": {
+                "description": "per-step override of the scenario settle policy",
+                "type": "object",
+                "properties": {
+                  "quiet_frames": {
+                    "default": 2,
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "min_ms": {
+                    "default": 0,
+                    "description": "observe at least this long before accepting quiescence (catches debounced handlers)",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "max_ms": {
+                    "default": 3000,
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "transition"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "operate": {
+                "type": "object",
+                "properties": {
+                  "target": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                  },
+                  "expect": {
+                    "type": "object",
+                    "properties": {
+                      "visible": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                      },
+                      "hidden": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                      },
+                      "url": {
+                        "description": "substring or regex /…/ the final URL must match",
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "text": {
+                        "type": "object",
+                        "properties": {
+                          "selector": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "CSS selector, or role=<role>[name=<accessible name>]"
+                          },
+                          "contains": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": [
+                          "selector",
+                          "contains"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "custom": {
+                        "description": "JS expression that must be truthy",
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "target",
+                  "expect"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "operate"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "settle": {
+      "default": {
+        "quiet_frames": 2,
+        "min_ms": 0,
+        "max_ms": 3000
+      },
+      "type": "object",
+      "properties": {
+        "quiet_frames": {
+          "default": 2,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "min_ms": {
+          "default": 0,
+          "description": "observe at least this long before accepting quiescence (catches debounced handlers)",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "max_ms": {
+          "default": 3000,
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 9007199254740991
+        }
+      },
+      "additionalProperties": false
+    },
+    "static": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "no-horizontal-overflow",
+          "target-size"
+        ]
+      }
+    },
+    "transient": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "description": "CSS selector, or role=<role>[name=<accessible name>]"
+      }
+    },
+    "mask": {
+      "default": [],
+      "description": "selectors masked in screenshots",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "description": "CSS selector, or role=<role>[name=<accessible name>]"
+      }
+    },
+    "expect": {
+      "default": {
+        "verdict": "pass",
+        "rules": []
+      },
+      "type": "object",
+      "properties": {
+        "verdict": {
+          "default": "pass",
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail"
+          ]
+        },
+        "rules": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "env-self-check",
+              "reachable",
+              "state-preserved",
+              "no-remount",
+              "not-occluded-by-hinge",
+              "straddles-fold-line",
+              "no-element-loss",
+              "fills-viewport",
+              "operate",
+              "no-horizontal-overflow",
+              "target-size"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "foldproof",
+    "id",
+    "title",
+    "profiles",
+    "task"
+  ],
+  "additionalProperties": false
+}

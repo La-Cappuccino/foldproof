@@ -1,0 +1,113 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "desktop-ultrawide-3440x1440",
+  "revision": 1,
+  "kind": "device",
+  "platform": "web",
+  "name": "Desktop ultrawide window 3440x1440 (LG 34WQ75C-B class)",
+  "vendor": "LG",
+  "sources": [
+    {
+      "id": "lg-34wq75c-b",
+      "url": "https://www.lg.com/us/monitors/lg-34wq75c-b-ultrawide-monitor",
+      "publisher": "LG",
+      "inspected": "2026-10-28",
+      "licence": "vendor-fact",
+      "kind": "published",
+      "quote": "34\" Curved QHD (3440 x 1440) IPS Display",
+      "note": "Page states the model is discontinued; the panel spec stands."
+    },
+    {
+      "id": "playwright",
+      "url": "https://github.com/microsoft/playwright/blob/main/packages/isomorphic/deviceDescriptorsSource.json",
+      "publisher": "Microsoft (Playwright)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "revision": "main f9a841f968dd9a4e315df2ec2930da1952971667 (package 1.65.0-next; file last changed b80bcb5a 2026-10-23)",
+      "note": "207 entries on main at inspection; file moved here from playwright-core/src/server. viewport = layout viewport after browser UI; screen = full screen in CSS px."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CDLA-Permissive-2.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "single",
+      "physical_px": {
+        "w": 3440,
+        "h": 1440
+      },
+      "diagonal_in": 34,
+      "source_ref": "lg-34wq75c-b"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 3440,
+      "h": 1440,
+      "scale": 1,
+      "kind": "derived",
+      "derivation": "css_px = device_px / devicePixelRatio with DPR 1 at 100% OS scaling (Playwright Desktop Chrome uses deviceScaleFactor 1): 3440 / 1 x 1440 / 1",
+      "source_ref": "foldproof-derivation"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 3440,
+        "h": 1440
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "maximised window; browser UI and OS taskbar heights are not published so the layout viewport equals the panel; measure at test time",
+      "source_ref": "foldproof-derivation"
+    }
+  ],
+  "display_features": [],
+  "postures": [],
+  "inputs": {
+    "pointer": "fine",
+    "hover": "hover",
+    "touch": false,
+    "keyboard": "hardware",
+    "source_ref": "playwright"
+  },
+  "operating_states": [],
+  "conflicts_with": [],
+  "unknowns": [
+    {
+      "field": "usable.layout_viewport",
+      "reason": "Browser chrome and OS taskbar heights are measured, not published."
+    },
+    {
+      "field": "logical.scale",
+      "reason": "OS scaling other than 100% changes DPR; profile assumes DPR 1 and says so in the derivation."
+    },
+    {
+      "field": "panels",
+      "reason": "LG lists the model as discontinued; the 3440x1440 panel class remains common."
+    }
+  ],
+  "tags": [
+    "desktop"
+  ]
+}

@@ -1,0 +1,21 @@
+foldproof: 1
+id: tabbar-missing-after-keyboard-close-broken
+title: "Broken: after keyboard-open, rotate, keyboard-close the bottom tab bar never returns; Profile is unreachable"
+profiles: [google-pixel-10-pro]
+task:
+  url: /tabbar-missing-after-keyboard-close/broken/
+  ready: { selector: "#tab-profile" }
+  controls: ["#tab-profile", "#q"]
+  landmarks: ["role=navigation"]
+  setup:
+    - { focus: "#q" }
+steps:
+  # hiding the tab bar while the keyboard is up is legitimate: nothing is asserted here
+  - transition: { kind: keyboard-open, to: { keyboard: { height: 300 } } }
+    assert: []
+  - transition: rotate
+    assert: []
+  - transition: keyboard-close
+    assert: [reachable, no-element-loss]
+expect: { verdict: fail, rules: [reachable] }
+tags: [fixture, keyboard, rotation, phone]

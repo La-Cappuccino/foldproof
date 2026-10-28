@@ -1,0 +1,10 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "skills": [
+    {
+      "name": "foldproof",
+      "path": "skills/foldproof",
+      "description": "Verify that a web task survives fold, unfold, posture, rotate, resize, split and soft-keyboard transitions with reproducible emulated evidence (SARIF)."
+    }
+  ]
+}

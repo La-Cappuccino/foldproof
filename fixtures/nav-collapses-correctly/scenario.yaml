@@ -1,0 +1,17 @@
+foldproof: 1
+id: nav-collapses-correctly
+title: "Positive control: the nav collapses into a menu button on fold and expands on unfold; Send stays reachable, nothing is flagged"
+profiles: [google-pixel-9-pro-fold, microsoft-surface-duo]
+start: { posture: flat }
+task:
+  url: /nav-collapses-correctly/
+  ready: { selector: "#send" }
+  controls: ["#send"]
+  landmarks: ["role=navigation"]
+steps:
+  - transition: fold
+    assert: preset@1
+  - transition: unfold
+    assert: preset@1
+expect: { verdict: pass }
+tags: [fixture, positive-control, foldable]

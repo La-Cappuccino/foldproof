@@ -1,0 +1,87 @@
+{
+  "name": "foldproof",
+  "version": "0.1.0",
+  "description": "Prove your UI survives the fold, the rotate, and the resize. Sourced device profiles, transition scenarios, state-preservation oracles and a SARIF evidence record for web apps and AI agents.",
+  "license": "Apache-2.0 AND CDLA-Permissive-2.0",
+  "type": "module",
+  "bin": {
+    "foldproof": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./playwright": {
+      "types": "./dist/playwright.d.ts",
+      "import": "./dist/playwright.js"
+    }
+  },
+  "files": [
+    "dist",
+    "schemas",
+    "profiles",
+    "scenarios",
+    "engines",
+    "skills",
+    "fixtures",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:fixtures": "vitest run tests/fixtures",
+    "schemas": "tsx scripts/emit-schemas.ts",
+    "engines": "tsx scripts/emit-engines.ts",
+    "smoke:pack": "bash scripts/smoke-pack.sh",
+    "validate": "tsx src/cli.ts profiles validate && tsx src/cli.ts scenarios validate",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "commander": "^15.0.0",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "peerDependencies": {
+    "playwright": ">=1.64 <2"
+  },
+  "devDependencies": {
+    "@mdn/browser-compat-data": "^8.1.7",
+    "@types/node": "^26.6.5",
+    "ajv": "^8.20.0",
+    "ajv-draft-04": "^1.0.0",
+    "ajv-formats": "^3.0.1",
+    "playwright": "^1.64.1",
+    "tsup": "^9.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/La-Cappuccino/foldproof"
+  },
+  "keywords": [
+    "responsive",
+    "adaptive",
+    "foldable",
+    "viewport-segments",
+    "device-posture",
+    "playwright",
+    "testing",
+    "agent-skill",
+    "accessibility",
+    "wcag"
+  ]
+}

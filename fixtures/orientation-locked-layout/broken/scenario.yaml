@@ -1,0 +1,17 @@
+foldproof: 1
+id: orientation-locked-layout-broken
+title: "Broken: the checkout hides itself in landscape and asks the user to rotate back"
+profiles: [google-pixel-10-pro, google-pixel-tablet]
+start: { orientation: portrait }
+task:
+  url: /orientation-locked-layout/broken/
+  ready: { selector: "#pay" }
+  controls: ["#pay", "#card"]
+  state: { form: all, focus: none, selection: none, scroll: none }
+  setup:
+    - { fill: "#card", value: "4242 4242 4242 4242" }
+steps:
+  - transition: rotate
+    assert: [reachable, state-preserved, no-remount, no-element-loss]
+expect: { verdict: fail, rules: [reachable] }
+tags: [fixture, transition, orientation, wcag-1-3-4]

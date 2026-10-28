@@ -1,0 +1,62 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run schemas && git diff --exit-code schemas/   # committed JSON Schemas must not drift from the zod sources
+      - run: npx tsx src/cli.ts profiles validate
+      - run: npx tsx src/cli.ts scenarios validate fixtures/*/broken/scenario.yaml fixtures/*/fixed/scenario.yaml fixtures/*/scenario.yaml
+      - run: npm run test:unit
+      - name: skill version must equal package version
+        run: |
+          pkg=$(node -p "require('./package.json').version")
+          skill=$(awk '/^  version:/{print $2; exit}' skills/foldproof/SKILL.md | tr -d '"')
+          test "$pkg" = "$skill" || { echo "package $pkg != skill $skill"; exit 1; }
+      - run: npx -y skills-ref validate skills/foldproof
+
+  fixtures:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx tsx src/cli.ts doctor
+      - name: fixture matrix (3 runs, deterministic)
+        run: FOLDPROOF_REPEAT=3 npm run test:fixtures
+      - name: fixture matrix under 4x CPU throttle
+        run: FOLDPROOF_REPEAT=1 FOLDPROOF_CPU_THROTTLE=4 npm run test:fixtures
+      - name: packed-package smoke test (build → pack → install into an empty dir → run)
+        run: npm run smoke:pack
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: foldproof-evidence-${{ matrix.os }}
+          path: test-results/fixtures/**/*
+      - name: upload SARIF to code scanning
+        if: always() && matrix.os == 'ubuntu-latest'
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: test-results/fixtures/run-0/foldproof.sarif
+          category: foldproof-fixtures
+        continue-on-error: true

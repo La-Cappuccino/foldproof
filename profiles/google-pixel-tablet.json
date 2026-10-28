@@ -1,0 +1,208 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "google-pixel-tablet",
+  "revision": 1,
+  "kind": "device",
+  "platform": "android",
+  "name": "Google Pixel Tablet",
+  "vendor": "Google",
+  "sources": [
+    {
+      "id": "aosp-nexus-xml",
+      "url": "https://android.googlesource.com/platform/tools/base/+/mirror-goog-studio-main/sdklib/src/main/resources/com/android/sdklib/devices/nexus.xml",
+      "publisher": "AOSP (platform/tools/base sdklib)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "revision": "mirror-goog-studio-main b143674a31236684a225ec6d6d19a5c9b1ecef51 (2026-10-28)",
+      "note": "Google device emulator profiles (Pixel Fold, Pixel 9 Pro Fold, Pixel 10 Pro Fold, Pixel Tablet, Pixel 10 Pro). One pixel-density per profile, applied to the folded region too."
+    },
+    {
+      "id": "android-screen-densities",
+      "url": "https://developer.android.com/training/multiscreen/screendensities",
+      "publisher": "Google (Android Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "px = dp * (dpi / 160)",
+      "note": "mdpi 160 = 1.0 baseline; xhdpi 320 = 2.0; xxhdpi 480 = 3.0; 420dpi = 2.625; 390dpi = 2.4375."
+    },
+    {
+      "id": "android-multi-window",
+      "url": "https://developer.android.com/guide/topics/large-screens/multi-window-support",
+      "publisher": "Google (Android Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "note": "On medium/expanded windows all apps run in multi-window; android:minWidth/minHeight in <layout> set minimums; target API 36 on sw >= 600dp ignores resize restrictions. No default split divider width is published."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CDLA-Permissive-2.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "single",
+      "physical_px": {
+        "w": 2560,
+        "h": 1600
+      },
+      "diagonal_in": 10.95,
+      "density_dpi": 320,
+      "source_ref": "aosp-nexus-xml"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "dp",
+      "w": 1280,
+      "h": 800,
+      "scale": 2,
+      "kind": "derived",
+      "derivation": "dp = px / (320 / 160) = px / 2: 2560 / 2 = 1280; 1600 / 2 = 800 (AOSP nexus.xml pixel_tablet xhdpi, default state Landscape)",
+      "source_ref": "aosp-nexus-xml"
+    },
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "dp",
+      "w": 800,
+      "h": 1280,
+      "scale": 2,
+      "kind": "derived",
+      "derivation": "swap of landscape dp",
+      "source_ref": "aosp-nexus-xml"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 1280,
+      "h": 800,
+      "scale": 2,
+      "kind": "derived",
+      "derivation": "css_px = dp at 100% zoom (Chromium on Android devicePixelRatio = density scale 2); no Playwright or DevTools entry exists for Pixel Tablet",
+      "source_ref": "aosp-nexus-xml"
+    },
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 800,
+      "h": 1280,
+      "scale": 2,
+      "kind": "derived",
+      "derivation": "swap of landscape css_px",
+      "source_ref": "aosp-nexus-xml"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "dp",
+      "layout_viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "full panel; system bars not published",
+      "source_ref": "aosp-nexus-xml"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "full panel; browser UI height unknown",
+      "source_ref": "aosp-nexus-xml"
+    },
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 800,
+        "h": 1280
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "full panel; browser UI height unknown",
+      "source_ref": "aosp-nexus-xml"
+    }
+  ],
+  "display_features": [],
+  "postures": [],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "source_ref": "aosp-nexus-xml"
+  },
+  "operating_states": [],
+  "conflicts_with": [],
+  "unknowns": [
+    {
+      "field": "logical.css_px",
+      "reason": "No Playwright or DevTools entry; css_px is derived from the AOSP profile and unmeasured in Chrome."
+    },
+    {
+      "field": "usable.split_screen",
+      "reason": "A 50/50 landscape split gives about 640x800 dp per app (1280 / 2) minus an unpublished divider width; use a `split` transition with an explicit viewport and record the divider as measured."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "System bar insets and browser UI height not published; insets 0."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
+  ],
+  "tags": [
+    "tablet"
+  ]
+}

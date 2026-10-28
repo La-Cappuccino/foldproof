@@ -1,0 +1,190 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "apple-ipad-pro-11",
+  "revision": 1,
+  "kind": "device",
+  "platform": "ipados",
+  "name": "Apple iPad Pro 11-inch",
+  "vendor": "Apple",
+  "sources": [
+    {
+      "id": "playwright",
+      "url": "https://github.com/microsoft/playwright/blob/main/packages/isomorphic/deviceDescriptorsSource.json",
+      "publisher": "Microsoft (Playwright)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "revision": "main f9a841f968dd9a4e315df2ec2930da1952971667 (package 1.65.0-next; file last changed b80bcb5a 2026-10-23)",
+      "note": "207 entries on main at inspection; file moved here from playwright-core/src/server. viewport = layout viewport after browser UI; screen = full screen in CSS px."
+    },
+    {
+      "id": "apple-hig-multitasking",
+      "url": "https://developer.apple.com/design/human-interface-guidelines/multitasking",
+      "publisher": "Apple (Human Interface Guidelines)",
+      "inspected": "2026-10-28",
+      "licence": "vendor-fact",
+      "kind": "published",
+      "quote": "Apps don't control multitasking configurations or receive any indication of the ones that people choose."
+    },
+    {
+      "id": "apple-tn3192",
+      "url": "https://developer.apple.com/documentation/technotes/tn3192-migrating-your-app-from-the-deprecated-uirequiresfullscreen-key",
+      "publisher": "Apple",
+      "inspected": "2026-10-28",
+      "licence": "vendor-fact",
+      "kind": "published",
+      "note": "UIRequiresFullScreen deprecated in iPadOS 26; from iOS/iPadOS 27 the key no longer opts out of resizing. sizeRestrictions.minimumSize is a preferred minimum (example 500 pt); no system minimum or maximum window size published."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CDLA-Permissive-2.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "single",
+      "physical_px": {
+        "w": 1668,
+        "h": 2388
+      },
+      "source_ref": "playwright"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 834,
+      "h": 1194,
+      "scale": 2,
+      "kind": "published",
+      "source_ref": "playwright",
+      "registry": "playwright deviceDescriptorsSource.json: iPad Pro 11"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 1194,
+      "h": 834,
+      "scale": 2,
+      "kind": "published",
+      "source_ref": "playwright",
+      "registry": "playwright deviceDescriptorsSource.json: iPad Pro 11 landscape"
+    },
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "pt",
+      "w": 834,
+      "h": 1194,
+      "scale": 2,
+      "kind": "published",
+      "source_ref": "playwright",
+      "registry": "playwright deviceDescriptorsSource.json: iPad Pro 11 (CSS px in Safari equal points)"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "pt",
+      "w": 1194,
+      "h": 834,
+      "scale": 2,
+      "kind": "published",
+      "source_ref": "playwright",
+      "registry": "playwright deviceDescriptorsSource.json: iPad Pro 11 landscape (CSS px in Safari equal points)"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 834,
+        "h": 1194
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "published",
+      "derivation": "layout_viewport is the Playwright `viewport` (screen minus browser UI); insets 0 = no separate system-inset data published, not a claim of none",
+      "source_ref": "playwright"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 1194,
+        "h": 834
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "published",
+      "derivation": "layout_viewport is the Playwright `viewport` (screen minus browser UI); insets 0 = no separate system-inset data published, not a claim of none",
+      "source_ref": "playwright"
+    }
+  ],
+  "display_features": [],
+  "postures": [],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "source_ref": "playwright"
+  },
+  "operating_states": [],
+  "conflicts_with": [],
+  "unknowns": [
+    {
+      "field": "usable.layout_viewport",
+      "reason": "Playwright has no separate screen field for this entry, so viewport = screen (browser UI height unknown)."
+    },
+    {
+      "field": "usable.stage_manager",
+      "reason": "Stage Manager / windowed sizes are not published: apps receive no indication of the multitasking configuration (HIG) and sizeRestrictions.minimumSize is only a preferred minimum (TN3192, example 500 pt). Use `resize` transitions with explicit viewports and label them illustrative."
+    },
+    {
+      "field": "logical.scale",
+      "reason": "Apple scale factor not on the spec page; scale 2 and physical_px 1668x2388 from Playwright."
+    },
+    {
+      "field": "inputs.keyboard",
+      "reason": "Hardware keyboard (Magic Keyboard) and trackpad are optional accessories; inputs record touch + soft keyboard only."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
+  ],
+  "tags": [
+    "tablet"
+  ]
+}

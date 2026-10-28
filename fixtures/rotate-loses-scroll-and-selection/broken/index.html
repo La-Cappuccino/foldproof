@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field notes (broken: rotating resets the reading position and drops focus)</title>
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui, sans-serif; color: #111; }
+  article { max-width: 680px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 24px; margin: 0 0 16px; }
+  p { margin: 0 0 12px; }
+  .note-box { margin: 16px 0; padding: 12px; border: 1px solid #c9c9c9; border-radius: 8px; background: #fafafa; }
+  label { display: block; margin-bottom: 6px; font-weight: 600; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 56px; font: inherit; padding: 8px; }
+  button { min-height: 44px; margin-top: 8px; padding: 0 16px; font: inherit; }
+</style>
+</head>
+<body>
+<article>
+  <h1>Field notes</h1>
+  <div id="before"></div>
+  <section class="note-box">
+    <label for="note">Margin note</label>
+    <textarea id="note" name="note" placeholder="Add a note to this section"></textarea>
+    <button id="save" type="button">Save note</button>
+  </section>
+  <div id="after"></div>
+</article>
+<script>
+  // Long paragraphs so that the stretch before p10 is taller than any profile's viewport: a jump to the top
+  // must actually scroll p10 out of view, on a tablet as well as on a phone.
+  const para = (i) => `<p id="p${i}">Paragraph ${i}: lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>`;
+  document.getElementById('before').innerHTML = Array.from({ length: 11 }, (_, i) => para(i + 1)).join('');
+  document.getElementById('after').innerHTML = Array.from({ length: 29 }, (_, i) => para(i + 12)).join('');
+
+  // BROKEN: an orientation-change handler "resets the layout": it jumps to the top and drops focus.
+  // The DOM is untouched (no remount), so only the state oracle catches it. Real-world class:
+  // thunderbird-android #11568 (draft gone after rotating), nextcloud/android #16251 (scroll position resets
+  // after rotation), docs/research/04 §1.2.
+  matchMedia('(orientation: landscape)').addEventListener('change', () => {
+    window.scrollTo(0, 0);
+    document.activeElement?.blur();
+  });
+</script>
+</body>
+</html>

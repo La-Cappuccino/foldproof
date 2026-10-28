@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notes (fixed: layout is CSS; no async rebuild)</title>
+<style>
+  body { margin: 0; font: 16px/1.4 system-ui, sans-serif; }
+  .app { display: grid; gap: 12px; padding: 12px; grid-template-areas: "editor" "list"; }
+  #editor { grid-area: editor; } #list { grid-area: list; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 140px; font: inherit; }
+  button { font: inherit; padding: 10px 16px; min-height: 44px; }
+  li { margin: 0 0 6px; }
+  /* FIXED: the width class is a pure CSS concern; the DOM is never rebuilt and no timer captures stale state. */
+  @media (min-width: 700px) {
+    .app { grid-template-columns: 1fr 1fr; grid-template-areas: "list editor"; }
+  }
+  @media (horizontal-viewport-segments: 2) {
+    .app { grid-template-columns: env(viewport-segment-width 0 0) env(viewport-segment-width 1 0); column-gap: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0)); padding-left: 0; padding-right: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="app" class="app">
+  <div id="editor"><label for="body">New note</label><textarea id="body" name="body"></textarea><div><button id="save" type="button">Save</button></div><div id="saved" hidden>Saved.</div></div>
+  <ul id="list"></ul>
+</div>
+<script>
+  document.getElementById('list').innerHTML = Array.from({ length: 20 }, (_, i) => `<li id="n${i + 1}">Note ${i + 1}</li>`).join('');
+  document.getElementById('save').addEventListener('click', () => { document.getElementById('saved').hidden = false; });
+</script>
+</body>
+</html>

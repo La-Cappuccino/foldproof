@@ -1,0 +1,138 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "apple-iphone-duo",
+  "revision": 1,
+  "kind": "device",
+  "platform": "ios",
+  "name": "Apple iPhone Duo",
+  "vendor": "Apple",
+  "sources": [
+    {
+      "id": "apple-iphone-duo-specs",
+      "url": "https://www.apple.com/iphone-duo/specs/",
+      "publisher": "Apple",
+      "inspected": "2026-10-28",
+      "licence": "vendor-fact",
+      "kind": "published",
+      "quote": "7.6-inch (diagonal) all-screen OLED folding display; 1878-by-2670-pixel resolution at 430 ppi. 5.4-inch (diagonal) all-screen OLED display; 1398-by-2034-pixel resolution at 460 ppi."
+    },
+    {
+      "id": "apple-hig-layout",
+      "url": "https://developer.apple.com/design/human-interface-guidelines/layout",
+      "publisher": "Apple (Human Interface Guidelines)",
+      "inspected": "2026-10-28",
+      "licence": "vendor-fact",
+      "kind": "published",
+      "quote": "Respecting the safe area is essential to make sure system UI and hardware features like the Dynamic Island don't obstruct content and controls.",
+      "note": "No numeric Dynamic Island or safe-area values on the page; no device dimension table (refers to Design Resources)."
+    },
+    {
+      "id": "mdn-bcd",
+      "url": "https://github.com/mdn/browser-compat-data",
+      "publisher": "MDN",
+      "inspected": "2026-10-28",
+      "licence": "CC0-1.0",
+      "kind": "published",
+      "revision": "v8.1.7 (main bf12f642f00a463ca4831b13005f1fbd21acdd1a)",
+      "note": "Navigator.devicePosture chrome 132, safari_ios 27 behind a flag, samsunginternet 16.2; Viewport.segments chrome 138; VisualViewport chrome 61 / safari 13 / firefox 91. Engine support lives in engines/, not in profiles."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
+    }
+  ],
+  "panels": [
+    {
+      "name": "inner",
+      "physical_px": {
+        "w": 1878,
+        "h": 2670
+      },
+      "diagonal_in": 7.6,
+      "ppi": 430,
+      "source_ref": "apple-iphone-duo-specs"
+    },
+    {
+      "name": "outer",
+      "physical_px": {
+        "w": 1398,
+        "h": 2034
+      },
+      "diagonal_in": 5.4,
+      "ppi": 460,
+      "source_ref": "apple-iphone-duo-specs"
+    }
+  ],
+  "logical": [],
+  "usable": [],
+  "display_features": [],
+  "postures": [
+    {
+      "name": "closed",
+      "panel": "outer",
+      "orientation": "portrait",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
+      "android_state": null,
+      "source_ref": "apple-iphone-duo-specs"
+    },
+    {
+      "name": "flat",
+      "panel": "inner",
+      "orientation": "portrait",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
+      "android_state": null,
+      "source_ref": "apple-iphone-duo-specs"
+    }
+  ],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "source_ref": "apple-iphone-duo-specs"
+  },
+  "operating_states": [],
+  "conflicts_with": [],
+  "unknowns": [
+    {
+      "field": "logical",
+      "reason": "Point dimensions and scale factor are NOT published by Apple and no Playwright or DevTools entry exists; inventory-only until measured (Safari innerWidth/innerHeight, devicePixelRatio). No value is assumed."
+    },
+    {
+      "field": "usable",
+      "reason": "CSS px layout viewport in Safari unmeasured; browser UI height unknown."
+    },
+    {
+      "field": "postures.half_opened",
+      "reason": "No half-opened/book posture declared: Apple publishes no posture API, hinge geometry or fold bounds, and Safari has no Device Posture API (BCD: safari_ios 27 behind a flag only)."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "Safe-area insets and Dynamic Island metrics unpublished."
+    },
+    {
+      "field": "panels.dimensions_mm",
+      "reason": "Physical dimensions on the Apple page (open 164.6 x 117.8 x 5.2 mm; closed 84.1 x 117.8 x 11.3 mm; 254 g) are not modelled in this schema."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
+  ],
+  "tags": [
+    "foldable",
+    "phone"
+  ]
+}

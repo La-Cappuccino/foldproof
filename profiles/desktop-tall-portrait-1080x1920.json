@@ -1,0 +1,97 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "desktop-tall-portrait-1080x1920",
+  "revision": 1,
+  "kind": "device",
+  "platform": "web",
+  "name": "Desktop portrait (pivoted) window 1080x1920",
+  "sources": [
+    {
+      "id": "playwright",
+      "url": "https://github.com/microsoft/playwright/blob/main/packages/isomorphic/deviceDescriptorsSource.json",
+      "publisher": "Microsoft (Playwright)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "revision": "main f9a841f968dd9a4e315df2ec2930da1952971667 (package 1.65.0-next; file last changed b80bcb5a 2026-10-23)",
+      "note": "207 entries on main at inspection; file moved here from playwright-core/src/server. viewport = layout viewport after browser UI; screen = full screen in CSS px."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CDLA-Permissive-2.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "single",
+      "physical_px": {
+        "w": 1080,
+        "h": 1920
+      },
+      "source_ref": "playwright"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 1080,
+      "h": 1920,
+      "scale": 1,
+      "kind": "derived",
+      "derivation": "Playwright Desktop Chrome screen 1920x1080 @1 pivoted 90 degrees: w 1080, h 1920; css_px = device_px / 1",
+      "source_ref": "playwright"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 1080,
+        "h": 1920
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "maximised window; browser UI height not published; measure at test time",
+      "source_ref": "playwright"
+    }
+  ],
+  "display_features": [],
+  "postures": [],
+  "inputs": {
+    "pointer": "fine",
+    "hover": "hover",
+    "touch": false,
+    "keyboard": "hardware",
+    "source_ref": "playwright"
+  },
+  "operating_states": [],
+  "conflicts_with": [],
+  "unknowns": [
+    {
+      "field": "panels",
+      "reason": "No vendor page for a specific pivot monitor was verified (Dell P2425H pivot is reseller-reported only); the panel is the Playwright Desktop Chrome 1920x1080 screen rotated."
+    },
+    {
+      "field": "usable.layout_viewport",
+      "reason": "Browser UI height measured, not published."
+    }
+  ],
+  "tags": [
+    "desktop"
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "android-automotive-1024p",
+  "revision": 1,
+  "kind": "emulator-profile",
+  "platform": "automotive",
+  "name": "AOSP emulator profile: Automotive (1024p landscape)",
+  "sources": [
+    {
+      "id": "aosp-automotive-xml",
+      "url": "https://android.googlesource.com/platform/tools/base/+/mirror-goog-studio-main/sdklib/src/main/resources/com/android/sdklib/devices/automotive.xml",
+      "publisher": "AOSP (platform/tools/base sdklib)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "revision": "mirror-goog-studio-main b143674a31236684a225ec6d6d19a5c9b1ecef51 (2026-10-28)",
+      "quote": "Automotive (1024p landscape): 1024 x 768, mdpi, 8.4 in"
+    },
+    {
+      "id": "android-car-app-quality",
+      "url": "https://developer.android.com/docs/quality-guidelines/car-app-quality",
+      "publisher": "Google (Android Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "note": "DD-2/DD-3: video, games, browsers not launchable or visible while driving. UX-1..3 (Car differentiated): targets >= 64dp, >= 24dp apart, fonts >= 24sp. AC-1/DR-1: tasks within five screens, buttons respond within two seconds."
+    },
+    {
+      "id": "android-automotive-parked",
+      "url": "https://developer.android.com/training/cars/parked/automotive-os",
+      "publisher": "Google (Android Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "The only value provided by CarUxRestrictions that your app refers to is the return value of isRequiresDistractionOptimization",
+      "note": "Do not infer restrictions from gear or speed; restrictions can vary per display. Parked apps must not set distractionOptimized."
+    },
+    {
+      "id": "android-car-ux-restrictions",
+      "url": "https://developer.android.com/reference/android/car/drivingstate/CarUxRestrictions",
+      "publisher": "Google (Android Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "UX_RESTRICTIONS_FULLY_RESTRICTED = 511",
+      "note": "Bit flags: NO_DIALPAD 1, NO_FILTERING 2, LIMIT_STRING_LENGTH 4, NO_KEYBOARD 8, NO_VIDEO 16, LIMIT_CONTENT 32, NO_SETUP 64, NO_TEXT_MESSAGE 128, NO_VOICE_TRANSCRIPTION 256. The active mask is OEM-configured and read at runtime."
+    },
+    {
+      "id": "android-screen-densities",
+      "url": "https://developer.android.com/training/multiscreen/screendensities",
+      "publisher": "Google (Android Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "px = dp * (dpi / 160)",
+      "note": "mdpi 160 = 1.0 baseline; xhdpi 320 = 2.0; xxhdpi 480 = 3.0; 420dpi = 2.625; 390dpi = 2.4375."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CDLA-Permissive-2.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "single",
+      "physical_px": {
+        "w": 1024,
+        "h": 768
+      },
+      "diagonal_in": 8.4,
+      "density_dpi": 160,
+      "source_ref": "aosp-automotive-xml"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "dp",
+      "w": 1024,
+      "h": 768,
+      "scale": 1,
+      "kind": "derived",
+      "derivation": "dp = px / (160 / 160) = px: 1024 x 768 (automotive.xml mdpi)",
+      "source_ref": "aosp-automotive-xml"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 1024,
+      "h": 768,
+      "scale": 1,
+      "kind": "derived",
+      "derivation": "css_px = dp at scale 1 if a browser runs on the head unit; browsers are a parked-only category (DD-2/DD-3) and web emulation of this profile is notApplicable while driving",
+      "source_ref": "aosp-automotive-xml"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "dp",
+      "layout_viewport": {
+        "w": 1024,
+        "h": 768
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "full display; system bar allocation is OEM-specific and not published",
+      "source_ref": "aosp-automotive-xml"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 1024,
+        "h": 768
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "same as dp at scale 1",
+      "source_ref": "aosp-automotive-xml"
+    }
+  ],
+  "display_features": [],
+  "postures": [],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "rotary": false,
+    "voice": true,
+    "source_ref": "android-car-app-quality"
+  },
+  "operating_states": [
+    {
+      "name": "parked",
+      "requires_distraction_optimization": false,
+      "ux_restrictions_mask": 0,
+      "source_ref": "android-automotive-parked"
+    },
+    {
+      "name": "driving",
+      "requires_distraction_optimization": true,
+      "ux_restrictions_mask": 511,
+      "source_ref": "android-car-ux-restrictions"
+    }
+  ],
+  "conflicts_with": [],
+  "unknowns": [
+    {
+      "field": "operating_states.driving.ux_restrictions_mask",
+      "reason": "511 is UX_RESTRICTIONS_FULLY_RESTRICTED (the published OR of all flags); the active mask is OEM-configured per display and must be read from CarUxRestrictionsManager at runtime."
+    },
+    {
+      "field": "operating_states.parked.ux_restrictions_mask",
+      "reason": "0 is UX_RESTRICTIONS_BASELINE; baseline distraction guidelines still apply when isRequiresDistractionOptimization() is true."
+    },
+    {
+      "field": "inputs.rotary",
+      "reason": "Rotary controller presence is OEM-specific; recorded false for the emulator profile. Voice true follows the car-app guidance that text entry is restricted while driving; not an emulator property."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "Head-unit system bar allocation and any browser UI are not published."
+    },
+    {
+      "field": "panels",
+      "reason": "Emulator is not a Tesla or any specific OEM dashboard."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
+  ],
+  "tags": [
+    "automotive"
+  ]
+}

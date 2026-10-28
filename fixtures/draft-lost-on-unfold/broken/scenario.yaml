@@ -1,0 +1,19 @@
+foldproof: 1
+id: draft-lost-on-unfold-broken
+title: "Broken: unfolding mid-draft re-renders the editor; the draft, caret and focus are lost"
+profiles: [microsoft-surface-duo, google-pixel-9-pro-fold]
+start: { posture: closed }
+task:
+  url: /draft-lost-on-unfold/broken/
+  ready: { selector: "#send" }
+  controls: ["#send", "role=button[name='Save draft']"]
+  state: { form: all, focus: same-element, selection: exact, scroll: anchor }
+  setup:
+    - { fill: "#body", value: "Hei, vedlagt er avtalen vi diskuterte." }
+    - { focus: "#body", select: [4, 7] }
+steps:
+  - transition: unfold
+    assert: preset@1
+  - operate: { target: "#send", expect: { visible: "#sent" } }
+expect: { verdict: fail, rules: [state-preserved, no-remount] }
+tags: [fixture, transition, foldable]
