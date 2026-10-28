@@ -44,6 +44,8 @@ jobs:
       - run: npx tsx src/cli.ts doctor
       - name: fixture matrix (3 runs, deterministic)
         run: FOLDPROOF_REPEAT=3 npm run test:fixtures
+      - name: fixture matrix under 4x CPU throttle
+        run: FOLDPROOF_REPEAT=1 FOLDPROOF_CPU_THROTTLE=4 npm run test:fixtures
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -53,6 +53,8 @@ export async function runScenario(browser: Browser, scenario: Scenario, profile:
   let fp: Foldproof | null = null;
   try {
     fp = await Foldproof.attach(page, { profile, start: scenario.start, settle: scenario.settle, mask: scenario.mask });
+    const throttle = Number(process.env.FOLDPROOF_CPU_THROTTLE ?? 0);
+    if (throttle > 1) await fp.session.cdp.send('Emulation.setCPUThrottlingRate', { rate: throttle });
     const url = /^https?:/.test(scenario.task.url) ? scenario.task.url : new URL(scenario.task.url, opts.baseUrl).href;
     await page.goto(url, { waitUntil: 'load' });
     if (scenario.task.ready) {
