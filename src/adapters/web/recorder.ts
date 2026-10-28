@@ -181,14 +181,20 @@ export const RECORDER_SOURCE = String.raw`
     const out = [];
     for (const [id, s] of fp.stamps) {
       const node = s.ref.deref();
-      // identity is independent of visibility: a hidden control is still the same node, not a remount
-      const current = fp.query(s.locator, true);
+      // identity is about the retained node, independent of visibility and of unrelated hidden duplicates:
+      // the node must still be connected and still match the locator; if any match is visible, the node must be
+      // the one visible match (a visible replacement means the control was swapped).
+      const all = fp.query(s.locator, true);
+      const visible = fp.query(s.locator);
+      const retained = !!(node && node.isConnected && all.includes(node));
+      const sameNode = retained && (visible.length === 0 ? true : visible.length === 1 && visible[0] === node);
+      const current = visible.length ? visible : all;
       out.push({
         id, locator: s.locator, key: s.key,
         nodeAlive: !!node, connected: !!(node && node.isConnected),
-        sameNode: !!(node && current.length === 1 && current[0] === node),
-        currentCount: current.length,
-        currentHasStamp: current.length === 1 && current[0].getAttribute('data-foldproof-stamp') === id,
+        sameNode,
+        currentCount: visible.length === 0 ? all.length : visible.length,
+        currentHasStamp: current.length >= 1 && current.some((c) => c.getAttribute('data-foldproof-stamp') === id),
       });
     }
     return out;

@@ -165,7 +165,7 @@ export async function runSetup(page: import('playwright').Page, actions: SetupAc
     else if ('focus' in a) {
       await loc(a.focus).focus();
       if (a.select) await loc(a.focus).evaluate((el, sel) => (el as HTMLInputElement).setSelectionRange?.(sel[0], sel[1]), a.select);
-    } else if ('scrollTo' in a) await loc(a.scrollTo).evaluate((el) => el.scrollIntoView({ block: 'start' }));
+    } else if ('scrollTo' in a) await loc(a.scrollTo).evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'instant' as ScrollBehavior }));
     else if ('play' in a) await loc(a.play).evaluate(async (el, seek) => { const m = el as HTMLMediaElement; if (seek != null) m.currentTime = seek; await m.play().catch(() => undefined); }, a.seek ?? null);
     else if ('waitFor' in a) await loc(a.waitFor).waitFor({ state: a.state });
     else if ('pushState' in a) await page.evaluate((s) => history.pushState({ foldproof: s }, '', s), a.pushState);
