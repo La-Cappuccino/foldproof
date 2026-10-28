@@ -133,10 +133,12 @@ describe('state policies', () => {
       "y http://app.test/p?q=it's-secret-three' ok",
       'z Http://app.test/p#frag-secret-four',
       'w ws://app.test/socket?key=secret-five',
+      'glued id_http://app.test/p?token=secret-six and 9https://app.test/q?k=secret-seven',
+      'nested:https://app.test/p?token=secret-eight',
     ];
     for (const c of cases) {
       const out = oracles.redactUrlsInText(c);
-      for (const secret of ['ret-part', 'secret-two', 'secret-three', 'secret-four', 'secret-five', 'token=', 'a=1', 'key=']) expect(out, c).not.toContain(secret);
+      for (const secret of ['ret-part', 'secret-two', 'secret-three', 'secret-four', 'secret-five', 'secret-six', 'secret-seven', 'secret-eight', 'token=', 'a=1', 'key=', 'k=']) expect(out, c).not.toContain(secret);
     }
     expect(oracles.redactUrlsInText('plain text without urls')).toBe('plain text without urls');
   });
