@@ -22,7 +22,7 @@ import type { Finding, StepResult } from '../core/types.js';
 export interface AttachOptions {
   profile: Profile;
   start?: ConfigurationTarget;
-  settle?: { quiet_frames: number; max_ms: number };
+  settle?: { quiet_frames: number; min_ms?: number; max_ms: number };
   mask?: string[];
   artifactsDir?: string;
 }
@@ -52,13 +52,13 @@ export class Foldproof {
     readonly page: Page,
     readonly session: WebSession,
     readonly profile: Profile,
-    readonly settleOpts: { quiet_frames: number; max_ms: number },
+    readonly settleOpts: { quiet_frames: number; min_ms?: number; max_ms: number },
     readonly mask: string[],
   ) {}
 
   static async attach(page: Page, opts: AttachOptions): Promise<Foldproof> {
     const session = await WebSession.attach(page);
-    const fp = new Foldproof(page, session, opts.profile, opts.settle ?? { quiet_frames: 2, max_ms: 3000 }, opts.mask ?? []);
+    const fp = new Foldproof(page, session, opts.profile, opts.settle ?? { quiet_frames: 2, min_ms: 0, max_ms: 3000 }, opts.mask ?? []);
     const r = resolveConfiguration(opts.profile, opts.start ?? {});
     if (isResolveError(r)) throw new Error(`cannot resolve start configuration for ${opts.profile.id}: ${r.error}`);
     fp.resolved = r;

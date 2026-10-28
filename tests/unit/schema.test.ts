@@ -96,7 +96,7 @@ describe('Scenario schema', () => {
   it('applies defaults: state policies, settle, empty steps = startup-only', () => {
     const r = Scenario.parse(base);
     expect(r.steps).toEqual([]);
-    expect(r.settle).toEqual({ quiet_frames: 2, max_ms: 3000 });
+    expect(r.settle).toEqual({ quiet_frames: 2, min_ms: 0, max_ms: 3000 });
     expect(r.task.state.scroll).toBe('anchor');
     expect(r.task.state.storage).toEqual([]);
     expect(r.expect).toEqual({ verdict: 'pass', rules: [] });

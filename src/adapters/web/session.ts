@@ -125,9 +125,9 @@ export class WebSession {
     return this.page.evaluate(() => (window as unknown as { __foldproof: { signals(): ObservedSignals } }).__foldproof.signals());
   }
 
-  async settle(opts: { quiet_frames: number; max_ms: number }): Promise<{ settled: boolean; ms: number; frames: unknown[] }> {
+  async settle(opts: { quiet_frames: number; min_ms?: number; max_ms: number }): Promise<{ settled: boolean; ms: number; frames: unknown[] }> {
     return this.page.evaluate(
-      (o) => (window as unknown as { __foldproof: { observe(a: { quietFrames: number; maxMs: number }): Promise<{ settled: boolean; ms: number; frames: unknown[] }> } }).__foldproof.observe({ quietFrames: o.quiet_frames, maxMs: o.max_ms }),
+      (o) => (window as unknown as { __foldproof: { observe(a: { quietFrames: number; minMs: number; maxMs: number }): Promise<{ settled: boolean; ms: number; frames: unknown[] }> } }).__foldproof.observe({ quietFrames: o.quiet_frames, minMs: o.min_ms ?? 0, maxMs: o.max_ms }),
       opts,
     );
   }
