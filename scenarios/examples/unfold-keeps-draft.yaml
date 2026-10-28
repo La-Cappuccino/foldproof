@@ -1,0 +1,23 @@
+foldproof: 1
+id: example-unfold-keeps-draft
+title: "Unfolding mid-draft keeps the draft, the caret and the Send control; Send then really sends"
+profiles: [google-pixel-9-pro-fold, microsoft-surface-duo, samsung-galaxy-z-fold7]
+start: { posture: closed }
+task:
+  url: /draft-lost-on-unfold/fixed/
+  ready: { selector: "#send" }
+  controls: ["#send", "role=button[name='Save draft']"]
+  state: { form: all, focus: same-element, selection: exact, scroll: anchor }
+  setup:
+    - { fill: "#body", value: "Hei Per, vedlagt er avtalen vi diskuterte." }
+    - { focus: "#body", select: [4, 7] }
+steps:
+  - transition: unfold
+    assert: preset@1
+  - transition: fold
+    assert: preset@1
+  - transition: unfold
+    assert: preset@1
+  - operate: { target: "#send", expect: { visible: "#sent" } }
+expect: { verdict: pass }
+tags: [example, foldable]

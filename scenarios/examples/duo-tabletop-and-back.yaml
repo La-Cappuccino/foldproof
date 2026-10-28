@@ -1,0 +1,18 @@
+foldproof: 1
+id: example-duo-tabletop-and-back
+title: "Surface Duo: closed → tabletop → flat; the toolbar controls never sit on the opaque hinge"
+profiles: [microsoft-surface-duo]
+start: { posture: closed }
+task:
+  url: /control-under-hinge/fixed/
+  ready: { selector: "#bookmark" }
+  controls: ["#bookmark", "#next"]
+  state: { form: none, focus: none, selection: none, scroll: anchor }
+steps:
+  - transition: { kind: posture, to: { posture: tabletop } }
+    assert: preset@1
+  - transition: { kind: posture, to: { posture: flat } }
+    assert: preset@1
+  - operate: { target: "#bookmark", expect: { text: { selector: "#bookmark", contains: "Bookmarked" } } }
+expect: { verdict: pass }
+tags: [example, dual-screen, hinge]

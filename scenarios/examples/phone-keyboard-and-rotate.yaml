@@ -1,0 +1,23 @@
+foldproof: 1
+id: example-phone-keyboard-and-rotate
+title: "Phone: keyboard open → rotate → keyboard close; the search field and the Profile tab stay reachable"
+profiles: [google-pixel-10-pro]
+start: { orientation: portrait }
+task:
+  url: /tabbar-missing-after-keyboard-close/fixed/
+  ready: { selector: "#q" }
+  controls: ["#q", "#tab-profile"]
+  landmarks: ["role=navigation"]
+  state: { form: all, focus: none, selection: none, scroll: none }
+  setup:
+    - { fill: "#q", value: "foldable" }
+    - { focus: "#q" }
+steps:
+  - transition: { kind: keyboard-open, to: { keyboard: { height: 300 } } }
+    assert: []
+  - transition: rotate
+    assert: []
+  - transition: keyboard-close
+    assert: [reachable, state-preserved, no-element-loss]
+expect: { verdict: pass }
+tags: [example, phone, keyboard]
