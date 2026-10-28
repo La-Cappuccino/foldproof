@@ -13,6 +13,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "mirror-goog-studio-main b143674a31236684a225ec6d6d19a5c9b1ecef51 (2026-10-28)",
       "note": "Emulator hardware profiles. hinge areas encoded x-y-w-h in device px of the unfolded panel; posture-list 1,2,3 = hinge-angles 0-30, 30-150, 150-180. Licence per AOSP repository NOTICE; the XML carries no header."
     },
     {
@@ -32,6 +33,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "androidx-main (read 2026-10-28)",
       "note": "State FLAT | HALF_OPENED; Orientation VERTICAL | HORIZONTAL; OcclusionType NONE (flexible screen, treat as guideline) | FULL (hinge is part of the window); isSeparating true for hinges always and for folds when not FLAT."
     },
     {
@@ -41,27 +43,9 @@
       "inspected": "2026-10-28",
       "licence": "W3C-document-licence",
       "kind": "published",
+      "revision": "Candidate Recommendation Draft 2026-10-26",
       "quote": "continuous | folded",
-      "note": "Candidate Recommendation Draft 2026-10-26. continuous = flat or fully closed; folded = book or laptop posture."
-    },
-    {
-      "id": "mdn-bcd",
-      "url": "https://github.com/mdn/browser-compat-data",
-      "publisher": "MDN",
-      "inspected": "2026-10-28",
-      "licence": "CC0-1.0",
-      "kind": "published",
-      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
-    },
-    {
-      "id": "chrome-viewport-resize",
-      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
-      "publisher": "Google (Chrome Developers)",
-      "inspected": "2026-10-28",
-      "licence": "CC-BY-4.0",
-      "kind": "published",
-      "quote": "Chrome on Android will no longer resize the Layout Viewport",
-      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+      "note": "continuous = flat or fully closed; folded = book or laptop posture."
     },
     {
       "id": "foldproof-derivation",
@@ -316,7 +300,7 @@
       "occlusion": "none",
       "is_separating": true,
       "kind": "derived",
-      "derivation": "AOSP hinge areas \"884-0-1-2208\" (x-y-w-h device px of the unfolded panel) / 2.625",
+      "derivation": "AOSP hinge areas \"884-0-1-2208\" (x-y-w-h device px of the unfolded panel in its default state) / 2.625",
       "source_ref": "aosp-devices-xml"
     },
     {
@@ -342,7 +326,10 @@
     {
       "name": "closed",
       "panel": "outer",
-      "web_posture": "continuous",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
       "android_state": null,
       "hinge_angle_range_deg": [
         0,
@@ -353,7 +340,10 @@
     {
       "name": "half_opened",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "hinge_angle_range_deg": [
         30,
@@ -365,7 +355,10 @@
     {
       "name": "book",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "hinge_angle_range_deg": [
         30,
@@ -377,7 +370,10 @@
     {
       "name": "flat",
       "panel": "inner",
-      "web_posture": "continuous",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
       "android_state": "FLAT",
       "hinge_angle_range_deg": [
         150,
@@ -393,50 +389,28 @@
     "keyboard": "soft",
     "source_ref": "aosp-devices-xml"
   },
-  "capabilities": {
-    "web": {
-      "device_posture_api": {
-        "supported": true,
-        "since": "chrome 132",
-        "source_ref": "mdn-bcd"
-      },
-      "viewport_segments": {
-        "supported": true,
-        "since": "chrome 138",
-        "source_ref": "mdn-bcd"
-      },
-      "window_management": {
-        "supported": true,
-        "since": "chrome 100",
-        "source_ref": "mdn-bcd"
-      },
-      "visual_viewport": {
-        "supported": true,
-        "since": "chrome 61",
-        "source_ref": "mdn-bcd"
-      },
-      "virtual_keyboard_api": {
-        "supported": true,
-        "since": "chrome 94",
-        "source_ref": "mdn-bcd"
-      },
-      "interactive_widget": {
-        "supported": true,
-        "since": "chrome 108",
-        "source_ref": "chrome-viewport-resize"
-      }
-    }
-  },
   "operating_states": [],
   "conflicts_with": [],
   "unknowns": [
-    "Generic profile (id \"7.6in Foldable\"), not a retail device; the folded region shares the inner panel density.",
-    "Default state is Portrait with keyboard-state keyssoft; no cutout or inset data in the profile.",
-    "Hinge \"areas\" 884-0-1-2208 is a 1 px line; occlusion none chosen because it is a flexible fold-in panel (type 1), unverified against emulator FoldingFeature output."
+    {
+      "field": "panels",
+      "reason": "Generic profile (id \"7.6in Foldable\"), not a retail device; the folded region shares the inner panel density."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "Default state is Portrait with keyboard-state keyssoft; no cutout or inset data in the profile."
+    },
+    {
+      "field": "display_features.occlusion",
+      "reason": "Hinge \"areas\" 884-0-1-2208 is a 1 px line; occlusion none chosen because it is a flexible fold-in panel (type 1), unverified against emulator FoldingFeature output."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
   ],
   "tags": [
     "foldable",
-    "emulator",
-    "chromium"
+    "phone"
   ]
 }

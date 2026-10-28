@@ -14,6 +14,7 @@
       "inspected": "2026-10-28",
       "licence": "BSD-3-Clause",
       "kind": "published",
+      "revision": "main 89605581639d434b16692f9dec9482e443a45973 (file last changed 4c3993d1 2026-08-27)",
       "note": "screen.vertical/horizontal in CSS px, device-pixel-ratio, spanned modes with hinge rect {x,y,width,height} in CSS px."
     },
     {
@@ -31,6 +32,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "mirror-goog-studio-main b143674a31236684a225ec6d6d19a5c9b1ecef51 (2026-10-28)",
       "note": "Google device emulator profiles (Pixel Fold, Pixel 9 Pro Fold, Pixel 10 Pro Fold, Pixel Tablet, Pixel 10 Pro). One pixel-density per profile, applied to the folded region too."
     },
     {
@@ -50,6 +52,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "androidx-main (read 2026-10-28)",
       "note": "State FLAT | HALF_OPENED; Orientation VERTICAL | HORIZONTAL; OcclusionType NONE (flexible screen, treat as guideline) | FULL (hinge is part of the window); isSeparating true for hinges always and for folds when not FLAT."
     },
     {
@@ -59,17 +62,9 @@
       "inspected": "2026-10-28",
       "licence": "W3C-document-licence",
       "kind": "published",
+      "revision": "Candidate Recommendation Draft 2026-10-26",
       "quote": "continuous | folded",
-      "note": "Candidate Recommendation Draft 2026-10-26. continuous = flat or fully closed; folded = book or laptop posture."
-    },
-    {
-      "id": "mdn-bcd",
-      "url": "https://github.com/mdn/browser-compat-data",
-      "publisher": "MDN",
-      "inspected": "2026-10-28",
-      "licence": "CC0-1.0",
-      "kind": "published",
-      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+      "note": "continuous = flat or fully closed; folded = book or laptop posture."
     },
     {
       "id": "chrome-viewport-resize",
@@ -79,7 +74,7 @@
       "licence": "CC-BY-4.0",
       "kind": "published",
       "quote": "Chrome on Android will no longer resize the Layout Viewport",
-      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
     },
     {
       "id": "foldproof-derivation",
@@ -125,7 +120,7 @@
       "scale": 2.625,
       "kind": "published",
       "source_ref": "chrome-devtools",
-      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Pixel 9 Pro Fold vertical-spanned"
+      "registry": "devtools-frontend EmulatedDevices.ts: Pixel 9 Pro Fold vertical-spanned"
     },
     {
       "panel": "inner",
@@ -136,7 +131,7 @@
       "scale": 2.625,
       "kind": "published",
       "source_ref": "chrome-devtools",
-      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Pixel 9 Pro Fold horizontal-spanned"
+      "registry": "devtools-frontend EmulatedDevices.ts: Pixel 9 Pro Fold horizontal-spanned"
     },
     {
       "panel": "outer",
@@ -147,7 +142,7 @@
       "scale": 2.625,
       "kind": "published",
       "source_ref": "chrome-devtools",
-      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Pixel 9 Pro Fold vertical"
+      "registry": "devtools-frontend EmulatedDevices.ts: Pixel 9 Pro Fold vertical"
     },
     {
       "panel": "outer",
@@ -158,7 +153,7 @@
       "scale": 2.625,
       "kind": "published",
       "source_ref": "chrome-devtools",
-      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Pixel 9 Pro Fold horizontal"
+      "registry": "devtools-frontend EmulatedDevices.ts: Pixel 9 Pro Fold horizontal"
     },
     {
       "panel": "inner",
@@ -277,7 +272,7 @@
       "occlusion": "none",
       "is_separating": true,
       "kind": "published",
-      "derivation": "DevTools hinge {x:418,y:0,width:0,height:842}, contentColor alpha 0.2 (translucent) = flexible fold",
+      "derivation": "portrait coordinates (836x842 span): DevTools hinge {x:418,y:0,width:0,height:842}, contentColor alpha 0.2 (translucent) = flexible fold",
       "source_ref": "chrome-devtools"
     },
     {
@@ -295,7 +290,7 @@
       "occlusion": "none",
       "is_separating": true,
       "kind": "published",
-      "derivation": "DevTools hinge {x:0,y:418,width:842,height:0}, alpha 0.2",
+      "derivation": "landscape coordinates (842x836 span): DevTools hinge {x:0,y:418,width:842,height:0}, alpha 0.2",
       "source_ref": "chrome-devtools"
     },
     {
@@ -321,7 +316,10 @@
     {
       "name": "closed",
       "panel": "outer",
-      "web_posture": "continuous",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
       "android_state": null,
       "hinge_angle_range_deg": [
         0,
@@ -332,7 +330,10 @@
     {
       "name": "flat",
       "panel": "inner",
-      "web_posture": "continuous",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
       "android_state": "FLAT",
       "hinge_angle_range_deg": [
         150,
@@ -343,7 +344,10 @@
     {
       "name": "half_opened",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "hinge_angle_range_deg": [
         30,
@@ -355,7 +359,10 @@
     {
       "name": "book",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "hinge_angle_range_deg": [
         30,
@@ -367,7 +374,10 @@
     {
       "name": "tabletop",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "hinge_angle_range_deg": [
         30,
@@ -384,40 +394,6 @@
     "keyboard": "soft",
     "source_ref": "aosp-nexus-xml"
   },
-  "capabilities": {
-    "web": {
-      "device_posture_api": {
-        "supported": true,
-        "since": "chrome 132",
-        "source_ref": "mdn-bcd"
-      },
-      "viewport_segments": {
-        "supported": true,
-        "since": "chrome 138",
-        "source_ref": "mdn-bcd"
-      },
-      "window_management": {
-        "supported": true,
-        "since": "chrome 100",
-        "source_ref": "mdn-bcd"
-      },
-      "visual_viewport": {
-        "supported": true,
-        "since": "chrome 61",
-        "source_ref": "mdn-bcd"
-      },
-      "virtual_keyboard_api": {
-        "supported": true,
-        "since": "chrome 94",
-        "source_ref": "mdn-bcd"
-      },
-      "interactive_widget": {
-        "supported": true,
-        "since": "chrome 108",
-        "source_ref": "chrome-viewport-resize"
-      }
-    }
-  },
   "operating_states": [],
   "conflicts_with": [
     {
@@ -427,15 +403,29 @@
     }
   ],
   "unknowns": [
-    "Hardware CSS px for the inner panel in Chrome is unmeasured; the DevTools value conflicts with vendor px (see conflicts_with).",
-    "Real fold bounds on hardware unmeasured; DevTools x=418 and AOSP x=1038 px are registry/emulator values.",
-    "Outer panel density on hardware unknown; AOSP applies one density (390dpi) to both regions.",
-    "System insets and cutouts not published; insets 0.",
-    "Soft keyboard height is measured, not published."
+    {
+      "field": "logical.inner.css_px",
+      "reason": "Hardware CSS px for the inner panel in Chrome is unmeasured; the DevTools value conflicts with vendor px (see conflicts_with)."
+    },
+    {
+      "field": "display_features.bounds",
+      "reason": "Real fold bounds on hardware unmeasured; DevTools x=418 css_px and AOSP x=1038 device px are registry/emulator values."
+    },
+    {
+      "field": "panels.outer.density_dpi",
+      "reason": "Outer panel density on hardware unknown; AOSP applies one density (390dpi) to both regions."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "System insets (status bar, navigation bar) and cutout geometry are not published; insets recorded as 0, meaning \"not published\", not \"none\"."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
   ],
   "tags": [
     "foldable",
-    "book-fold",
-    "chromium"
+    "phone"
   ]
 }

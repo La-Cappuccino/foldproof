@@ -50,7 +50,9 @@ export function resolveConfiguration(profile: Profile, target: ConfigurationTarg
   const gaps: string[] = [];
   const sourceRefs = new Set<string>();
 
-  const panel: PanelName = target.panel ?? previous?.panel ?? (profile.panels.length === 1 ? profile.panels[0]!.name : 'inner');
+  // panel: explicit → inferred from the requested posture → previous → the only panel → inner
+  const postureOwner = target.posture && !target.panel ? profile.postures.find((p) => p.name === target.posture)?.panel : undefined;
+  const panel: PanelName = target.panel ?? postureOwner ?? previous?.panel ?? (profile.panels.length === 1 ? profile.panels[0]!.name : 'inner');
   if (!profile.panels.some((p) => p.name === panel)) return { error: `profile ${profile.id} has no panel "${panel}"` };
 
   const posture: PostureName | null = target.posture ?? (target.panel && target.panel !== previous?.panel ? null : previous?.posture ?? null);
@@ -62,7 +64,9 @@ export function resolveConfiguration(profile: Profile, target: ConfigurationTarg
   if (logicalForPanel.length === 0) {
     return { error: `profile ${profile.id} has no css_px logical size for panel "${panel}"`, notExecutable: true };
   }
-  const orientation: Orientation = target.orientation ?? previous?.orientation ?? logicalForPanel[0]!.orientation;
+  // orientation: explicit → (same panel) previous → the panel's first published entry (its natural orientation)
+  const samePanel = previous?.panel === panel;
+  const orientation: Orientation = target.orientation ?? (samePanel ? previous!.orientation : logicalForPanel[0]!.orientation);
   let logical = logicalForPanel.find((l) => l.orientation === orientation);
   let swapped = false;
   if (!logical) {

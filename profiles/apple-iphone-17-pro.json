@@ -14,6 +14,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "main f9a841f968dd9a4e315df2ec2930da1952971667 (package 1.65.0-next; file last changed b80bcb5a 2026-10-23)",
       "note": "207 entries on main at inspection; file moved here from playwright-core/src/server. viewport = layout viewport after browser UI; screen = full screen in CSS px."
     },
     {
@@ -33,7 +34,8 @@
       "inspected": "2026-10-28",
       "licence": "CC0-1.0",
       "kind": "published",
-      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+      "revision": "v8.1.7 (main bf12f642f00a463ca4831b13005f1fbd21acdd1a)",
+      "note": "Navigator.devicePosture chrome 132, safari_ios 27 behind a flag, samsunginternet 16.2; Viewport.segments chrome 138; VisualViewport chrome 61 / safari 13 / firefox 91. Engine support lives in engines/, not in profiles."
     },
     {
       "id": "chrome-viewport-resize",
@@ -43,7 +45,7 @@
       "licence": "CC-BY-4.0",
       "kind": "published",
       "quote": "Chrome on Android will no longer resize the Layout Viewport",
-      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
     },
     {
       "id": "foldproof-derivation",
@@ -75,7 +77,7 @@
       "scale": 3,
       "kind": "published",
       "source_ref": "playwright",
-      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: iPhone 17 Pro"
+      "registry": "playwright deviceDescriptorsSource.json: iPhone 17 Pro"
     },
     {
       "panel": "single",
@@ -86,7 +88,7 @@
       "scale": 3,
       "kind": "published",
       "source_ref": "playwright",
-      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: iPhone 17 Pro (CSS px in Safari equal points)"
+      "registry": "playwright deviceDescriptorsSource.json: iPhone 17 Pro (CSS px in Safari equal points)"
     },
     {
       "panel": "single",
@@ -97,7 +99,7 @@
       "scale": 3,
       "kind": "derived",
       "source_ref": "playwright",
-      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: iPhone 17 Pro landscape",
+      "registry": "playwright deviceDescriptorsSource.json: iPhone 17 Pro landscape",
       "derivation": "Playwright keeps screen 402x874 for the landscape entry; landscape logical size is the swap 874x402 (viewport 756x352 is published)"
     },
     {
@@ -109,7 +111,7 @@
       "scale": 3,
       "kind": "derived",
       "source_ref": "playwright",
-      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: iPhone 17 Pro landscape (CSS px in Safari equal points)",
+      "registry": "playwright deviceDescriptorsSource.json: iPhone 17 Pro landscape (CSS px in Safari equal points)",
       "derivation": "swap of portrait points"
     }
   ],
@@ -162,46 +164,27 @@
     "keyboard": "soft",
     "source_ref": "playwright"
   },
-  "capabilities": {
-    "web": {
-      "device_posture_api": {
-        "supported": false,
-        "source_ref": "mdn-bcd"
-      },
-      "viewport_segments": {
-        "supported": false,
-        "source_ref": "mdn-bcd"
-      },
-      "window_management": {
-        "supported": false,
-        "source_ref": "mdn-bcd"
-      },
-      "visual_viewport": {
-        "supported": true,
-        "since": "safari 13",
-        "source_ref": "mdn-bcd"
-      },
-      "virtual_keyboard_api": {
-        "supported": false,
-        "source_ref": "mdn-bcd"
-      },
-      "interactive_widget": {
-        "supported": null,
-        "source_ref": "chrome-viewport-resize"
-      }
-    }
-  },
   "operating_states": [],
   "conflicts_with": [],
   "unknowns": [
-    "Apple does not publish the scale factor or point dimensions on the tech-spec page; scale 3 and physical_px 1206x2622 are from Playwright (css_px x deviceScaleFactor).",
-    "Dynamic Island metrics and safe-area insets are not published numerically (HIG Layout); insets recorded as 0 and must be measured via env(safe-area-inset-*).",
-    "Soft keyboard height is measured; iOS Safari resizes the visual viewport only (Chrome Developers post), layout viewport unchanged.",
-    "Device Posture / Viewport Segments: not supported in Safari; BCD lists devicePosture for safari_ios 27 behind a flag only."
+    {
+      "field": "logical.scale",
+      "reason": "Apple does not publish the scale factor or point dimensions on the tech-spec page; scale 3 and physical_px 1206x2622 are from Playwright (css_px x deviceScaleFactor)."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "Dynamic Island metrics and safe-area insets are not published numerically (HIG Layout); insets recorded as 0 and must be measured via env(safe-area-inset-*)."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited measurement; iOS Safari resizes the visual viewport only (Chrome Developers post), layout viewport unchanged. Measure at test time."
+    },
+    {
+      "field": "postures",
+      "reason": "Not a foldable. Device Posture / Viewport Segments are not supported in Safari; BCD lists devicePosture for safari_ios 27 behind a flag only."
+    }
   ],
   "tags": [
-    "phone",
-    "keyboard",
-    "webkit"
+    "phone"
   ]
 }
