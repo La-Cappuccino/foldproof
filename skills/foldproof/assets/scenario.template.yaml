@@ -38,6 +38,6 @@ steps:
 settle: { quiet_frames: 2, min_ms: 0, max_ms: 3000 }   # raise min_ms to catch debounced handlers
 static: []                                   # opt-in diagnostics: no-horizontal-overflow, target-size (warning level)
 transient: [".toast"]                        # excluded from no-element-loss
-mask: []                                     # selectors masked in screenshots
+mask: []                                     # locators hidden in screenshots; each must match ≥1 element or the screenshot is skipped (fail-closed)
 expect: { verdict: pass }                    # fixtures: { verdict: fail, rules: [state-preserved] }
 tags: []

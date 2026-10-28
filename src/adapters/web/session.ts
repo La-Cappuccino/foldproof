@@ -210,32 +210,45 @@ export class WebSession {
   async screenshot(file: string, mask: string[]): Promise<boolean> {
     const STYLE_ID = '__foldproof_mask';
     try {
+      // Masking is fail-closed: every mask must resolve (via the same locator engine as controls) to at least one
+      // element, every match must be confirmed hidden immediately before capture, and the match set is re-confirmed
+      // after capture; if anything differs the image is discarded. CSS masks additionally get a live selector rule
+      // so an element re-rendered between stamping and capture is still hidden.
+      const confirmMasks = ({ id, locators, install }: { id: string; locators: string[]; install: boolean }) => {
+        const fp = (window as unknown as { __foldproof: { query(l: string, h?: boolean): Element[] } }).__foldproof;
+        const els: Element[] = [];
+        const cssRules: string[] = [];
+        for (const l of locators) {
+          let found: Element[];
+          try {
+            found = fp.query(l, true);
+          } catch {
+            return { ok: false, reason: `unparseable mask "${l}"` };
+          }
+          if (found.length === 0) return { ok: false, reason: `mask "${l}" matched no element` };
+          els.push(...found);
+          if (!/^role=/.test(l.trim())) cssRules.push(l);
+        }
+        if (install) {
+          for (const e of els) e.setAttribute('data-foldproof-mask', '');
+          const st = document.createElement('style');
+          st.id = id;
+          st.textContent = '[data-foldproof-mask],[data-foldproof-mask] *{visibility:hidden !important}' + (cssRules.length ? `\n${cssRules.join(',')}{visibility:hidden !important}` : '');
+          document.documentElement.appendChild(st);
+        }
+        const hidden = els.every((e) => e.hasAttribute('data-foldproof-mask') && getComputedStyle(e).visibility === 'hidden');
+        return { ok: hidden, reason: hidden ? '' : 'a masked element is not hidden', count: els.length };
+      };
+      let before: { ok: boolean; reason: string; count?: number } = { ok: true, reason: '' };
       if (mask.length) {
-        // resolve every mask with the same locator engine as controls (CSS or role=…), stamp the matches, hide the
-        // stamped elements, then CONFIRM each one is hidden; fail closed (no screenshot) if any is not
-        const confirmed = await this.page.evaluate(
-          ({ id, locators }) => {
-            const fp = (window as unknown as { __foldproof: { query(l: string, h?: boolean): Element[] } }).__foldproof;
-            const els: Element[] = [];
-            for (const l of locators) {
-              try {
-                els.push(...fp.query(l, true));
-              } catch {
-                return false; // an unparseable mask is a failure, not a silent no-op
-              }
-            }
-            for (const e of els) e.setAttribute('data-foldproof-mask', '');
-            const st = document.createElement('style');
-            st.id = id;
-            st.textContent = '[data-foldproof-mask],[data-foldproof-mask] *{visibility:hidden !important}';
-            document.documentElement.appendChild(st);
-            return els.every((e) => getComputedStyle(e).visibility === 'hidden');
-          },
-          { id: STYLE_ID, locators: mask },
-        );
-        if (!confirmed) return false;
+        before = await this.page.evaluate(confirmMasks, { id: STYLE_ID, locators: mask, install: true });
+        if (!before.ok) return false;
       }
       const { data } = (await this.cdp.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false } as never)) as { data: string };
+      if (mask.length) {
+        const after = await this.page.evaluate(confirmMasks, { id: STYLE_ID, locators: mask, install: false });
+        if (!after.ok || after.count !== before.count) return false; // the page changed under us: discard the image
+      }
       const { writeFile } = await import('node:fs/promises');
       await writeFile(file, Buffer.from(data, 'base64'));
       return true;
