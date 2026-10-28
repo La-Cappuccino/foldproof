@@ -13,7 +13,7 @@ export function registerQuickCommand(program: Command): void {
   program
     .command('quick <url>')
     .description('zero-config smoke run: discover visible controls and run fold/unfold (or rotate) across executable profiles')
-    .option('--profiles <list>', 'comma-separated profile ids, or a class: foldable | phone | tablet | desktop | all', 'foldable')
+    .option('--devices <list>', 'comma-separated profile ids, or a class: foldable | phone | tablet | desktop | all', 'foldable')
     .option('--max-controls <n>', 'controls to discover', '8')
     .option('--out <dir>', 'output directory', 'foldproof-report')
     .option('--headed', 'run with a visible browser')
@@ -23,9 +23,9 @@ export function registerQuickCommand(program: Command): void {
         console.error(formatIssues(issues));
         process.exit(3);
       }
-      const selected = selectQuickProfiles(profiles, opts.profiles);
+      const selected = selectQuickProfiles(profiles, opts.devices);
       if (!selected.length) {
-        console.error(`no executable profiles match "${opts.profiles}"`);
+        console.error(`no executable profiles match "${opts.devices}"`);
         process.exit(3);
       }
       const controls = await discoverControls(url, Number(opts.maxControls));
