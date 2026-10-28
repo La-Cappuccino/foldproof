@@ -14,6 +14,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "main f9a841f968dd9a4e315df2ec2930da1952971667 (package 1.65.0-next; file last changed b80bcb5a 2026-10-23)",
       "note": "207 entries on main at inspection; file moved here from playwright-core/src/server. viewport = layout viewport after browser UI; screen = full screen in CSS px."
     },
     {
@@ -32,6 +33,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "androidx-main (read 2026-10-28)",
       "note": "State FLAT | HALF_OPENED; Orientation VERTICAL | HORIZONTAL; OcclusionType NONE (flexible screen, treat as guideline) | FULL (hinge is part of the window); isSeparating true for hinges always and for folds when not FLAT."
     },
     {
@@ -41,17 +43,9 @@
       "inspected": "2026-10-28",
       "licence": "W3C-document-licence",
       "kind": "published",
+      "revision": "Candidate Recommendation Draft 2026-10-26",
       "quote": "continuous | folded",
-      "note": "Candidate Recommendation Draft 2026-10-26. continuous = flat or fully closed; folded = book or laptop posture."
-    },
-    {
-      "id": "mdn-bcd",
-      "url": "https://github.com/mdn/browser-compat-data",
-      "publisher": "MDN",
-      "inspected": "2026-10-28",
-      "licence": "CC0-1.0",
-      "kind": "published",
-      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+      "note": "continuous = flat or fully closed; folded = book or laptop posture."
     },
     {
       "id": "chrome-viewport-resize",
@@ -61,7 +55,7 @@
       "licence": "CC-BY-4.0",
       "kind": "published",
       "quote": "Chrome on Android will no longer resize the Layout Viewport",
-      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
     },
     {
       "id": "foldproof-derivation",
@@ -101,7 +95,7 @@
       "scale": 2,
       "kind": "published",
       "source_ref": "playwright",
-      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: Galaxy Z Fold 6"
+      "registry": "playwright deviceDescriptorsSource.json: Galaxy Z Fold 6"
     },
     {
       "panel": "inner",
@@ -112,7 +106,7 @@
       "scale": 2,
       "kind": "published",
       "source_ref": "playwright",
-      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: Galaxy Z Fold 6 landscape"
+      "registry": "playwright deviceDescriptorsSource.json: Galaxy Z Fold 6 landscape"
     },
     {
       "panel": "outer",
@@ -123,7 +117,7 @@
       "scale": 2,
       "kind": "published",
       "source_ref": "playwright",
-      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: Galaxy Z Fold 6 Cover"
+      "registry": "playwright deviceDescriptorsSource.json: Galaxy Z Fold 6 Cover"
     },
     {
       "panel": "outer",
@@ -134,7 +128,7 @@
       "scale": 2,
       "kind": "published",
       "source_ref": "playwright",
-      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: Galaxy Z Fold 6 Cover landscape"
+      "registry": "playwright deviceDescriptorsSource.json: Galaxy Z Fold 6 Cover landscape"
     },
     {
       "panel": "inner",
@@ -253,7 +247,7 @@
       "occlusion": "none",
       "is_separating": true,
       "kind": "derived",
-      "derivation": "centre line of the portrait inner width: 928 / 2 = 464.0; width 0 and occlusion none because FoldingFeature.OcclusionType is NONE for flexible screens; actual fold bounds are unmeasured (see unknowns)",
+      "derivation": "portrait coordinates: centre line of the portrait inner width 928 / 2 = 464.0; width 0 and occlusion none because FoldingFeature.OcclusionType is NONE for flexible screens; actual fold bounds are unmeasured (see unknowns)",
       "source_ref": "foldproof-derivation"
     },
     {
@@ -271,7 +265,7 @@
       "occlusion": "none",
       "is_separating": true,
       "kind": "derived",
-      "derivation": "centre line of the landscape inner height: 928 / 2 = 464.0; width 0 and occlusion none per FoldingFeature.OcclusionType NONE; unmeasured",
+      "derivation": "landscape coordinates (tabletop = phone held landscape, fold stays at half the portrait width): centre line of the landscape screen height 928 / 2 = 464.0; width 0 and occlusion none per FoldingFeature.OcclusionType NONE. Offset is in screen coordinates; the Playwright landscape layout viewport is smaller than the screen, so the offset relative to the layout viewport depends on where the browser UI sits (unmeasured)",
       "source_ref": "foldproof-derivation"
     }
   ],
@@ -279,21 +273,30 @@
     {
       "name": "closed",
       "panel": "outer",
-      "web_posture": "continuous",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
       "android_state": null,
       "source_ref": "samsung-flex-mode"
     },
     {
       "name": "flat",
       "panel": "inner",
-      "web_posture": "continuous",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
       "android_state": "FLAT",
       "source_ref": "samsung-flex-mode"
     },
     {
       "name": "half_opened",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "display_feature": "fold6-fold-vertical",
       "source_ref": "samsung-flex-mode"
@@ -301,7 +304,10 @@
     {
       "name": "book",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "display_feature": "fold6-fold-vertical",
       "source_ref": "samsung-flex-mode"
@@ -309,7 +315,10 @@
     {
       "name": "tabletop",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "display_feature": "fold6-fold-horizontal",
       "source_ref": "samsung-flex-mode"
@@ -321,40 +330,6 @@
     "touch": true,
     "keyboard": "soft",
     "source_ref": "playwright"
-  },
-  "capabilities": {
-    "web": {
-      "device_posture_api": {
-        "supported": true,
-        "since": "chrome 132",
-        "source_ref": "mdn-bcd"
-      },
-      "viewport_segments": {
-        "supported": true,
-        "since": "chrome 138",
-        "source_ref": "mdn-bcd"
-      },
-      "window_management": {
-        "supported": true,
-        "since": "chrome 100",
-        "source_ref": "mdn-bcd"
-      },
-      "visual_viewport": {
-        "supported": true,
-        "since": "chrome 61",
-        "source_ref": "mdn-bcd"
-      },
-      "virtual_keyboard_api": {
-        "supported": true,
-        "since": "chrome 94",
-        "source_ref": "mdn-bcd"
-      },
-      "interactive_widget": {
-        "supported": true,
-        "since": "chrome 108",
-        "source_ref": "chrome-viewport-resize"
-      }
-    }
   },
   "operating_states": [],
   "conflicts_with": [
@@ -370,15 +345,29 @@
     }
   ],
   "unknowns": [
-    "Vendor panel resolutions unverified; physical_px derived from Playwright css_px x deviceScaleFactor.",
-    "Hinge/fold bounds unmeasured; display features are derived centre lines.",
-    "Samsung publishes no hinge-angle thresholds.",
-    "System insets and cutouts not published; insets recorded as 0.",
-    "Soft keyboard height is measured, not published."
+    {
+      "field": "panels.physical_px",
+      "reason": "Vendor panel resolutions unverified; physical_px derived from Playwright css_px x deviceScaleFactor."
+    },
+    {
+      "field": "display_features.bounds",
+      "reason": "Fold bounds on hardware are unmeasured; the display features are derived centre lines in screen coordinates (vertical in portrait, horizontal in landscape, because the fold stays at half the portrait width and reads as horizontal only when the phone is held landscape). The Playwright landscape layout viewport is smaller than the screen, so the fold offset relative to the layout viewport shifts by the browser UI height (unmeasured)."
+    },
+    {
+      "field": "postures.hinge_angle_range_deg",
+      "reason": "Samsung publishes no hinge-angle thresholds."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "System insets (status bar, navigation bar) and cutout geometry are not published; insets recorded as 0, meaning \"not published\", not \"none\"."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
   ],
   "tags": [
     "foldable",
-    "book-fold",
-    "chromium"
+    "phone"
   ]
 }

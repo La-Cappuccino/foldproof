@@ -33,7 +33,8 @@
       "inspected": "2026-10-28",
       "licence": "CC0-1.0",
       "kind": "published",
-      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+      "revision": "v8.1.7 (main bf12f642f00a463ca4831b13005f1fbd21acdd1a)",
+      "note": "Navigator.devicePosture chrome 132, safari_ios 27 behind a flag, samsunginternet 16.2; Viewport.segments chrome 138; VisualViewport chrome 61 / safari 13 / firefox 91. Engine support lives in engines/, not in profiles."
     },
     {
       "id": "chrome-viewport-resize",
@@ -43,16 +44,7 @@
       "licence": "CC-BY-4.0",
       "kind": "published",
       "quote": "Chrome on Android will no longer resize the Layout Viewport",
-      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
-    },
-    {
-      "id": "foldproof-derivation",
-      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
-      "publisher": "foldproof (this corpus)",
-      "inspected": "2026-10-28",
-      "licence": "CC-BY-4.0",
-      "kind": "derived",
-      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
     }
   ],
   "panels": [
@@ -77,83 +69,27 @@
       "source_ref": "apple-iphone-duo-specs"
     }
   ],
-  "logical": [
-    {
-      "panel": "inner",
-      "orientation": "portrait",
-      "unit": "pt",
-      "w": 626,
-      "h": 890,
-      "scale": 3,
-      "kind": "derived",
-      "derivation": "ASSUMED scale 3 (unpublished): 1878 / 3 = 626; 2670 / 3 = 890. Apple does not state the scale factor; the schema requires at least one logical entry, so this is recorded as derived with the assumption explicit and repeated in unknowns",
-      "source_ref": "foldproof-derivation"
-    },
-    {
-      "panel": "outer",
-      "orientation": "portrait",
-      "unit": "pt",
-      "w": 466,
-      "h": 678,
-      "scale": 3,
-      "kind": "derived",
-      "derivation": "ASSUMED scale 3 (unpublished): 1398 / 3 = 466; 2034 / 3 = 678; see unknowns",
-      "source_ref": "foldproof-derivation"
-    }
-  ],
-  "usable": [
-    {
-      "panel": "inner",
-      "orientation": "portrait",
-      "unit": "pt",
-      "layout_viewport": {
-        "w": 626,
-        "h": 890
-      },
-      "insets": {
-        "top": 0,
-        "right": 0,
-        "bottom": 0,
-        "left": 0
-      },
-      "cutouts": [],
-      "kind": "derived",
-      "derivation": "full panel at the assumed scale; safe-area insets unpublished",
-      "source_ref": "foldproof-derivation"
-    },
-    {
-      "panel": "outer",
-      "orientation": "portrait",
-      "unit": "pt",
-      "layout_viewport": {
-        "w": 466,
-        "h": 678
-      },
-      "insets": {
-        "top": 0,
-        "right": 0,
-        "bottom": 0,
-        "left": 0
-      },
-      "cutouts": [],
-      "kind": "derived",
-      "derivation": "full panel at the assumed scale; safe-area insets unpublished",
-      "source_ref": "foldproof-derivation"
-    }
-  ],
+  "logical": [],
+  "usable": [],
   "display_features": [],
   "postures": [
     {
       "name": "closed",
       "panel": "outer",
-      "web_posture": "continuous",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
       "android_state": null,
       "source_ref": "apple-iphone-duo-specs"
     },
     {
       "name": "flat",
       "panel": "inner",
-      "web_posture": "continuous",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
       "android_state": null,
       "source_ref": "apple-iphone-duo-specs"
     }
@@ -165,47 +101,36 @@
     "keyboard": "soft",
     "source_ref": "apple-iphone-duo-specs"
   },
-  "capabilities": {
-    "web": {
-      "device_posture_api": {
-        "supported": false,
-        "source_ref": "mdn-bcd"
-      },
-      "viewport_segments": {
-        "supported": false,
-        "source_ref": "mdn-bcd"
-      },
-      "window_management": {
-        "supported": false,
-        "source_ref": "mdn-bcd"
-      },
-      "visual_viewport": {
-        "supported": true,
-        "since": "safari 13",
-        "source_ref": "mdn-bcd"
-      },
-      "virtual_keyboard_api": {
-        "supported": false,
-        "source_ref": "mdn-bcd"
-      },
-      "interactive_widget": {
-        "supported": null,
-        "source_ref": "chrome-viewport-resize"
-      }
-    }
-  },
   "operating_states": [],
   "conflicts_with": [],
   "unknowns": [
-    "Point dimensions and scale factor are NOT published by Apple; the pt entries assume scale 3 and must be replaced by measured values (Safari innerWidth/innerHeight, devicePixelRatio). No Playwright or DevTools entry exists.",
-    "CSS px layout viewport in Safari unmeasured; browser UI height unknown.",
-    "No half-opened/book posture declared: Apple publishes no posture API, hinge geometry or fold bounds, and Safari has no Device Posture API (BCD: safari_ios 27 behind a flag only).",
-    "Safe-area insets and Dynamic Island metrics unpublished.",
-    "Physical dimensions on the Apple page (open 164.6 x 117.8 x 5.2 mm; closed 84.1 x 117.8 x 11.3 mm; 254 g) are not modelled in this schema."
+    {
+      "field": "logical",
+      "reason": "Point dimensions and scale factor are NOT published by Apple and no Playwright or DevTools entry exists; inventory-only until measured (Safari innerWidth/innerHeight, devicePixelRatio). No value is assumed."
+    },
+    {
+      "field": "usable",
+      "reason": "CSS px layout viewport in Safari unmeasured; browser UI height unknown."
+    },
+    {
+      "field": "postures.half_opened",
+      "reason": "No half-opened/book posture declared: Apple publishes no posture API, hinge geometry or fold bounds, and Safari has no Device Posture API (BCD: safari_ios 27 behind a flag only)."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "Safe-area insets and Dynamic Island metrics unpublished."
+    },
+    {
+      "field": "panels.dimensions_mm",
+      "reason": "Physical dimensions on the Apple page (open 164.6 x 117.8 x 5.2 mm; closed 84.1 x 117.8 x 11.3 mm; 254 g) are not modelled in this schema."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
   ],
   "tags": [
     "foldable",
-    "webkit",
-    "points-unknown"
+    "phone"
   ]
 }

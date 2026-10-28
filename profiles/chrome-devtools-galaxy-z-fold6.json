@@ -14,6 +14,7 @@
       "inspected": "2026-10-28",
       "licence": "BSD-3-Clause",
       "kind": "published",
+      "revision": "main 89605581639d434b16692f9dec9482e443a45973 (file last changed 4c3993d1 2026-08-27)",
       "note": "screen.vertical/horizontal in CSS px, device-pixel-ratio, spanned modes with hinge rect {x,y,width,height} in CSS px."
     },
     {
@@ -23,6 +24,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "androidx-main (read 2026-10-28)",
       "note": "State FLAT | HALF_OPENED; Orientation VERTICAL | HORIZONTAL; OcclusionType NONE (flexible screen, treat as guideline) | FULL (hinge is part of the window); isSeparating true for hinges always and for folds when not FLAT."
     },
     {
@@ -32,17 +34,9 @@
       "inspected": "2026-10-28",
       "licence": "W3C-document-licence",
       "kind": "published",
+      "revision": "Candidate Recommendation Draft 2026-10-26",
       "quote": "continuous | folded",
-      "note": "Candidate Recommendation Draft 2026-10-26. continuous = flat or fully closed; folded = book or laptop posture."
-    },
-    {
-      "id": "mdn-bcd",
-      "url": "https://github.com/mdn/browser-compat-data",
-      "publisher": "MDN",
-      "inspected": "2026-10-28",
-      "licence": "CC0-1.0",
-      "kind": "published",
-      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+      "note": "continuous = flat or fully closed; folded = book or laptop posture."
     },
     {
       "id": "chrome-viewport-resize",
@@ -52,7 +46,7 @@
       "licence": "CC-BY-4.0",
       "kind": "published",
       "quote": "Chrome on Android will no longer resize the Layout Viewport",
-      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
     },
     {
       "id": "foldproof-derivation",
@@ -92,7 +86,7 @@
       "scale": 2.625,
       "kind": "published",
       "source_ref": "chrome-devtools",
-      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Galaxy Z Fold 6 vertical-spanned"
+      "registry": "devtools-frontend EmulatedDevices.ts: Galaxy Z Fold 6 vertical-spanned"
     },
     {
       "panel": "inner",
@@ -103,7 +97,7 @@
       "scale": 2.625,
       "kind": "published",
       "source_ref": "chrome-devtools",
-      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Galaxy Z Fold 6 horizontal-spanned"
+      "registry": "devtools-frontend EmulatedDevices.ts: Galaxy Z Fold 6 horizontal-spanned"
     },
     {
       "panel": "outer",
@@ -114,7 +108,7 @@
       "scale": 2.625,
       "kind": "published",
       "source_ref": "chrome-devtools",
-      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Galaxy Z Fold 6 vertical"
+      "registry": "devtools-frontend EmulatedDevices.ts: Galaxy Z Fold 6 vertical"
     },
     {
       "panel": "outer",
@@ -125,7 +119,7 @@
       "scale": 2.625,
       "kind": "published",
       "source_ref": "chrome-devtools",
-      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Galaxy Z Fold 6 horizontal"
+      "registry": "devtools-frontend EmulatedDevices.ts: Galaxy Z Fold 6 horizontal"
     }
   ],
   "usable": [
@@ -222,7 +216,7 @@
       "occlusion": "none",
       "is_separating": true,
       "kind": "published",
-      "derivation": "DevTools hinge {x:372,y:0,width:0,height:860} drawn with contentColor alpha 0.2 (translucent) = flexible fold, not an opaque hinge",
+      "derivation": "portrait coordinates (744x860 span): DevTools hinge {x:372,y:0,width:0,height:860} drawn with contentColor alpha 0.2 (translucent) = flexible fold, not an opaque hinge",
       "source_ref": "chrome-devtools"
     },
     {
@@ -240,7 +234,7 @@
       "occlusion": "none",
       "is_separating": true,
       "kind": "published",
-      "derivation": "DevTools hinge {x:0,y:372,width:860,height:0}, alpha 0.2",
+      "derivation": "landscape coordinates (860x744 span): DevTools hinge {x:0,y:372,width:860,height:0}, alpha 0.2",
       "source_ref": "chrome-devtools"
     }
   ],
@@ -248,21 +242,30 @@
     {
       "name": "closed",
       "panel": "outer",
-      "web_posture": "continuous",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
       "android_state": null,
       "source_ref": "w3c-device-posture"
     },
     {
       "name": "flat",
       "panel": "inner",
-      "web_posture": "continuous",
+      "web": {
+        "posture": "continuous",
+        "segments": 1
+      },
       "android_state": "FLAT",
       "source_ref": "w3c-device-posture"
     },
     {
       "name": "half_opened",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "display_feature": "dt-fold6-fold-vertical",
       "source_ref": "w3c-device-posture"
@@ -270,7 +273,10 @@
     {
       "name": "book",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "display_feature": "dt-fold6-fold-vertical",
       "source_ref": "w3c-device-posture"
@@ -278,7 +284,10 @@
     {
       "name": "tabletop",
       "panel": "inner",
-      "web_posture": "folded",
+      "web": {
+        "posture": "folded",
+        "segments": 2
+      },
       "android_state": "HALF_OPENED",
       "display_feature": "dt-fold6-fold-horizontal",
       "source_ref": "w3c-device-posture"
@@ -291,40 +300,6 @@
     "keyboard": "soft",
     "source_ref": "chrome-devtools"
   },
-  "capabilities": {
-    "web": {
-      "device_posture_api": {
-        "supported": true,
-        "since": "chrome 132",
-        "source_ref": "mdn-bcd"
-      },
-      "viewport_segments": {
-        "supported": true,
-        "since": "chrome 138",
-        "source_ref": "mdn-bcd"
-      },
-      "window_management": {
-        "supported": true,
-        "since": "chrome 100",
-        "source_ref": "mdn-bcd"
-      },
-      "visual_viewport": {
-        "supported": true,
-        "since": "chrome 61",
-        "source_ref": "mdn-bcd"
-      },
-      "virtual_keyboard_api": {
-        "supported": true,
-        "since": "chrome 94",
-        "source_ref": "mdn-bcd"
-      },
-      "interactive_widget": {
-        "supported": true,
-        "since": "chrome 108",
-        "source_ref": "chrome-viewport-resize"
-      }
-    }
-  },
   "operating_states": [],
   "conflicts_with": [
     {
@@ -334,12 +309,21 @@
     }
   ],
   "unknowns": [
-    "physical_px is derived (css_px x device-pixel-ratio) and does not match Playwright; registry entry, not device truth.",
-    "Browser UI height not in the registry."
+    {
+      "field": "panels.physical_px",
+      "reason": "Derived (css_px x device-pixel-ratio) and does not match Playwright; registry entry, not device truth."
+    },
+    {
+      "field": "usable.layout_viewport",
+      "reason": "Browser UI height not in the registry."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
   ],
   "tags": [
     "foldable",
-    "registry",
-    "chromium"
+    "phone"
   ]
 }

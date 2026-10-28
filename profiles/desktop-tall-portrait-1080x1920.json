@@ -13,26 +13,8 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "main f9a841f968dd9a4e315df2ec2930da1952971667 (package 1.65.0-next; file last changed b80bcb5a 2026-10-23)",
       "note": "207 entries on main at inspection; file moved here from playwright-core/src/server. viewport = layout viewport after browser UI; screen = full screen in CSS px."
-    },
-    {
-      "id": "mdn-bcd",
-      "url": "https://github.com/mdn/browser-compat-data",
-      "publisher": "MDN",
-      "inspected": "2026-10-28",
-      "licence": "CC0-1.0",
-      "kind": "published",
-      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
-    },
-    {
-      "id": "chrome-viewport-resize",
-      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
-      "publisher": "Google (Chrome Developers)",
-      "inspected": "2026-10-28",
-      "licence": "CC-BY-4.0",
-      "kind": "published",
-      "quote": "Chrome on Android will no longer resize the Layout Viewport",
-      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
     },
     {
       "id": "foldproof-derivation",
@@ -97,49 +79,19 @@
     "keyboard": "hardware",
     "source_ref": "playwright"
   },
-  "capabilities": {
-    "web": {
-      "device_posture_api": {
-        "supported": true,
-        "since": "chrome 132",
-        "source_ref": "mdn-bcd"
-      },
-      "viewport_segments": {
-        "supported": true,
-        "since": "chrome 138",
-        "source_ref": "mdn-bcd"
-      },
-      "window_management": {
-        "supported": true,
-        "since": "chrome 100",
-        "source_ref": "mdn-bcd"
-      },
-      "visual_viewport": {
-        "supported": true,
-        "since": "chrome 61",
-        "source_ref": "mdn-bcd"
-      },
-      "virtual_keyboard_api": {
-        "supported": true,
-        "since": "chrome 94",
-        "source_ref": "mdn-bcd"
-      },
-      "interactive_widget": {
-        "supported": true,
-        "since": "chrome 108",
-        "source_ref": "chrome-viewport-resize"
-      }
-    }
-  },
   "operating_states": [],
   "conflicts_with": [],
   "unknowns": [
-    "No vendor page for a specific pivot monitor was verified (Dell P2425H pivot is reseller-reported only); the panel is the Playwright Desktop Chrome 1920x1080 screen rotated.",
-    "Browser UI height measured, not published."
+    {
+      "field": "panels",
+      "reason": "No vendor page for a specific pivot monitor was verified (Dell P2425H pivot is reseller-reported only); the panel is the Playwright Desktop Chrome 1920x1080 screen rotated."
+    },
+    {
+      "field": "usable.layout_viewport",
+      "reason": "Browser UI height measured, not published."
+    }
   ],
   "tags": [
-    "desktop",
-    "portrait",
-    "chromium"
+    "desktop"
   ]
 }

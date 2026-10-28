@@ -1,9 +1,9 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: { index: 'src/index.ts', cli: 'src/cli.ts' },
+  entry: { index: 'src/index.ts', cli: 'src/cli.ts', playwright: 'src/playwright/index.ts' },
   format: ['esm'],
-  dts: { entry: { index: 'src/index.ts' } },
+  dts: { entry: { index: 'src/index.ts', playwright: 'src/playwright/index.ts' } },
   sourcemap: true,
   clean: true,
   target: 'node20',

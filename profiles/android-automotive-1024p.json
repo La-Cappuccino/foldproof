@@ -13,6 +13,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "mirror-goog-studio-main b143674a31236684a225ec6d6d19a5c9b1ecef51 (2026-10-28)",
       "quote": "Automotive (1024p landscape): 1024 x 768, mdpi, 8.4 in"
     },
     {
@@ -167,15 +168,32 @@
   ],
   "conflicts_with": [],
   "unknowns": [
-    "The driving mask 511 is UX_RESTRICTIONS_FULLY_RESTRICTED (the published OR of all flags); the active mask is OEM-configured per display and must be read from CarUxRestrictionsManager at runtime.",
-    "Parked mask 0 is UX_RESTRICTIONS_BASELINE; baseline distraction guidelines still apply when isRequiresDistractionOptimization() is true.",
-    "Rotary controller presence is OEM-specific; recorded false for the emulator profile. Voice true follows the car-app guidance that text entry is restricted while driving; not an emulator property.",
-    "Head-unit system bar allocation and any browser UI are not published.",
-    "Emulator is not a Tesla or any specific OEM dashboard."
+    {
+      "field": "operating_states.driving.ux_restrictions_mask",
+      "reason": "511 is UX_RESTRICTIONS_FULLY_RESTRICTED (the published OR of all flags); the active mask is OEM-configured per display and must be read from CarUxRestrictionsManager at runtime."
+    },
+    {
+      "field": "operating_states.parked.ux_restrictions_mask",
+      "reason": "0 is UX_RESTRICTIONS_BASELINE; baseline distraction guidelines still apply when isRequiresDistractionOptimization() is true."
+    },
+    {
+      "field": "inputs.rotary",
+      "reason": "Rotary controller presence is OEM-specific; recorded false for the emulator profile. Voice true follows the car-app guidance that text entry is restricted while driving; not an emulator property."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "Head-unit system bar allocation and any browser UI are not published."
+    },
+    {
+      "field": "panels",
+      "reason": "Emulator is not a Tesla or any specific OEM dashboard."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
   ],
   "tags": [
-    "automotive",
-    "emulator",
-    "parked-driving"
+    "automotive"
   ]
 }

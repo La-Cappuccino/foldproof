@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compose (fixed: CSS reflows, the DOM stays)</title>
+<style>
+  body { margin: 0; font: 16px/1.4 system-ui, sans-serif; }
+  .app { display: grid; gap: 12px; padding: 12px; grid-template-areas: "compose" "thread"; }
+  #compose { grid-area: compose; }
+  #thread { grid-area: thread; }
+  .pane { min-width: 0; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 120px; font: inherit; }
+  button { font: inherit; padding: 10px 16px; min-height: 44px; }
+  .toolbar { display: flex; gap: 8px; margin-top: 8px; }
+  .sent { display: none; padding: 8px; background: #e6ffe6; }
+  .sent.show { display: block; }
+  p { margin: 0 0 8px; }
+  /* FIXED: the same DOM reflows into two panes; nothing is re-created. */
+  @media (min-width: 700px) {
+    .app { grid-template-columns: 1fr 1fr; grid-template-areas: "thread compose"; }
+  }
+  /* Hinge-aware: when the viewport is split, size the columns to the segments and leave the hinge empty. */
+  @media (horizontal-viewport-segments: 2) {
+    .app {
+      grid-template-columns: env(viewport-segment-width 0 0) env(viewport-segment-width 1 0);
+      column-gap: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+      padding-left: 0; padding-right: 0;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="pane" id="compose">
+    <label for="body">Reply</label>
+    <textarea id="body" name="body" placeholder="Write a reply"></textarea>
+    <div class="toolbar">
+      <button id="send" type="button">Send</button>
+      <button id="save-draft" type="button">Save draft</button>
+    </div>
+    <div class="sent" id="sent">Sent.</div>
+  </div>
+  <div class="pane" id="thread"></div>
+</div>
+<script>
+  document.getElementById('thread').innerHTML = Array.from({ length: 30 }, (_, i) => `<p id="p${i + 1}">Thread message ${i + 1}: lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.</p>`).join('');
+  document.getElementById('send').addEventListener('click', () => document.getElementById('sent').classList.add('show'));
+</script>
+</body>
+</html>

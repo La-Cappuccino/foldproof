@@ -13,6 +13,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "mirror-goog-studio-main b143674a31236684a225ec6d6d19a5c9b1ecef51 (2026-10-28)",
       "quote": "Television (1080p): 1920 x 1080, xhdpi, 55.0 in"
     },
     {
@@ -134,13 +135,20 @@
   "operating_states": [],
   "conflicts_with": [],
   "unknowns": [
-    "Browser availability and capabilities on Android TV are not modelled; no BCD platform for TV browsers.",
-    "Real overscan varies per TV; the 48/27 dp margin is guidance, not a measurement.",
-    "On-screen keyboard exists for text entry via D-pad; recorded as keyboard none because there is no soft keyboard occlusion model for TV."
+    {
+      "field": "logical.css_px",
+      "reason": "Browser availability on Android TV is not modelled; css_px is a derived assumption that a Chromium browser would map dp 1:1."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "Real overscan varies per TV; the 48/27 dp margin is guidance, not a measurement."
+    },
+    {
+      "field": "inputs.keyboard",
+      "reason": "An on-screen keyboard exists for text entry via D-pad; recorded as keyboard none because there is no soft keyboard occlusion model for TV."
+    }
   ],
   "tags": [
-    "tv",
-    "emulator",
-    "dpad"
+    "tv"
   ]
 }

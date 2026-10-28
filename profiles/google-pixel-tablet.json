@@ -14,6 +14,7 @@
       "inspected": "2026-10-28",
       "licence": "Apache-2.0",
       "kind": "published",
+      "revision": "mirror-goog-studio-main b143674a31236684a225ec6d6d19a5c9b1ecef51 (2026-10-28)",
       "note": "Google device emulator profiles (Pixel Fold, Pixel 9 Pro Fold, Pixel 10 Pro Fold, Pixel Tablet, Pixel 10 Pro). One pixel-density per profile, applied to the folded region too."
     },
     {
@@ -36,15 +37,6 @@
       "note": "On medium/expanded windows all apps run in multi-window; android:minWidth/minHeight in <layout> set minimums; target API 36 on sw >= 600dp ignores resize restrictions. No default split divider width is published."
     },
     {
-      "id": "mdn-bcd",
-      "url": "https://github.com/mdn/browser-compat-data",
-      "publisher": "MDN",
-      "inspected": "2026-10-28",
-      "licence": "CC0-1.0",
-      "kind": "published",
-      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
-    },
-    {
       "id": "chrome-viewport-resize",
       "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
       "publisher": "Google (Chrome Developers)",
@@ -52,7 +44,7 @@
       "licence": "CC-BY-4.0",
       "kind": "published",
       "quote": "Chrome on Android will no longer resize the Layout Viewport",
-      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both. No keyboard heights published."
     },
     {
       "id": "foldproof-derivation",
@@ -190,50 +182,27 @@
     "keyboard": "soft",
     "source_ref": "aosp-nexus-xml"
   },
-  "capabilities": {
-    "web": {
-      "device_posture_api": {
-        "supported": true,
-        "since": "chrome 132",
-        "source_ref": "mdn-bcd"
-      },
-      "viewport_segments": {
-        "supported": true,
-        "since": "chrome 138",
-        "source_ref": "mdn-bcd"
-      },
-      "window_management": {
-        "supported": true,
-        "since": "chrome 100",
-        "source_ref": "mdn-bcd"
-      },
-      "visual_viewport": {
-        "supported": true,
-        "since": "chrome 61",
-        "source_ref": "mdn-bcd"
-      },
-      "virtual_keyboard_api": {
-        "supported": true,
-        "since": "chrome 94",
-        "source_ref": "mdn-bcd"
-      },
-      "interactive_widget": {
-        "supported": true,
-        "since": "chrome 108",
-        "source_ref": "chrome-viewport-resize"
-      }
-    }
-  },
   "operating_states": [],
   "conflicts_with": [],
   "unknowns": [
-    "No Playwright or DevTools entry; css_px is derived from the AOSP profile and unmeasured in Chrome.",
-    "Split-screen: a 50/50 landscape split gives about 640x800 dp per app (1280 / 2) minus an unpublished divider width; use a `split` transition with an explicit viewport and record the divider as measured.",
-    "System bar insets and browser UI height not published."
+    {
+      "field": "logical.css_px",
+      "reason": "No Playwright or DevTools entry; css_px is derived from the AOSP profile and unmeasured in Chrome."
+    },
+    {
+      "field": "usable.split_screen",
+      "reason": "A 50/50 landscape split gives about 640x800 dp per app (1280 / 2) minus an unpublished divider width; use a `split` transition with an explicit viewport and record the divider as measured."
+    },
+    {
+      "field": "usable.insets",
+      "reason": "System bar insets and browser UI height not published; insets 0."
+    },
+    {
+      "field": "keyboard_height",
+      "reason": "No published or cited community measurement of the soft keyboard height for this device; measure at test time (visualViewport.height delta or env(keyboard-inset-height)). Never defaulted."
+    }
   ],
   "tags": [
-    "tablet",
-    "split-screen",
-    "chromium"
+    "tablet"
   ]
 }
