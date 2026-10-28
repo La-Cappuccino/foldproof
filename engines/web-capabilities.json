@@ -1,0 +1,757 @@
+{
+  "generated": "2026-10-28",
+  "source": {
+    "name": "@mdn/browser-compat-data",
+    "version": "8.1.7",
+    "licence": "CC0-1.0",
+    "url": "https://github.com/mdn/browser-compat-data"
+  },
+  "features": {
+    "device_posture_api": {
+      "bcd_path": "api.DevicePosture",
+      "found": true,
+      "spec_url": "https://w3c.github.io/device-posture/#dom-deviceposture",
+      "status": {
+        "deprecated": false,
+        "experimental": true,
+        "standard_track": true
+      },
+      "browsers": {
+        "chrome": {
+          "supported": true,
+          "since": "132",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "chrome_android": {
+          "supported": true,
+          "since": "132",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "edge": {
+          "supported": true,
+          "since": "132",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox_android": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari_ios": {
+          "supported": false,
+          "since": "27",
+          "flagged": true,
+          "partial": false,
+          "notes": "behind a flag"
+        },
+        "samsunginternet_android": {
+          "supported": true,
+          "since": "16.2",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "webview_android": {
+          "supported": true,
+          "since": "132",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        }
+      }
+    },
+    "device_posture_media_feature": {
+      "bcd_path": "css.at-rules.media.device-posture",
+      "found": true,
+      "spec_url": "https://w3c.github.io/device-posture/#the-device-posture-media-feature",
+      "status": {
+        "deprecated": false,
+        "experimental": true,
+        "standard_track": true
+      },
+      "browsers": {
+        "chrome": {
+          "supported": true,
+          "since": "132",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "chrome_android": {
+          "supported": true,
+          "since": "132",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "edge": {
+          "supported": true,
+          "since": "132",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox_android": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari_ios": {
+          "supported": false,
+          "since": "27",
+          "flagged": true,
+          "partial": false,
+          "notes": "behind a flag"
+        },
+        "samsunginternet_android": {
+          "supported": true,
+          "since": "16.2",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "webview_android": {
+          "supported": true,
+          "since": "132",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        }
+      }
+    },
+    "viewport_segments_api": {
+      "bcd_path": "api.Viewport.segments",
+      "found": true,
+      "spec_url": "https://drafts.csswg.org/css-viewport/#dom-viewport-segments",
+      "status": {
+        "deprecated": false,
+        "experimental": true,
+        "standard_track": true
+      },
+      "browsers": {
+        "chrome": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "chrome_android": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "edge": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox_android": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari_ios": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "samsunginternet_android": {
+          "supported": true,
+          "since": "30.0",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "webview_android": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        }
+      }
+    },
+    "viewport_segments_media_features": {
+      "bcd_path": "css.at-rules.media.horizontal-viewport-segments",
+      "found": true,
+      "spec_url": "https://drafts.csswg.org/mediaqueries-5/#mf-horizontal-viewport-segments",
+      "status": {
+        "deprecated": false,
+        "experimental": true,
+        "standard_track": true
+      },
+      "browsers": {
+        "chrome": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "chrome_android": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "edge": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox_android": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari_ios": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "samsunginternet_android": {
+          "supported": true,
+          "since": "30.0",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "webview_android": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        }
+      }
+    },
+    "viewport_segment_env": {
+      "bcd_path": "css.types.env.viewport-segment-width",
+      "found": true,
+      "spec_url": "https://drafts.csswg.org/css-env/#valdef-env-viewport-segment-width",
+      "status": {
+        "deprecated": false,
+        "experimental": true,
+        "standard_track": true
+      },
+      "browsers": {
+        "chrome": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "chrome_android": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "edge": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox_android": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari_ios": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "samsunginternet_android": {
+          "supported": true,
+          "since": "30.0",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "webview_android": {
+          "supported": true,
+          "since": "138",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        }
+      }
+    },
+    "visual_viewport": {
+      "bcd_path": "api.VisualViewport",
+      "found": true,
+      "spec_url": "https://drafts.csswg.org/cssom-view/#the-visualviewport-interface",
+      "status": {
+        "deprecated": false,
+        "experimental": false,
+        "standard_track": true
+      },
+      "browsers": {
+        "chrome": {
+          "supported": true,
+          "since": "61",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "chrome_android": {
+          "supported": true,
+          "since": "61",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "edge": {
+          "supported": true,
+          "since": "79",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox": {
+          "supported": true,
+          "since": "91",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox_android": {
+          "supported": true,
+          "since": "68",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari": {
+          "supported": true,
+          "since": "13",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari_ios": {
+          "supported": true,
+          "since": "13",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "samsunginternet_android": {
+          "supported": true,
+          "since": "8.0",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "webview_android": {
+          "supported": true,
+          "since": "61",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        }
+      }
+    },
+    "virtual_keyboard_api": {
+      "bcd_path": "api.VirtualKeyboard",
+      "found": true,
+      "spec_url": "https://w3c.github.io/virtual-keyboard/#the-virtualkeyboard-interface",
+      "status": {
+        "deprecated": false,
+        "experimental": true,
+        "standard_track": true
+      },
+      "browsers": {
+        "chrome": {
+          "supported": true,
+          "since": "94",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "chrome_android": {
+          "supported": true,
+          "since": "94",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "edge": {
+          "supported": true,
+          "since": "94",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox_android": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari_ios": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "samsunginternet_android": {
+          "supported": true,
+          "since": "17.0",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "webview_android": {
+          "supported": true,
+          "since": "94",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        }
+      }
+    },
+    "window_management": {
+      "bcd_path": "api.Window.getScreenDetails",
+      "found": true,
+      "spec_url": "https://w3c.github.io/window-management/#api-window-getScreenDetails-method",
+      "status": {
+        "deprecated": false,
+        "experimental": true,
+        "standard_track": true
+      },
+      "browsers": {
+        "chrome": {
+          "supported": true,
+          "since": "100",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "chrome_android": {
+          "supported": true,
+          "since": "100",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "edge": {
+          "supported": true,
+          "since": "100",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox_android": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari_ios": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "samsunginternet_android": {
+          "supported": true,
+          "since": "19.0",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "webview_android": {
+          "supported": true,
+          "since": "100",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        }
+      }
+    },
+    "dynamic_viewport_units": {
+      "bcd_path": "css.types.length.dvh",
+      "found": false,
+      "spec_url": null,
+      "status": null,
+      "browsers": {
+        "chrome": {
+          "supported": null,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "chrome_android": {
+          "supported": null,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "edge": {
+          "supported": null,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox": {
+          "supported": null,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox_android": {
+          "supported": null,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari": {
+          "supported": null,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari_ios": {
+          "supported": null,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "samsunginternet_android": {
+          "supported": null,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "webview_android": {
+          "supported": null,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        }
+      }
+    },
+    "interactive_widget": {
+      "bcd_path": "html.elements.meta.name.viewport.interactive-widget",
+      "found": true,
+      "spec_url": "https://drafts.csswg.org/css-viewport/#interactive-widget-section",
+      "status": {
+        "deprecated": false,
+        "experimental": false,
+        "standard_track": true
+      },
+      "browsers": {
+        "chrome": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "chrome_android": {
+          "supported": true,
+          "since": "108",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "edge": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "firefox_android": {
+          "supported": true,
+          "since": "133",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "safari_ios": {
+          "supported": false,
+          "since": null,
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "samsunginternet_android": {
+          "supported": true,
+          "since": "21.0",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        },
+        "webview_android": {
+          "supported": true,
+          "since": "108",
+          "flagged": false,
+          "partial": false,
+          "notes": null
+        }
+      }
+    }
+  }
+}
