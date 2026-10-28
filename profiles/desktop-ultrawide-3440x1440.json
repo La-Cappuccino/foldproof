@@ -1,0 +1,158 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "desktop-ultrawide-3440x1440",
+  "revision": 1,
+  "kind": "device",
+  "platform": "web",
+  "name": "Desktop ultrawide window 3440x1440 (LG 34WQ75C-B class)",
+  "vendor": "LG",
+  "sources": [
+    {
+      "id": "lg-34wq75c-b",
+      "url": "https://www.lg.com/us/monitors/lg-34wq75c-b-ultrawide-monitor",
+      "publisher": "LG",
+      "inspected": "2026-10-28",
+      "licence": "vendor-fact",
+      "kind": "published",
+      "quote": "34\" Curved QHD (3440 x 1440) IPS Display",
+      "note": "Page states the model is discontinued; the panel spec stands."
+    },
+    {
+      "id": "playwright",
+      "url": "https://github.com/microsoft/playwright/blob/main/packages/isomorphic/deviceDescriptorsSource.json",
+      "publisher": "Microsoft (Playwright)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "note": "207 entries on main at inspection; file moved here from playwright-core/src/server. viewport = layout viewport after browser UI; screen = full screen in CSS px."
+    },
+    {
+      "id": "mdn-bcd",
+      "url": "https://github.com/mdn/browser-compat-data",
+      "publisher": "MDN",
+      "inspected": "2026-10-28",
+      "licence": "CC0-1.0",
+      "kind": "published",
+      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "single",
+      "physical_px": {
+        "w": 3440,
+        "h": 1440
+      },
+      "diagonal_in": 34,
+      "source_ref": "lg-34wq75c-b"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 3440,
+      "h": 1440,
+      "scale": 1,
+      "kind": "derived",
+      "derivation": "css_px = device_px / devicePixelRatio with DPR 1 at 100% OS scaling (Playwright Desktop Chrome uses deviceScaleFactor 1): 3440 / 1 x 1440 / 1",
+      "source_ref": "foldproof-derivation"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 3440,
+        "h": 1440
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "maximised window; browser UI and OS taskbar heights are not published so the layout viewport equals the panel; measure at test time",
+      "source_ref": "foldproof-derivation"
+    }
+  ],
+  "display_features": [],
+  "postures": [],
+  "inputs": {
+    "pointer": "fine",
+    "hover": "hover",
+    "touch": false,
+    "keyboard": "hardware",
+    "source_ref": "playwright"
+  },
+  "capabilities": {
+    "web": {
+      "device_posture_api": {
+        "supported": true,
+        "since": "chrome 132",
+        "source_ref": "mdn-bcd"
+      },
+      "viewport_segments": {
+        "supported": true,
+        "since": "chrome 138",
+        "source_ref": "mdn-bcd"
+      },
+      "window_management": {
+        "supported": true,
+        "since": "chrome 100",
+        "source_ref": "mdn-bcd"
+      },
+      "visual_viewport": {
+        "supported": true,
+        "since": "chrome 61",
+        "source_ref": "mdn-bcd"
+      },
+      "virtual_keyboard_api": {
+        "supported": true,
+        "since": "chrome 94",
+        "source_ref": "mdn-bcd"
+      },
+      "interactive_widget": {
+        "supported": true,
+        "since": "chrome 108",
+        "source_ref": "chrome-viewport-resize"
+      }
+    }
+  },
+  "operating_states": [],
+  "conflicts_with": [],
+  "unknowns": [
+    "Browser chrome and OS taskbar heights are measured, not published.",
+    "OS scaling other than 100% changes DPR; profile assumes DPR 1 and says so in the derivation.",
+    "LG lists the model as discontinued; the 3440x1440 panel class remains common."
+  ],
+  "tags": [
+    "desktop",
+    "ultrawide",
+    "chromium"
+  ]
+}

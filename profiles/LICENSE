@@ -1,0 +1,31 @@
+foldproof device and scenario profile corpus (profiles/)
+
+The profile files in this directory are licensed under the Creative Commons
+Attribution 4.0 International licence (CC BY 4.0).
+
+Full licence text: https://creativecommons.org/licenses/by/4.0/legalcode
+Human-readable summary: https://creativecommons.org/licenses/by/4.0/
+
+Attribution: "Device profiles from the foldproof corpus
+(https://github.com/La-Cappuccino/foldproof), CC BY 4.0."
+
+Upstream data quoted in these profiles keeps its own licence, recorded per
+source inside each file (`sources[].licence`):
+
+- Playwright device descriptors, Microsoft — Apache-2.0
+- Chrome DevTools emulated devices, Chromium authors — BSD-3-Clause
+- MDN browser-compat-data — CC0-1.0
+- AOSP sdklib device definitions (devices.xml, nexus.xml, tv.xml, automotive.xml) — Apache-2.0
+- Android Developers and Chrome Developers documentation — CC-BY-4.0
+- Microsoft Learn documentation — CC-BY-4.0
+- W3C specifications — W3C Document Licence
+- Vendor technical specifications (Apple, Google, Samsung, LG) — quoted as facts
+  with URL and inspection date ("vendor-fact"); no page content is reproduced
+  beyond short factual quotes.
+
+Values marked `kind: "derived"` were computed by the corpus authors and are
+covered by CC BY 4.0. Values marked `kind: "measured"` carry the tool and date
+that produced them.
+
+This licence applies to the data files only. The foldproof source code is
+licensed separately under Apache-2.0 (see the repository LICENSE).

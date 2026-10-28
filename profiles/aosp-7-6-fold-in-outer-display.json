@@ -1,0 +1,442 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "aosp-7-6-fold-in-outer-display",
+  "revision": 1,
+  "kind": "emulator-profile",
+  "platform": "android",
+  "name": "AOSP emulator profile: 7.6\" Fold-in with outer display",
+  "sources": [
+    {
+      "id": "aosp-devices-xml",
+      "url": "https://android.googlesource.com/platform/tools/base/+/mirror-goog-studio-main/sdklib/src/main/resources/com/android/sdklib/devices/devices.xml",
+      "publisher": "AOSP (platform/tools/base sdklib)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "note": "Emulator hardware profiles. hinge areas encoded x-y-w-h in device px of the unfolded panel; posture-list 1,2,3 = hinge-angles 0-30, 30-150, 150-180. Licence per AOSP repository NOTICE; the XML carries no header."
+    },
+    {
+      "id": "android-screen-densities",
+      "url": "https://developer.android.com/training/multiscreen/screendensities",
+      "publisher": "Google (Android Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "px = dp * (dpi / 160)",
+      "note": "mdpi 160 = 1.0 baseline; xhdpi 320 = 2.0; xxhdpi 480 = 3.0; 420dpi = 2.625; 390dpi = 2.4375."
+    },
+    {
+      "id": "androidx-foldingfeature",
+      "url": "https://android.googlesource.com/platform/frameworks/support/+/androidx-main/window/window/src/main/java/androidx/window/layout/FoldingFeature.kt",
+      "publisher": "AOSP (androidx.window)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "note": "State FLAT | HALF_OPENED; Orientation VERTICAL | HORIZONTAL; OcclusionType NONE (flexible screen, treat as guideline) | FULL (hinge is part of the window); isSeparating true for hinges always and for folds when not FLAT."
+    },
+    {
+      "id": "w3c-device-posture",
+      "url": "https://www.w3.org/TR/device-posture/",
+      "publisher": "W3C Devices and Sensors WG",
+      "inspected": "2026-10-28",
+      "licence": "W3C-document-licence",
+      "kind": "published",
+      "quote": "continuous | folded",
+      "note": "Candidate Recommendation Draft 2026-10-26. continuous = flat or fully closed; folded = book or laptop posture."
+    },
+    {
+      "id": "mdn-bcd",
+      "url": "https://github.com/mdn/browser-compat-data",
+      "publisher": "MDN",
+      "inspected": "2026-10-28",
+      "licence": "CC0-1.0",
+      "kind": "published",
+      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "inner",
+      "physical_px": {
+        "w": 1768,
+        "h": 2208
+      },
+      "diagonal_in": 7.59,
+      "density_dpi": 420,
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "name": "outer",
+      "physical_px": {
+        "w": 884,
+        "h": 2208
+      },
+      "density_dpi": 420,
+      "source_ref": "aosp-devices-xml"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "dp",
+      "w": 673.52,
+      "h": 841.14,
+      "scale": 2.625,
+      "kind": "derived",
+      "derivation": "dp = px / (420 / 160) = px / 2.625: 1768 / 2.625 = 673.52; 2208 / 2.625 = 841.14",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "dp",
+      "w": 841.14,
+      "h": 673.52,
+      "scale": 2.625,
+      "kind": "derived",
+      "derivation": "dp = px / (420 / 160) = px / 2.625: 2208 / 2.625 = 841.14; 1768 / 2.625 = 673.52",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "dp",
+      "w": 336.76,
+      "h": 841.14,
+      "scale": 2.625,
+      "kind": "derived",
+      "derivation": "dp = px / (420 / 160) = px / 2.625: 884 / 2.625 = 336.76; 2208 / 2.625 = 841.14",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "outer",
+      "orientation": "landscape",
+      "unit": "dp",
+      "w": 841.14,
+      "h": 336.76,
+      "scale": 2.625,
+      "kind": "derived",
+      "derivation": "dp = px / (420 / 160) = px / 2.625: 2208 / 2.625 = 841.14; 884 / 2.625 = 336.76",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 673.52,
+      "h": 841.14,
+      "scale": 2.625,
+      "kind": "derived",
+      "derivation": "css_px = dp at 100% zoom (Chromium on Android devicePixelRatio = density scale 2.625); emulator value, not measured on hardware",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 841.14,
+      "h": 673.52,
+      "scale": 2.625,
+      "kind": "derived",
+      "derivation": "css_px = dp at 100% zoom (Chromium on Android devicePixelRatio = density scale 2.625); emulator value, not measured on hardware",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 336.76,
+      "h": 841.14,
+      "scale": 2.625,
+      "kind": "derived",
+      "derivation": "css_px = dp at 100% zoom (Chromium on Android devicePixelRatio = density scale 2.625); emulator value, not measured on hardware",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "outer",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 841.14,
+      "h": 336.76,
+      "scale": 2.625,
+      "kind": "derived",
+      "derivation": "css_px = dp at 100% zoom (Chromium on Android devicePixelRatio = density scale 2.625); emulator value, not measured on hardware",
+      "source_ref": "aosp-devices-xml"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "dp",
+      "layout_viewport": {
+        "w": 673.52,
+        "h": 841.14
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "full panel; emulator system bars and browser UI not modelled; insets 0 = not published",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "dp",
+      "layout_viewport": {
+        "w": 336.76,
+        "h": 841.14
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "full panel; emulator system bars and browser UI not modelled; insets 0 = not published",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 673.52,
+        "h": 841.14
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "full panel; emulator system bars and browser UI not modelled; insets 0 = not published",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 841.14,
+        "h": 673.52
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "full panel; emulator system bars and browser UI not modelled; insets 0 = not published",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 336.76,
+        "h": 841.14
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "full panel; emulator system bars and browser UI not modelled; insets 0 = not published",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "panel": "outer",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 841.14,
+        "h": 336.76
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "full panel; emulator system bars and browser UI not modelled; insets 0 = not published",
+      "source_ref": "aosp-devices-xml"
+    }
+  ],
+  "display_features": [
+    {
+      "id": "aosp-7-6-fold-in-outer-display-fold-vertical",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "vertical",
+      "bounds": {
+        "x": 336.76,
+        "y": 0,
+        "w": 0.38,
+        "h": 841.14
+      },
+      "unit": "dp",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "derived",
+      "derivation": "AOSP hinge areas \"884-0-1-2208\" (x-y-w-h device px of the unfolded panel) / 2.625",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "id": "aosp-7-6-fold-in-outer-display-fold-vertical-css",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "vertical",
+      "bounds": {
+        "x": 336.76,
+        "y": 0,
+        "w": 0.38,
+        "h": 841.14
+      },
+      "unit": "css_px",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "derived",
+      "derivation": "same geometry as the dp feature; css_px = dp at 100% zoom in Chromium on Android",
+      "source_ref": "aosp-devices-xml"
+    }
+  ],
+  "postures": [
+    {
+      "name": "closed",
+      "panel": "outer",
+      "web_posture": "continuous",
+      "android_state": null,
+      "hinge_angle_range_deg": [
+        0,
+        30
+      ],
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "name": "half_opened",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": "HALF_OPENED",
+      "hinge_angle_range_deg": [
+        30,
+        150
+      ],
+      "display_feature": "aosp-7-6-fold-in-outer-display-fold-vertical-css",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "name": "book",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": "HALF_OPENED",
+      "hinge_angle_range_deg": [
+        30,
+        150
+      ],
+      "display_feature": "aosp-7-6-fold-in-outer-display-fold-vertical-css",
+      "source_ref": "aosp-devices-xml"
+    },
+    {
+      "name": "flat",
+      "panel": "inner",
+      "web_posture": "continuous",
+      "android_state": "FLAT",
+      "hinge_angle_range_deg": [
+        150,
+        180
+      ],
+      "source_ref": "aosp-devices-xml"
+    }
+  ],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "source_ref": "aosp-devices-xml"
+  },
+  "capabilities": {
+    "web": {
+      "device_posture_api": {
+        "supported": true,
+        "since": "chrome 132",
+        "source_ref": "mdn-bcd"
+      },
+      "viewport_segments": {
+        "supported": true,
+        "since": "chrome 138",
+        "source_ref": "mdn-bcd"
+      },
+      "window_management": {
+        "supported": true,
+        "since": "chrome 100",
+        "source_ref": "mdn-bcd"
+      },
+      "visual_viewport": {
+        "supported": true,
+        "since": "chrome 61",
+        "source_ref": "mdn-bcd"
+      },
+      "virtual_keyboard_api": {
+        "supported": true,
+        "since": "chrome 94",
+        "source_ref": "mdn-bcd"
+      },
+      "interactive_widget": {
+        "supported": true,
+        "since": "chrome 108",
+        "source_ref": "chrome-viewport-resize"
+      }
+    }
+  },
+  "operating_states": [],
+  "conflicts_with": [],
+  "unknowns": [
+    "Generic profile (id \"7.6in Foldable\"), not a retail device; the folded region shares the inner panel density.",
+    "Default state is Portrait with keyboard-state keyssoft; no cutout or inset data in the profile.",
+    "Hinge \"areas\" 884-0-1-2208 is a 1 px line; occlusion none chosen because it is a flexible fold-in panel (type 1), unverified against emulator FoldingFeature output."
+  ],
+  "tags": [
+    "foldable",
+    "emulator",
+    "chromium"
+  ]
+}

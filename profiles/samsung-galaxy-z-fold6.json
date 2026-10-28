@@ -1,0 +1,384 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "samsung-galaxy-z-fold6",
+  "revision": 1,
+  "kind": "device",
+  "platform": "android",
+  "name": "Samsung Galaxy Z Fold6",
+  "vendor": "Samsung",
+  "sources": [
+    {
+      "id": "playwright",
+      "url": "https://github.com/microsoft/playwright/blob/main/packages/isomorphic/deviceDescriptorsSource.json",
+      "publisher": "Microsoft (Playwright)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "note": "207 entries on main at inspection; file moved here from playwright-core/src/server. viewport = layout viewport after browser UI; screen = full screen in CSS px."
+    },
+    {
+      "id": "samsung-flex-mode",
+      "url": "https://developer.samsung.com/galaxy-z/flex-mode.html",
+      "publisher": "Samsung Developers",
+      "inspected": "2026-10-28",
+      "licence": "vendor-fact",
+      "kind": "published",
+      "note": "Flex mode = FoldingFeature HALF_OPENED (POSTURE_HALF_OPENED); Samsung foldables report TYPE_FOLD; requires Jetpack WindowManager 1.0.0+. No hinge angle thresholds or screen dimensions published on the page."
+    },
+    {
+      "id": "androidx-foldingfeature",
+      "url": "https://android.googlesource.com/platform/frameworks/support/+/androidx-main/window/window/src/main/java/androidx/window/layout/FoldingFeature.kt",
+      "publisher": "AOSP (androidx.window)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "note": "State FLAT | HALF_OPENED; Orientation VERTICAL | HORIZONTAL; OcclusionType NONE (flexible screen, treat as guideline) | FULL (hinge is part of the window); isSeparating true for hinges always and for folds when not FLAT."
+    },
+    {
+      "id": "w3c-device-posture",
+      "url": "https://www.w3.org/TR/device-posture/",
+      "publisher": "W3C Devices and Sensors WG",
+      "inspected": "2026-10-28",
+      "licence": "W3C-document-licence",
+      "kind": "published",
+      "quote": "continuous | folded",
+      "note": "Candidate Recommendation Draft 2026-10-26. continuous = flat or fully closed; folded = book or laptop posture."
+    },
+    {
+      "id": "mdn-bcd",
+      "url": "https://github.com/mdn/browser-compat-data",
+      "publisher": "MDN",
+      "inspected": "2026-10-28",
+      "licence": "CC0-1.0",
+      "kind": "published",
+      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "inner",
+      "physical_px": {
+        "w": 1856,
+        "h": 2160
+      },
+      "source_ref": "playwright"
+    },
+    {
+      "name": "outer",
+      "physical_px": {
+        "w": 968,
+        "h": 2376
+      },
+      "source_ref": "playwright"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 928,
+      "h": 1080,
+      "scale": 2,
+      "kind": "published",
+      "source_ref": "playwright",
+      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: Galaxy Z Fold 6"
+    },
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 1080,
+      "h": 928,
+      "scale": 2,
+      "kind": "published",
+      "source_ref": "playwright",
+      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: Galaxy Z Fold 6 landscape"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 484,
+      "h": 1188,
+      "scale": 2,
+      "kind": "published",
+      "source_ref": "playwright",
+      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: Galaxy Z Fold 6 Cover"
+    },
+    {
+      "panel": "outer",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 1188,
+      "h": 484,
+      "scale": 2,
+      "kind": "published",
+      "source_ref": "playwright",
+      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: Galaxy Z Fold 6 Cover landscape"
+    },
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "dp",
+      "w": 928,
+      "h": 1080,
+      "scale": 2,
+      "kind": "derived",
+      "derivation": "dp = css_px at 100% zoom: Chromium on Android reports devicePixelRatio equal to the Android density scale (Playwright Pixel 7 = 2.625 = 420dpi/160), so 928x1080 css_px = 928x1080 dp",
+      "source_ref": "playwright"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "dp",
+      "w": 484,
+      "h": 1188,
+      "scale": 2,
+      "kind": "derived",
+      "derivation": "dp = css_px at 100% zoom: Chromium on Android reports devicePixelRatio equal to the Android density scale (Playwright Pixel 7 = 2.625 = 420dpi/160), so 484x1188 css_px = 484x1188 dp",
+      "source_ref": "playwright"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 928,
+        "h": 1004
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "published",
+      "derivation": "layout_viewport is the Playwright `viewport` (screen minus browser UI); insets 0 = no separate system-inset data published, not a claim of none",
+      "source_ref": "playwright"
+    },
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 1028,
+        "h": 876
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "published",
+      "derivation": "layout_viewport is the Playwright `viewport` (screen minus browser UI); insets 0 = no separate system-inset data published, not a claim of none",
+      "source_ref": "playwright"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 484,
+        "h": 1112
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "published",
+      "derivation": "layout_viewport is the Playwright `viewport` (screen minus browser UI); insets 0 = no separate system-inset data published, not a claim of none",
+      "source_ref": "playwright"
+    },
+    {
+      "panel": "outer",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 1136,
+        "h": 432
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "published",
+      "derivation": "layout_viewport is the Playwright `viewport` (screen minus browser UI); insets 0 = no separate system-inset data published, not a claim of none",
+      "source_ref": "playwright"
+    }
+  ],
+  "display_features": [
+    {
+      "id": "fold6-fold-vertical",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "vertical",
+      "bounds": {
+        "x": 464.0,
+        "y": 0,
+        "w": 0,
+        "h": 1080
+      },
+      "unit": "css_px",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "derived",
+      "derivation": "centre line of the portrait inner width: 928 / 2 = 464.0; width 0 and occlusion none because FoldingFeature.OcclusionType is NONE for flexible screens; actual fold bounds are unmeasured (see unknowns)",
+      "source_ref": "foldproof-derivation"
+    },
+    {
+      "id": "fold6-fold-horizontal",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "horizontal",
+      "bounds": {
+        "x": 0,
+        "y": 464.0,
+        "w": 1080,
+        "h": 0
+      },
+      "unit": "css_px",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "derived",
+      "derivation": "centre line of the landscape inner height: 928 / 2 = 464.0; width 0 and occlusion none per FoldingFeature.OcclusionType NONE; unmeasured",
+      "source_ref": "foldproof-derivation"
+    }
+  ],
+  "postures": [
+    {
+      "name": "closed",
+      "panel": "outer",
+      "web_posture": "continuous",
+      "android_state": null,
+      "source_ref": "samsung-flex-mode"
+    },
+    {
+      "name": "flat",
+      "panel": "inner",
+      "web_posture": "continuous",
+      "android_state": "FLAT",
+      "source_ref": "samsung-flex-mode"
+    },
+    {
+      "name": "half_opened",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": "HALF_OPENED",
+      "display_feature": "fold6-fold-vertical",
+      "source_ref": "samsung-flex-mode"
+    },
+    {
+      "name": "book",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": "HALF_OPENED",
+      "display_feature": "fold6-fold-vertical",
+      "source_ref": "samsung-flex-mode"
+    },
+    {
+      "name": "tabletop",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": "HALF_OPENED",
+      "display_feature": "fold6-fold-horizontal",
+      "source_ref": "samsung-flex-mode"
+    }
+  ],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "source_ref": "playwright"
+  },
+  "capabilities": {
+    "web": {
+      "device_posture_api": {
+        "supported": true,
+        "since": "chrome 132",
+        "source_ref": "mdn-bcd"
+      },
+      "viewport_segments": {
+        "supported": true,
+        "since": "chrome 138",
+        "source_ref": "mdn-bcd"
+      },
+      "window_management": {
+        "supported": true,
+        "since": "chrome 100",
+        "source_ref": "mdn-bcd"
+      },
+      "visual_viewport": {
+        "supported": true,
+        "since": "chrome 61",
+        "source_ref": "mdn-bcd"
+      },
+      "virtual_keyboard_api": {
+        "supported": true,
+        "since": "chrome 94",
+        "source_ref": "mdn-bcd"
+      },
+      "interactive_widget": {
+        "supported": true,
+        "since": "chrome 108",
+        "source_ref": "chrome-viewport-resize"
+      }
+    }
+  },
+  "operating_states": [],
+  "conflicts_with": [
+    {
+      "profile_id": "chrome-devtools-galaxy-z-fold6",
+      "field": "logical.inner",
+      "note": "Playwright 928x1080 css_px @2 (=1856x2160 device px) vs DevTools spanned 744x860 @2.625 (=1953x2257.5 device px). About 100 device px apart; neither is vendor-verified. Kept side by side."
+    },
+    {
+      "profile_id": "chrome-devtools-galaxy-z-fold6",
+      "field": "logical.outer",
+      "note": "Playwright cover 484x1188 @2 (=968x2376) vs DevTools default 412x968 @2.625 (=1081.5x2541). Kept side by side."
+    }
+  ],
+  "unknowns": [
+    "Vendor panel resolutions unverified; physical_px derived from Playwright css_px x deviceScaleFactor.",
+    "Hinge/fold bounds unmeasured; display features are derived centre lines.",
+    "Samsung publishes no hinge-angle thresholds.",
+    "System insets and cutouts not published; insets recorded as 0.",
+    "Soft keyboard height is measured, not published."
+  ],
+  "tags": [
+    "foldable",
+    "book-fold",
+    "chromium"
+  ]
+}

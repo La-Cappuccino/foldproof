@@ -1,1 +1,7 @@
 .claude/worktrees/
+node_modules/
+dist/
+test-results/
+foldproof-report/
+*.log
+.DS_Store
