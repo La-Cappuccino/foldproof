@@ -1,0 +1,17 @@
+foldproof: 1
+id: autosave-updates-storage
+title: "Positive control: unfolding mid-note triggers an autosave that rewrites the draft and adds a timestamp key; nothing is flagged"
+profiles: [google-pixel-9-pro-fold]
+start: { posture: closed }
+task:
+  url: /autosave-updates-storage/
+  ready: { selector: "#save" }
+  controls: ["#save"]
+  state: { storage: [draft] }
+  setup:
+    - { fill: "#body", value: "Call back about the Q4 invoice before Friday." }
+steps:
+  - transition: unfold
+    assert: preset@1
+expect: { verdict: pass }
+tags: [fixture, positive-control, foldable, storage]

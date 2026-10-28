@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inbox (positive control: the nav collapses into a menu button with CSS only)</title>
+<style>
+  body { margin: 0; font: 16px/1.4 system-ui, sans-serif; color: #111; }
+  header { display: flex; align-items: center; gap: 12px; padding: 8px 16px; border-bottom: 1px solid #ddd; }
+  h1 { margin: 0; font-size: 20px; flex: 1; }
+  nav ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+  nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; color: #222; text-decoration: none; }
+  #menu { display: none; min-height: 44px; min-width: 44px; font: inherit; background: none; border: 1px solid #999; border-radius: 6px; }
+  .layout { padding: 16px; }
+  main { max-width: 520px; }
+  aside p { margin: 0 0 8px; color: #444; }
+  label { display: block; margin-bottom: 6px; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 96px; font: inherit; padding: 8px; }
+  #send { min-height: 44px; margin-top: 8px; padding: 0 16px; font: inherit; font-weight: 600; background: #1a56db; color: #fff; border: 0; border-radius: 8px; }
+  /* Narrow: the same nav links are hidden and a menu button takes their place. Same DOM, CSS only. */
+  @media (max-width: 699px) {
+    nav ul { display: none; }
+    #menu { display: inline-flex; align-items: center; justify-content: center; }
+    nav.open ul { display: flex; flex-direction: column; position: absolute; right: 16px; top: 60px; background: #fff; border: 1px solid #ddd; padding: 8px; }
+  }
+  /* Wide: two columns. */
+  @media (min-width: 700px) {
+    .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  }
+  /* Split viewport (dual-screen): size the columns to the segments and leave the hinge empty. */
+  @media (horizontal-viewport-segments: 2) {
+    .layout {
+      grid-template-columns: env(viewport-segment-width 0 0) env(viewport-segment-width 1 0);
+      column-gap: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+      padding-left: 0; padding-right: 0;
+    }
+    main, aside { padding: 0 16px; box-sizing: border-box; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Inbox</h1>
+  <button id="menu" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
+  <nav id="nav" aria-label="Primary">
+    <ul>
+      <li><a href="#inbox">Inbox</a></li>
+      <li><a href="#sent">Sent</a></li>
+      <li><a href="#drafts">Drafts</a></li>
+      <li><a href="#settings">Settings</a></li>
+    </ul>
+  </nav>
+</header>
+<div class="layout">
+  <main>
+    <label for="reply">Reply</label>
+    <textarea id="reply" name="reply" placeholder="Write a reply"></textarea>
+    <button id="send" type="button">Send</button>
+  </main>
+  <aside id="thread"></aside>
+</div>
+<script>
+  document.getElementById('thread').innerHTML = Array.from({ length: 12 }, (_, i) => `<p id="m${i + 1}">Message ${i + 1}: lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>`).join('');
+  const menu = document.getElementById('menu');
+  const nav = document.getElementById('nav');
+  menu.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    menu.setAttribute('aria-expanded', String(open));
+  });
+</script>
+</body>
+</html>

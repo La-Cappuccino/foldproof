@@ -82,6 +82,7 @@ export async function runScenario(browser: Browser, scenario: Scenario, profile:
     const startupRules: RuleId[] = [...STARTUP_RULES, ...scenario.static];
     if (startupRules.includes('reachable')) await task.assertStartup();
     if (scenario.static.includes('no-horizontal-overflow')) await task.assert(['no-horizontal-overflow']);
+    if (scenario.static.includes('target-size')) fp.currentStep().findings.push(await targetSize(page));
     await screenshot(fp, opts, scenario, 'startup');
     for (const step of scenario.steps) {
       const tr = stepTransition(step);
@@ -102,6 +103,18 @@ export async function runScenario(browser: Browser, scenario: Scenario, profile:
   } finally {
     await fp?.detach().catch(() => undefined);
     await context.close().catch(() => undefined);
+  }
+}
+
+async function targetSize(page: import('playwright').Page): Promise<Finding> {
+  try {
+    const { default: AxeBuilder } = await import('@axe-core/playwright');
+    const res = await new AxeBuilder({ page }).withRules(['target-size']).analyze();
+    const v = res.violations.find((x) => x.id === 'target-size');
+    if (!v || v.nodes.length === 0) return { rule: 'target-size', kind: 'pass', message: `axe target-size: no violations (${res.passes.find((x) => x.id === 'target-size')?.nodes.length ?? 0} targets checked)` };
+    return { rule: 'target-size', kind: 'fail', message: `axe target-size: ${v.nodes.length} target(s) under 24 CSS px: ${v.nodes.slice(0, 5).map((n) => n.target.join(' ')).join(', ')}`, locations: v.nodes.slice(0, 5).map((n) => ({ selector: n.target.join(' ') })), details: { helpUrl: v.helpUrl } };
+  } catch (e) {
+    return { rule: 'target-size', kind: 'open', message: `axe-core unavailable: ${(e as Error).message.split('\n')[0]}` };
   }
 }
 
