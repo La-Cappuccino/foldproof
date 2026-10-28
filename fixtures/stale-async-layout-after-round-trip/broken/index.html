@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notes (broken: a debounced layout job applies a stale width class)</title>
+<style>
+  body { margin: 0; font: 16px/1.4 system-ui, sans-serif; }
+  .app { display: grid; gap: 12px; padding: 12px; grid-template-areas: "editor" "list"; }
+  .app.wide { grid-template-columns: 1fr 1fr; grid-template-areas: "list editor"; }
+  #editor { grid-area: editor; } #list { grid-area: list; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 140px; font: inherit; }
+  button { font: inherit; padding: 10px 16px; min-height: 44px; }
+  li { margin: 0 0 6px; }
+  @media (horizontal-viewport-segments: 2) {
+    .app.wide { grid-template-columns: env(viewport-segment-width 0 0) env(viewport-segment-width 1 0); column-gap: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0)); padding-left: 0; padding-right: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="app" class="app"></div>
+<script>
+  // BROKEN: every width-class change schedules a debounced (700 ms) "applyLayout" that captures the width class
+  // AT SCHEDULE TIME and rebuilds the editor pane for it. Unfold → fold → unfold within 700 ms leaves the
+  // fold's job pending; it fires after the second unfold and rebuilds the editor for the narrow layout:
+  // the draft is lost while the viewport is wide. (Stale asynchronous work after repeated transitions —
+  // council finding; the class behind "stuck layout after fold/unfold" reports, research 05.)
+  const items = Array.from({ length: 20 }, (_, i) => `<li id="n${i + 1}">Note ${i + 1}</li>`).join('');
+  function editor() {
+    return `<div id="editor"><label for="body">New note</label><textarea id="body" name="body"></textarea><div><button id="save" type="button">Save</button></div><div id="saved" hidden>Saved.</div></div>`;
+  }
+  function applyLayout(wide) {
+    const app = document.getElementById('app');
+    app.className = 'app' + (wide ? ' wide' : '');
+    app.innerHTML = `${editor()}<ul id="list">${items}</ul>`;
+    document.getElementById('save').addEventListener('click', () => { document.getElementById('saved').hidden = false; });
+  }
+  applyLayout(matchMedia('(min-width: 700px)').matches);
+  let timer = null;
+  matchMedia('(min-width: 700px)').addEventListener('change', (e) => {
+    const wideAtScheduleTime = e.matches;
+    // bug: no cancellation of the previous job, and the captured value is applied later regardless of the current width
+    timer = setTimeout(() => applyLayout(wideAtScheduleTime), 700);
+  });
+</script>
+</body>
+</html>

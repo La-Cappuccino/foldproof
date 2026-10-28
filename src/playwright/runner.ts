@@ -55,7 +55,21 @@ export async function runScenario(browser: Browser, scenario: Scenario, profile:
     fp = await Foldproof.attach(page, { profile, start: scenario.start, settle: scenario.settle, mask: scenario.mask });
     const url = /^https?:/.test(scenario.task.url) ? scenario.task.url : new URL(scenario.task.url, opts.baseUrl).href;
     await page.goto(url, { waitUntil: 'load' });
-    if (scenario.task.ready) await page.locator(scenario.task.ready.selector).first().waitFor({ state: 'visible', timeout: scenario.settle.max_ms });
+    if (scenario.task.ready) {
+      const ready = await page
+        .locator(scenario.task.ready.selector)
+        .first()
+        .waitFor({ state: 'visible', timeout: scenario.settle.max_ms })
+        .then(() => true)
+        .catch(() => false);
+      if (!ready) {
+        // startup-class failure: the task never became available at the documented configuration
+        await fp.verifyStart();
+        fp.currentStep().findings.push({ rule: 'reachable', kind: 'fail', message: `task not ready at startup: "${scenario.task.ready.selector}" not visible within ${scenario.settle.max_ms} ms`, locations: [{ selector: scenario.task.ready.selector }] });
+        await screenshot(fp, opts, scenario, 'startup');
+        return finish({ ...base, steps: fp.steps, gaps: [...new Set(gaps)] }, scenario, t0);
+      }
+    }
     if (scenario.task.script) {
       const mod = (await import(pathToFileURL(path.resolve(path.dirname(opts.scenarioFile ?? '.'), scenario.task.script)).href)) as { setup?: (p: typeof page, ctx: { profile: Profile; scenario: Scenario }) => Promise<void> };
       await mod.setup?.(page, { profile, scenario });
@@ -72,7 +86,7 @@ export async function runScenario(browser: Browser, scenario: Scenario, profile:
     for (const step of scenario.steps) {
       const tr = stepTransition(step);
       if (tr) {
-        await fp.transition(tr);
+        await fp.transition(tr, 'settle' in step ? step.settle : undefined);
         gaps.push(...fp.configuration.gaps);
         await task.assert(stepRules(step) as RuleId[]);
         await screenshot(fp, opts, scenario, `step-${fp.steps.length - 1}`);

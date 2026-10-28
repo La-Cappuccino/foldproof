@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reader (fixed: toolbar lives in one segment)</title>
+<style>
+  body { margin: 0; font: 16px/1.4 system-ui, sans-serif; }
+  main { padding: 16px; max-width: 70ch; margin: 0 auto; }
+  .toolbar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; gap: 12px; padding: 12px; background: #f3f3f6; }
+  button { font: inherit; padding: 10px 18px; min-height: 44px; min-width: 120px; }
+  p { margin: 0 0 12px; }
+  /* FIXED: when the viewport has two horizontal segments, keep the toolbar inside the first segment. */
+  @media (horizontal-viewport-segments: 2) {
+    .toolbar { right: auto; width: env(viewport-segment-width 0 0); box-sizing: border-box; }
+    main { max-width: calc(env(viewport-segment-width 0 0) - 32px); margin: 0; }
+  }
+</style>
+</head>
+<body>
+<main id="article"></main>
+<div class="toolbar">
+  <button id="prev" type="button">Previous</button>
+  <button id="bookmark" type="button">Bookmark</button>
+  <button id="next" type="button">Next</button>
+</div>
+<script>
+  document.getElementById('article').innerHTML = Array.from({ length: 24 }, (_, i) => `<p id="p${i + 1}">Chapter paragraph ${i + 1}: lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>`).join('');
+  document.getElementById('bookmark').addEventListener('click', () => document.getElementById('bookmark').textContent = 'Bookmarked');
+</script>
+</body>
+</html>

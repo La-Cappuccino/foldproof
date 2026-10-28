@@ -83,15 +83,16 @@ export class Foldproof {
     return { selfCheck, settle };
   }
 
-  async transition(t: TransitionKind | Transition): Promise<TransitionOutcome> {
+  async transition(t: TransitionKind | Transition, settleOverride?: Partial<{ quiet_frames: number; min_ms: number; max_ms: number }>): Promise<TransitionOutcome> {
     const transition: Transition = typeof t === 'string' ? { kind: t, to: {} } : t;
+    const settleOpts = { ...this.settleOpts, ...(settleOverride ?? {}) };
     const next = applyTransition(this.profile, this.resolved, transition);
     if (isResolveError(next)) throw new Error(`transition ${transition.kind} on ${this.profile.id}: ${next.error}`);
     await this.page.evaluate(() => (window as unknown as { __foldproof: { drainEvents(): unknown[] } }).__foldproof.drainEvents()).catch(() => undefined);
     const t0 = Date.now();
     this.resolved = next;
     this.current = await this.session.apply(next);
-    const settle = (await this.session.settle(this.settleOpts)) as TransitionOutcome['settle'];
+    const settle = (await this.session.settle(settleOpts)) as TransitionOutcome['settle'];
     const observed = await this.session.observe();
     const selfCheck = this.session.selfCheck(this.current, observed);
     const events = await this.page.evaluate(() => (window as unknown as { __foldproof: { drainEvents(): unknown[] } }).__foldproof.drainEvents()).catch(() => []);

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout (broken: "please rotate your device")</title>
+<style>
+  body { margin: 0; font: 16px/1.4 system-ui, sans-serif; }
+  #app { padding: 16px; display: grid; gap: 12px; }
+  label { display: block; }
+  input { width: 100%; box-sizing: border-box; font: inherit; padding: 10px; min-height: 44px; }
+  button { font: inherit; padding: 10px 16px; min-height: 44px; }
+  #rotate-prompt { display: none; position: fixed; inset: 0; background: #111; color: #fff; align-items: center; justify-content: center; font-size: 20px; text-align: center; padding: 24px; }
+  /* BROKEN: the task is only available in portrait. WCAG 2.2 1.3.4 Orientation failure F97; EN 301 549 11.1.3.4. */
+  @media (orientation: landscape) {
+    #app { display: none; }
+    #rotate-prompt { display: flex; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>Checkout</h1>
+  <label for="card">Card number</label>
+  <input id="card" name="card" inputmode="numeric" autocomplete="cc-number">
+  <label for="name">Name on card</label>
+  <input id="name" name="name" autocomplete="cc-name">
+  <button id="pay" type="button">Pay 1 250 kr</button>
+  <div id="paid" hidden>Paid.</div>
+</div>
+<div id="rotate-prompt">Please rotate your device to portrait to continue</div>
+<script>
+  document.getElementById('pay').addEventListener('click', () => { document.getElementById('paid').hidden = false; });
+</script>
+</body>
+</html>
