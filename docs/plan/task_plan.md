@@ -20,6 +20,12 @@ profiles and reproducible failure fixtures, not in a screenshot at one size.
 
 ## Decisions log (append as made)
 - 2026-10-28 Repo initialised at /Users/echo/Projects/active/responsivness (was not git).
+- 2026-10-28 VERIFIED: foldable emulation on web is feasible today via Playwright CDPSession +
+  inline `displayFeature`/`devicePosture` on `Emulation.setDeviceMetricsOverride` (Chromium 156).
+  Dedicated `setDisplayFeaturesOverride` is a no-op in that build; `navigator.devicePosture` absent.
+  Fold→unfold mid-session works without reload (transition tests are possible). Chromium-only.
+- 2026-10-28 Skill packaging follows the Agent Skills spec (agentskills.io): SKILL.md + scripts/ +
+  references/ + assets/; validate with `skills-ref validate`; ship marketplace.json + npx skills add.
 
 ## Open questions (resolve by research or by stated assumption)
 - Package name (dir typo "responsivness" is not the public name)
