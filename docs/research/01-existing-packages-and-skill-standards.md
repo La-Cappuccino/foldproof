@@ -257,3 +257,14 @@ Must build ourselves: the device-profile corpus with provenance (no permissive s
 - https://developer.android.com/studio/run/emulator-commandline
 
 **Verification limits.** Local execution was limited to `claude plugin validate` on Impeccable's plugin directory and parsing of the device corpora; no package was run against an application. Install counts are from skills.sh on the inspection date and change daily. The iPhone Duo and Android `cmd device_state`/`hinge-angle0` commands come from capacitor-foldable's reference file and were not checked against Apple or Google documentation.
+
+## Addendum (2026-10-28, verified via Perplexity against Apple primary sources) — Apple "App Resizability" skill
+
+- **Exists.** Xcode 27.1 renames the Xcode 27 "app modernization" skill to **App Resizability** and adds SwiftUI + iPhone Duo support (Apple Tech Talk 111461, ~9:19–9:24). Export for other agents: `xcrun agent skills export` (creates Markdown files; WWDC26 session 278, ~14:07–15:05). Not named in the Xcode 27.1 release notes themselves.
+- **What it checks (documented audit targets, "most issues, but not all"):** `UIScreen.main` usage; measuring only at launch / `viewIsAppearing`; `UIWindow(frame: UIScreen.main.bounds)` instead of `UIWindow(windowScene:)`; layout from `UIDevice.current.orientation` / `statusBarOrientation`; `.phone`/`.pad` idiom branches; hard-coded device dimensions; aspect-fill media cropping; UIKit scene-lifecycle migration.
+- **What it is NOT:** no bundled runtime test, posture sweep, assertions or pass/fail record. Apple separates "run the skill → fix → test in iPhone Duo simulator / Device Hub (open, close, rotate, fold, Split View)". `UIRequiresFullScreen` is honoured on Duo but the app still resizes on fold.
+- **Exported tree:** not documented by Apple; requires an actual Xcode 27.1 export to inspect.
+- **iPhone Duo:** announced 2026-09-09, available 2026-10-23 (further regions 2026-10-30). Inner 7.6" 1878×2670 @430 ppi; outer 5.4" 1398×2034 @460 ppi; no point dimensions or posture API published.
+- Sources: https://developer.apple.com/iphone-duo/prepare/ · https://developer.apple.com/videos/play/tech-talks/111461/ · https://developer.apple.com/videos/play/wwdc2026/278/ · https://www.apple.com/newsroom/2026/09/apple-unveils-iphone-duo/ · https://www.apple.com/iphone-duo/specs/ · https://developer.apple.com/documentation/xcode-release-notes/xcode-27_1-release-notes
+
+**Implication for this project:** vendors now ship *code-audit* skills on both mobile platforms (Apple App Resizability, Google android/skills adaptive). None ships the *verification* layer: drive the transition, assert reachability + state, record coverage. That layer, cross-platform and sourced, is the open position.
