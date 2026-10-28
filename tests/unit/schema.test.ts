@@ -184,6 +184,37 @@ describe('resolveConfiguration + expectedSignals', () => {
     if (isResolveError(closed)) throw new Error(closed.error);
     expect(closed.keyboard).toBeNull();
   });
+  it('rotating a panel rotates its display feature with it (same offset, other axis)', () => {
+    const start = resolveConfiguration(p, { panel: 'inner', posture: 'half_opened' });
+    if (isResolveError(start)) throw new Error(start.error);
+    expect(start.displayFeature?.orientation).toBe('vertical');
+    const rot = applyTransition(p, start, { kind: 'rotate', to: {} });
+    if (isResolveError(rot)) throw new Error(rot.error);
+    expect(rot.orientation).toBe('landscape');
+    expect(rot.displayFeature).toMatchObject({ orientation: 'horizontal', offset: 492, maskLength: 0, rotated: true });
+    expect(expectedSignals(rot).segmentRects?.[1]?.y).toBe(492);
+  });
+  it('an explicit resize viewport survives keyboard-open and keyboard-close', () => {
+    const start = resolveConfiguration(p, { panel: 'outer', posture: 'closed' });
+    if (isResolveError(start)) throw new Error(start.error);
+    const resized = applyTransition(p, start, { kind: 'resize', to: { viewport: { w: 300, h: 500 } } });
+    if (isResolveError(resized)) throw new Error(resized.error);
+    const kb = applyTransition(p, resized, { kind: 'keyboard-open', to: { keyboard: { height: 200 } } });
+    if (isResolveError(kb)) throw new Error(kb.error);
+    expect(kb.viewport).toEqual({ w: 300, h: 500 });
+    expect(kb.keyboard).toEqual({ height: 200 });
+    const closed = applyTransition(p, kb, { kind: 'keyboard-close', to: {} });
+    if (isResolveError(closed)) throw new Error(closed.error);
+    expect(closed.viewport).toEqual({ w: 300, h: 500 });
+    const rotated = applyTransition(p, closed, { kind: 'rotate', to: {} });
+    if (isResolveError(rotated)) throw new Error(rotated.error);
+    expect(rotated.explicitViewport).toBeNull(); // a new frame drops the explicit size
+  });
+  it('an operate step must declare an outcome', () => {
+    const base = { foldproof: 1 as const, id: 'op', title: 'x', profiles: ['test-fold'], task: { url: '/x', controls: ['#a'] } };
+    expect(Scenario.safeParse({ ...base, steps: [{ operate: { target: '#a', expect: {} } }] }).success).toBe(false);
+    expect(Scenario.safeParse({ ...base, steps: [{ operate: { target: '#a', expect: { visible: '.ok' } } }] }).success).toBe(true);
+  });
   it('rotate flips orientation; resize requires a viewport', () => {
     const start = resolveConfiguration(p, { panel: 'inner', posture: 'flat' });
     if (isResolveError(start)) throw new Error(start.error);

@@ -374,7 +374,8 @@ export const Step = z.union([
               text: z.object({ selector: Locator, contains: z.string() }).strict().optional(),
               custom: z.string().optional().describe('JS expression that must be truthy'),
             })
-            .strict(),
+            .strict()
+            .refine((e) => Object.values(e).some((v) => v !== undefined), { message: 'operate.expect must declare at least one outcome (visible, hidden, url, text or custom)' }),
         })
         .strict(),
     })

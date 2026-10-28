@@ -2,7 +2,7 @@
 name: foldproof
 description: Verify that a web task still works after display transitions (fold, unfold, posture, rotate, resize, split, soft keyboard) and at documented device sizes, with reproducible emulated evidence. Use when asked to test or audit responsiveness, foldables, large screens, split-screen, rotation, keyboard overlap, "does the draft survive unfolding", Galaxy Fold / Pixel Fold / Surface Duo / iPhone Duo support, Android adaptive quality tiers, or WCAG reflow and orientation; when a responsive bug must be reproduced in CI; or when writing a foldproof scenario or reading a foldproof report. Not for pixel-diff visual regression, native Android/iOS execution (v0.1 is web via Chromium), or performance.
 license: Apache-2.0
-compatibility: Node >= 20, Chromium via Playwright >= 1.64 (npx playwright install chromium). Fold and posture emulation is Chromium-only; Firefox/WebKit get viewport-only parity.
+compatibility: Node >= 22.12, Chromium via Playwright >= 1.64 (npx playwright install chromium). v0.1 runs on Chromium only (CDP emulation); Firefox and WebKit are not supported yet.
 metadata:
   version: "0.1.0"
   corpus-version: "2026-10-28"

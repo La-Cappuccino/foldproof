@@ -1,6 +1,6 @@
 # AGENTS.md — working in this repository
 
-foldproof is a TypeScript/Node package (ESM, Node ≥ 20) plus an Agent Skill under `skills/foldproof/`.
+foldproof is a TypeScript/Node package (ESM, Node ≥ 22.12) plus an Agent Skill under `skills/foldproof/`.
 The skill is the user-facing contract; the code is what it runs.
 
 ## Commands

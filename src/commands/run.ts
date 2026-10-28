@@ -154,8 +154,12 @@ export async function execute(
 ): Promise<0 | 1 | 2 | 3> {
   const { chromium } = await import('playwright');
   const { runScenario } = await import('../playwright/runner.js');
-  const { createRequire } = await import('node:module');
-  const version = (createRequire(import.meta.url)('../../package.json') as { version: string }).version;
+  const { packageInfo } = await import('../core/package-root.js');
+  const version = packageInfo().version;
+  if (pairs.length === 0) {
+    console.error('nothing to run: no (scenario × profile) pairs matched the selection');
+    return 3;
+  }
   await mkdir(opts.out, { recursive: true });
   const artifactsDir = path.join(opts.out, 'artifacts');
   await mkdir(artifactsDir, { recursive: true });

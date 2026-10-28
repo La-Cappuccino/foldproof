@@ -109,7 +109,7 @@ its named rules. Use it to score any tool, not just this one.
 
 ## Boundaries (read before trusting a result)
 
-- Fold and posture emulation is **Chromium-only** (CDP). Firefox/WebKit get viewport and rotation parity, labelled.
+- v0.1 runs on **Chromium only** (CDP emulation for folds, posture and metrics). Firefox and WebKit are not supported yet; the adapter refuses them rather than reporting partial results. Node ≥ 22.12.
 - No desktop engine shows a real keyboard. Two labelled approximations: `keyboard-overlay-approx` (the
   Chrome-Android/iOS default) and `keyboard-shrink` (`interactive-widget=resizes-content`).
 - Results are **emulated evidence**. No physical device was involved; rules *relate to* WCAG 2.2 1.3.4 / 1.4.10 /

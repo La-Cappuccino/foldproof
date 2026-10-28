@@ -65,9 +65,9 @@ export const RECORDER_SOURCE = String.raw`
   startObserving();
 
   fp.key = (el) => {
-    if (el.id) return '#' + el.id;
+    if (el.id) return '#' + CSS.escape(el.id);
     const name = el.getAttribute && el.getAttribute('name');
-    if (name) return el.tagName.toLowerCase() + '[name="' + name + '"]';
+    if (name) return el.tagName.toLowerCase() + '[name="' + name.replace(/["\\]/g, '\\$&') + '"]';
     const parts = [];
     let cur = el;
     while (cur && cur !== document.body && parts.length < 6) {
@@ -110,8 +110,24 @@ export const RECORDER_SOURCE = String.raw`
       if (el.getAttribute('placeholder')) return el.getAttribute('placeholder').trim();
     }
     if (el.matches('img') && el.getAttribute('alt')) return el.getAttribute('alt').trim();
+    const fromContent = (node) => {
+      let out = '';
+      for (const child of node.childNodes) {
+        if (child.nodeType === 3) out += child.textContent;
+        else if (child.nodeType === 1) {
+          const c = child;
+          const cl = c.getAttribute('aria-label');
+          if (cl) out += ' ' + cl + ' ';
+          else if (c.matches('img') && c.getAttribute('alt')) out += ' ' + c.getAttribute('alt') + ' ';
+          else if (getComputedStyle(c).display !== 'none') out += fromContent(c);
+        }
+      }
+      return out;
+    };
+    const text = fromContent(el).replace(/\s+/g, ' ').trim();
+    if (text) return text.slice(0, 120);
     if (el.getAttribute('title')) return el.getAttribute('title').trim();
-    return (el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+    return '';
   };
   fp.role = (el) => {
     const r = el.getAttribute('role');
@@ -119,13 +135,22 @@ export const RECORDER_SOURCE = String.raw`
     for (const [role, sel] of Object.entries(ROLE_SELECTORS)) if (el.matches(sel)) return role;
     return null;
   };
-  fp.query = (locator) => {
+  // role= locators follow Playwright's getByRole: hidden elements are excluded unless includeHidden is set
+  // (identity checks pass includeHidden so a nav collapsed behind a menu counts as present, not lost).
+  fp.query = (locator, includeHidden) => {
     const m = /^role=([a-z]+)(?:\[name=(?:'([^']*)'|"([^"]*)"|([^\]]*))\])?$/.exec(locator.trim());
     if (!m) return Array.from(document.querySelectorAll(locator));
     const role = m[1];
     const name = m[2] != null ? m[2] : m[3] != null ? m[3] : m[4];
     const sel = ROLE_SELECTORS[role] || '[role=' + role + ']';
-    const all = Array.from(document.querySelectorAll(sel)).filter((el) => fp.role(el) === role);
+    const isHidden = (el) => {
+      if (el.closest('[hidden],[aria-hidden="true"]')) return true;
+      const cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return true;
+      const r = el.getBoundingClientRect();
+      return r.width === 0 && r.height === 0;
+    };
+    const all = Array.from(document.querySelectorAll(sel)).filter((el) => fp.role(el) === role && (includeHidden || !isHidden(el)));
     if (name == null) return all;
     const want = name.trim().toLowerCase();
     return all.filter((el) => fp.accName(el).toLowerCase() === want);
@@ -166,7 +191,8 @@ export const RECORDER_SOURCE = String.raw`
     hSegs: fp.mql.h2.matches ? 2 : 1,
     vSegs: fp.mql.v2.matches ? 2 : 1,
     segments: window.viewport && window.viewport.segments ? window.viewport.segments.map((r) => ({ x: r.x, y: r.y, w: r.width, h: r.height })) : null,
-    orientation: screen.orientation ? screen.orientation.type : (fp.mql.landscape.matches ? 'landscape-primary' : 'portrait-primary'),
+    screenOrientation: screen.orientation ? screen.orientation.type : null,
+    cssOrientation: fp.mql.landscape.matches ? 'landscape' : 'portrait',
     visualViewport: window.visualViewport ? { w: visualViewport.width, h: visualViewport.height } : null,
     secureContext: isSecureContext,
     url: location.href,

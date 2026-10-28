@@ -17,7 +17,7 @@ Contents
 
 ## 1. Prerequisites
 
-Node 20 or later, `playwright` in the range `>=1.64 <2` as a peer dependency, a Chromium browser (the adapter throws on Firefox or WebKit contexts because it needs CDP). The page under test must be served from a secure context (`https` or `http://localhost`) so posture and segment APIs exist. Create the context with the start configuration's viewport, DPR, `isMobile` and `hasTouch` so Playwright's own emulation matches what the adapter will apply; the YAML runner does this from the resolved configuration. Load a profile with `loadProfiles(dir)` from the package root entry; `attach` takes the parsed `Profile` object, not an id.
+Node 22.12 or later, `playwright` in the range `>=1.64 <2` as a peer dependency, a Chromium browser (the adapter throws on Firefox or WebKit contexts because it needs CDP). The page under test must be served from a secure context (`https` or `http://localhost`) so posture and segment APIs exist. Create the context with the start configuration's viewport, DPR, `isMobile` and `hasTouch` so Playwright's own emulation matches what the adapter will apply; the YAML runner does this from the resolved configuration. Load a profile with `loadProfiles(dir)` from the package root entry; `attach` takes the parsed `Profile` object, not an id.
 
 ## 2. Attach before goto
 

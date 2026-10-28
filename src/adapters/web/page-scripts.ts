@@ -5,7 +5,7 @@
 
 interface FP {
   key(el: Element): string;
-  query(locator: string): Element[];
+  query(locator: string, includeHidden?: boolean): Element[];
   role(el: Element): string | null;
   accName(el: Element): string;
   checkStamps(): StampCheck[];
@@ -84,6 +84,7 @@ export function snapshotScript(args: SnapshotArgs): StateSnapshot {
     for (const el of els) {
       const k = f.key(el);
       if (el instanceof HTMLInputElement && (el.type === 'checkbox' || el.type === 'radio')) form[k] = el.checked;
+      else if (el instanceof HTMLSelectElement && el.multiple) form[k] = JSON.stringify(Array.from(el.selectedOptions).map((o) => o.value));
       else if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement) {
         if (el instanceof HTMLInputElement && ['button', 'submit', 'reset', 'hidden'].includes(el.type)) continue;
         form[k] = el.value;
@@ -159,9 +160,22 @@ export interface GeometryReport {
   controls: ControlGeometry[];
 }
 
-/** Active: scrolls each control into view before hit-testing. Run AFTER the passive state probes. */
+/** Active: scrolls each control into view before hit-testing, then restores every scroll position. Run AFTER the passive probes. */
 export function geometryScript(locators: string[]): GeometryReport {
   const f = (window as unknown as { __foldproof: FP }).__foldproof;
+  const savedWindow = { x: scrollX, y: scrollY };
+  const savedContainers: { el: Element; top: number; left: number }[] = [];
+  for (const el of Array.from(document.querySelectorAll<HTMLElement>('*'))) {
+    if (el.scrollTop > 0 || el.scrollLeft > 0) savedContainers.push({ el, top: el.scrollTop, left: el.scrollLeft });
+    if (savedContainers.length > 50) break;
+  }
+  const restore = () => {
+    for (const c of savedContainers) {
+      c.el.scrollTop = c.top;
+      c.el.scrollLeft = c.left;
+    }
+    window.scrollTo(savedWindow.x, savedWindow.y);
+  };
   const controls: ControlGeometry[] = locators.map((locator) => {
     const els = f.query(locator);
     const base: ControlGeometry = { locator, count: els.length, key: null, role: null, name: '', rect: null, visible: false, disabled: false, inert: false, pointerEvents: '', clipped: false, inViewport: false, hits: [] };
@@ -210,6 +224,7 @@ export function geometryScript(locators: string[]): GeometryReport {
     });
     return base;
   });
+  restore();
   return { viewport: { w: innerWidth, h: innerHeight }, docClientWidth: document.documentElement.clientWidth, docScrollWidth: document.scrollingElement?.scrollWidth ?? document.documentElement.scrollWidth, controls };
 }
 
@@ -218,9 +233,10 @@ export interface ElementIdentity {
   found: { key: string; role: string | null; name: string }[];
 }
 
+/** Identity (for no-element-loss) counts hidden-but-present elements: collapsing into a menu is not loss. */
 export function identitiesScript(locators: string[]): ElementIdentity[] {
   const f = (window as unknown as { __foldproof: FP }).__foldproof;
-  return locators.map((locator) => ({ locator, found: f.query(locator).map((el) => ({ key: f.key(el), role: f.role(el), name: f.accName(el) })) }));
+  return locators.map((locator) => ({ locator, found: f.query(locator, true).map((el) => ({ key: f.key(el), role: f.role(el), name: f.accName(el) })) }));
 }
 
 export function stampScript(args: { locators: string[]; runId: string }): { locator: string; count: number }[] {

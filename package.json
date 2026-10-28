@@ -33,7 +33,7 @@
     "CHANGELOG.md"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12"
   },
   "scripts": {
     "build": "tsup",
@@ -43,6 +43,7 @@
     "test:fixtures": "vitest run tests/fixtures",
     "schemas": "tsx scripts/emit-schemas.ts",
     "engines": "tsx scripts/emit-engines.ts",
+    "smoke:pack": "bash scripts/smoke-pack.sh",
     "validate": "tsx src/cli.ts profiles validate && tsx src/cli.ts scenarios validate",
     "lint": "tsc --noEmit"
   },
@@ -64,7 +65,7 @@
     "playwright": "^1.64.1",
     "tsup": "^9.0.0",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2",
+    "typescript": "^5.9.3",
     "vitest": "^5.0.5"
   },
   "repository": {

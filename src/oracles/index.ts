@@ -1,20 +1,21 @@
 /**
  * Oracles: pure functions from observations to findings. Decided at quiescence; the per-frame log is evidence.
- * Every rule explains itself in `message` and keeps raw observations in `details` (values masked at export).
+ * Every rule explains itself in `message` and keeps observations in `details`, with values and secrets redacted
+ * before anything is exported (form values, storage values, history state, URL query/fragment).
  */
 import type { Finding } from '../core/types.js';
 import type { StatePolicies } from '../core/schema.js';
 import type { StateSnapshot, GeometryReport, ControlGeometry, StampCheck, ElementIdentity } from '../adapters/web/page-scripts.js';
 
-export const ORACLE_VERSION = '0.1.0';
+export const ORACLE_VERSION = '0.1.1';
 
 export const RULE_HELP: Record<string, { description: string; helpUri: string; relatesTo: string }> = {
-  'env-self-check': { description: 'Expected vs observed emulation signals after each configuration change', helpUri: 'https://github.com/La-Cappuccino/foldproof/blob/main/skills/foldproof/references/platform-boundaries.md', relatesTo: 'foldproof' },
+  'env-self-check': { description: 'Expected vs observed emulation signals after each configuration change; the page settled', helpUri: 'https://github.com/La-Cappuccino/foldproof/blob/main/skills/foldproof/references/platform-boundaries.md', relatesTo: 'foldproof' },
   reachable: { description: 'Declared controls remain visible, in viewport, hit-testable and actionable without a real click', helpUri: 'https://www.w3.org/WAI/WCAG22/Understanding/reflow.html', relatesTo: 'WCAG 2.2 1.4.10 Reflow (relates to); Google adaptive Config_Changes' },
   'state-preserved': { description: 'Form values, focus, selection, scroll anchor, declared storage, history and media survive the transition under per-field policies', helpUri: 'https://developer.android.com/develop/adaptive-apps/quality-guidelines', relatesTo: 'Google adaptive Tier 3 Config_Changes (T-Config_State)' },
   'no-remount': { description: 'Declared controls keep node identity across the transition (a remount loses focus and ephemeral state)', helpUri: 'https://github.com/La-Cappuccino/foldproof/blob/main/skills/foldproof/references/state-policies.md', relatesTo: 'foldproof' },
   'not-occluded-by-hinge': { description: 'Declared controls do not intersect an occluding hinge region', helpUri: 'https://developer.mozilla.org/en-US/docs/Web/API/Viewport_segments_API/Using', relatesTo: 'Viewport Segments API; Google LS-F1' },
-  'straddles-fold-line': { description: 'Advisory: a control crosses a non-occluding fold line in a folded posture', helpUri: 'https://developer.mozilla.org/en-US/docs/Web/API/Viewport_segments_API/Using', relatesTo: 'advisory' },
+  'straddles-fold-line': { description: 'Advisory: a control crosses a non-occluding fold line or region in a folded posture', helpUri: 'https://developer.mozilla.org/en-US/docs/Web/API/Viewport_segments_API/Using', relatesTo: 'advisory' },
   'no-element-loss': { description: 'Declared controls and landmarks keep an element with the same role and accessible name', helpUri: 'https://www.w3.org/WAI/WCAG22/Understanding/reflow.html', relatesTo: 'WCAG 2.2 1.4.10 (loss of information or functionality) (relates to)' },
   'fills-viewport': { description: 'The document lays out to the viewport width (no letterbox / fixed-width page)', helpUri: 'https://developer.android.com/develop/adaptive-apps/quality-guidelines', relatesTo: 'Google adaptive Config_Changes (not letterboxed)' },
   operate: { description: 'An explicit action on a declared control produces the declared outcome', helpUri: 'https://github.com/La-Cappuccino/foldproof/blob/main/skills/foldproof/references/transitions.md', relatesTo: 'foldproof task completion' },
@@ -31,17 +32,19 @@ export function reachable(geom: GeometryReport, trialClicks: Record<string, { ok
     }
     const problems: string[] = [];
     if (!c.visible) problems.push('not visible');
-    if (!c.inViewport) problems.push(`outside the viewport after scrollIntoView (rect ${JSON.stringify(c.rect)}, viewport ${geom.viewport.w}x${geom.viewport.h})`);
+    else if (!c.inViewport) problems.push(`outside the viewport after scrollIntoView (rect ${JSON.stringify(c.rect)}, viewport ${geom.viewport.w}x${geom.viewport.h})`);
     if (c.clipped) problems.push('clipped by an overflow-hidden ancestor');
     if (c.disabled) problems.push('disabled');
     if (c.inert) problems.push('inside an inert subtree');
     if (c.pointerEvents === 'none') problems.push('pointer-events: none');
-    const covered = c.hits.filter((h) => !h.ok && h.coveredBy);
-    if (c.hits.length && c.hits.every((h) => !h.ok)) {
-      const by = covered[0]?.coveredBy;
-      problems.push(by ? `covered by ${by.name ? `"${by.name}"` : by.key}${by.role ? ` (${by.role})` : ''}` : 'no hit-test point resolves to the control');
-    } else if (covered.length) {
-      problems.push(`partially covered at ${covered.map((h) => h.point).join(', ')} by ${covered[0]!.coveredBy!.name || covered[0]!.coveredBy!.key}`);
+    if (c.visible) {
+      const covered = c.hits.filter((h) => !h.ok && h.coveredBy);
+      if (c.hits.length && c.hits.every((h) => !h.ok)) {
+        const by = covered[0]?.coveredBy;
+        problems.push(by ? `covered by ${by.name ? `"${by.name}"` : by.key}${by.role ? ` (${by.role})` : ''}` : 'no hit-test point resolves to the control');
+      } else if (covered.length) {
+        problems.push(`partially covered at ${covered.map((h) => h.point).join(', ')} by ${covered[0]!.coveredBy!.name || covered[0]!.coveredBy!.key}`);
+      }
     }
     const trial = trialClicks[c.locator];
     if (trial && !trial.ok) problems.push(`actionability check failed: ${trial.error ?? 'unknown'}`);
@@ -55,7 +58,16 @@ export function reachable(geom: GeometryReport, trialClicks: Record<string, { ok
   });
 }
 
-export function statePreserved(before: StateSnapshot, after: StateSnapshot, policies: StatePolicies, anchors: { container: string; ok: boolean | null; detail: string }[], custom?: { before: unknown; after: unknown }): Finding {
+export interface CustomProbe {
+  ok: boolean;
+  value?: unknown;
+  error?: string;
+}
+
+export function statePreserved(before: StateSnapshot, after: StateSnapshot, policies: StatePolicies, anchors: { container: string; ok: boolean | null; detail: string }[], custom?: { before: CustomProbe; after: CustomProbe }): Finding {
+  if (custom && (!custom.before.ok || !custom.after.ok)) {
+    return { rule: 'state-preserved', kind: 'open', message: `custom state probe failed (${custom.before.ok ? '' : 'before: ' + custom.before.error}${!custom.before.ok && !custom.after.ok ? '; ' : ''}${custom.after.ok ? '' : 'after: ' + custom.after.error}); the expression must evaluate in the page`, details: { custom: { before: custom.before.error ?? null, after: custom.after.error ?? null } } };
+  }
   const losses: string[] = [];
   const notes: string[] = [];
   if (policies.form !== 'none') {
@@ -83,8 +95,7 @@ export function statePreserved(before: StateSnapshot, after: StateSnapshot, poli
   if (policies.history === 'no-loss') {
     if (after.historyLength < before.historyLength) losses.push(`history length shrank ${before.historyLength} → ${after.historyLength}`);
     if (before.historyState !== null && before.historyState !== 'null' && after.historyState !== before.historyState) losses.push('history.state changed');
-    const strip = (u: string) => u.split('#')[0];
-    if (strip(after.url) !== strip(before.url)) losses.push(`navigated: ${before.url} → ${after.url}`);
+    if (redactUrl(after.url, true) !== redactUrl(before.url, true)) losses.push(`navigated: ${redactUrl(before.url)} → ${redactUrl(after.url)}`);
   }
   if (policies.media === 'progress') {
     for (const [k, m] of Object.entries(before.media)) {
@@ -96,11 +107,11 @@ export function statePreserved(before: StateSnapshot, after: StateSnapshot, poli
       }
     }
   }
-  if (custom && JSON.stringify(custom.before) !== JSON.stringify(custom.after)) losses.push('custom app state changed');
+  if (custom && JSON.stringify(custom.before.value) !== JSON.stringify(custom.after.value)) losses.push('custom app state changed');
   return {
     rule: 'state-preserved',
     kind: losses.length ? 'fail' : 'pass',
-    message: losses.length ? `state lost: ${losses.join('; ')}` : `state preserved (${[policies.form !== 'none' && 'form', policies.focus !== 'none' && 'focus', policies.selection !== 'none' && 'selection', policies.scroll !== 'none' && 'scroll-anchor', policies.storage.length && 'storage', policies.history !== 'none' && 'history', policies.media !== 'none' && 'media'].filter(Boolean).join(', ')})${notes.length ? `; notes: ${notes.join('; ')}` : ''}`,
+    message: losses.length ? `state lost: ${losses.join('; ')}` : `state preserved (${[policies.form !== 'none' && 'form', policies.focus !== 'none' && 'focus', policies.selection !== 'none' && 'selection', policies.scroll !== 'none' && 'scroll-anchor', policies.storage.length && 'storage', policies.history !== 'none' && 'history', policies.media !== 'none' && 'media', custom && 'custom'].filter(Boolean).join(', ')})${notes.length ? `; notes: ${notes.join('; ')}` : ''}`,
     details: { before: maskSnapshot(before), after: maskSnapshot(after), anchors, losses, notes },
   };
 }
@@ -119,9 +130,10 @@ export function noRemount(checks: StampCheck[], frames: { missingStamps: string[
   });
 }
 
-export function hinge(geom: GeometryReport, feature: { orientation: 'vertical' | 'horizontal'; offset: number; maskLength: number } | null, folded: boolean): Finding[] {
+export function hinge(geom: GeometryReport, feature: { orientation: 'vertical' | 'horizontal'; offset: number; maskLength: number; occlusion: 'none' | 'full' } | null, folded: boolean): Finding[] {
   if (!feature) return [{ rule: 'not-occluded-by-hinge', kind: 'notApplicable', message: 'no display feature in this configuration' }];
   const out: Finding[] = [];
+  const occluding = feature.maskLength > 0 && feature.occlusion === 'full';
   for (const c of geom.controls) {
     if (!c.rect || c.count !== 1) continue;
     const r = c.rect;
@@ -129,16 +141,17 @@ export function hinge(geom: GeometryReport, feature: { orientation: 'vertical' |
     const hi = feature.orientation === 'vertical' ? r.x + r.w : r.y + r.h;
     const maskLo = feature.offset;
     const maskHi = feature.offset + feature.maskLength;
-    if (feature.maskLength > 0) {
-      const overlap = Math.min(hi, maskHi) - Math.max(lo, maskLo);
+    const overlap = Math.min(hi, maskHi) - Math.max(lo, maskLo);
+    if (occluding) {
       out.push(
         overlap > 0
           ? { rule: 'not-occluded-by-hinge', kind: 'fail', message: `"${c.name || c.locator}" intersects the ${feature.orientation} hinge mask [${maskLo}, ${maskHi}] by ${Math.round(overlap)} px`, locations: [loc(c)], details: { feature, overlap } }
           : { rule: 'not-occluded-by-hinge', kind: 'pass', message: `"${c.name || c.locator}" clear of the hinge mask`, locations: [loc(c)], details: { feature } },
       );
     } else {
-      out.push({ rule: 'not-occluded-by-hinge', kind: 'notApplicable', message: 'fold line has no occluding mask (maskLength 0)', locations: [loc(c)], details: { feature } });
-      if (folded && lo < maskLo && hi > maskLo) out.push({ rule: 'straddles-fold-line', kind: 'review', message: `"${c.name || c.locator}" straddles the fold line at ${maskLo} px in a folded posture`, locations: [loc(c)], details: { feature } });
+      out.push({ rule: 'not-occluded-by-hinge', kind: 'notApplicable', message: feature.maskLength > 0 ? `fold region [${maskLo}, ${maskHi}] is declared non-occluding` : 'fold line has no occluding mask (maskLength 0)', locations: [loc(c)], details: { feature } });
+      const crosses = feature.maskLength > 0 ? overlap > 0 : lo < maskLo && hi > maskLo;
+      if (folded && crosses) out.push({ rule: 'straddles-fold-line', kind: 'review', message: `"${c.name || c.locator}" crosses the non-occluding fold ${feature.maskLength > 0 ? `region [${maskLo}, ${maskHi}]` : `line at ${maskLo} px`} in a folded posture`, locations: [loc(c)], details: { feature } });
     }
   }
   return out.length ? out : [{ rule: 'not-occluded-by-hinge', kind: 'notApplicable', message: 'no resolvable controls to test against the hinge' }];
@@ -171,10 +184,27 @@ function mask(v: unknown): string {
   return s.length <= 2 ? '**' : `${s[0]}…${s[s.length - 1]} (${s.length} chars)`;
 }
 
+/** Keep origin + path; drop query and fragment (they carry tokens). `forCompare` keeps the fragment-less form stable. */
+export function redactUrl(u: string, forCompare = false): string {
+  try {
+    const url = new URL(u);
+    const hasQuery = url.search.length > 0;
+    return `${url.origin}${url.pathname}${hasQuery ? (forCompare ? '?<query>' : '?<redacted>') : ''}`;
+  } catch {
+    return '<unparseable url>';
+  }
+}
+
 export function maskSnapshot(s: StateSnapshot): Record<string, unknown> {
   return {
-    ...s,
+    url: redactUrl(s.url),
+    historyLength: s.historyLength,
+    historyState: s.historyState === null || s.historyState === 'null' ? s.historyState : `<redacted ${s.historyState.length} chars>`,
+    scroll: s.scroll,
+    focus: s.focus,
+    selection: s.selection,
     form: Object.fromEntries(Object.entries(s.form).map(([k, v]) => [k, typeof v === 'boolean' ? v : mask(v)])),
     storage: { local: Object.fromEntries(Object.keys(s.storage.local).map((k) => [k, '<masked>'])), session: Object.fromEntries(Object.keys(s.storage.session).map((k) => [k, '<masked>'])) },
+    media: s.media,
   };
 }

@@ -29,7 +29,7 @@ No desktop engine shows a soft keyboard, and `navigator.virtualKeyboard` cannot 
 
 `env(keyboard-inset-*)` cannot be injected by a stylesheet (council finding) and is not claimed. Keyboard heights are not published by any vendor; a scenario must supply `to.keyboard.height` or the profile must carry a cited measurement. A default fixed-footer case therefore stays `review` for the real-keyboard class, and the mode used is recorded in every keyboard finding.
 
-## 3. Firefox and WebKit: viewport only
+## 3. Firefox and WebKit: not supported in v0.1 (the adapter refuses them)
 
 Viewport, DPR, `isMobile`, `hasTouch`, rotation via a viewport swap, `screen.orientation` change events and `emulateMedia` work in all three engines (research 03 section 1.2 to 1.4). Posture, segments, safe-area overrides and the CDP metrics path do not. Only Chromium reports `navigator.maxTouchPoints` above zero under touch emulation, so touch feature detection by that property reads "no touch" in WebKit and Firefox emulation. v0.1 does not run those engines; when a later version does, their results must be labelled `viewport-only` in `emulation` and fold rules must be `notApplicable` for them.
 

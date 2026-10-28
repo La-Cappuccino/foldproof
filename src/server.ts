@@ -31,7 +31,13 @@ export async function serveStatic(root: string, port = 0): Promise<{ url: string
       res.writeHead(403, { 'content-type': 'text/plain' }).end('forbidden');
       return;
     }
-    const u = new URL(req.url ?? '/', 'http://localhost');
+    let u: URL;
+    try {
+      u = new URL(req.url ?? '/', 'http://localhost');
+    } catch {
+      res.writeHead(400, { 'content-type': 'text/plain' }).end('bad request');
+      return;
+    }
     let p = resolveInside(abs, u.pathname);
     if (!p) {
       res.writeHead(403, { 'content-type': 'text/plain' }).end('forbidden');
