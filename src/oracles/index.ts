@@ -187,8 +187,10 @@ function mask(_v: unknown): string {
 
 /** Replace every URL inside free text with its origin + path (query and fragment carry tokens). */
 export function redactUrlsInText(s: string): string {
-  // any scheme (case-insensitive), consume everything up to whitespace so a query containing )]'" cannot leak its tail
-  return s.replace(/(?<![a-z0-9+.-])[a-z][a-z0-9+.-]*:\/\/\S+/gi, (m) => {
+  // redact the WHOLE whitespace-delimited token around any "://" (glued prefixes such as id_http:// or 9https://
+  // included); consume to whitespace so a query containing )]'" cannot leak its tail; an unparseable token
+  // becomes "<unparseable url>", which over-redacts rather than leaking
+  return s.replace(/\S+:\/\/\S+/g, (m) => {
     const cut = m.search(/[?#]/);
     const head = cut === -1 ? m : m.slice(0, cut);
     const redacted = redactUrl(head.replace(/[)\]'".,;]+$/, ''));
