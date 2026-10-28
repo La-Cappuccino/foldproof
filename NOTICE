@@ -5,7 +5,8 @@ Licensed under the Apache License, Version 2.0 (code) — see LICENSE.
 The device-profile corpus in profiles/ is licensed under CDLA-Permissive-2.0 — see profiles/LICENSE.
 
 This product includes data derived from third-party sources, each retained under its own terms and
-cited per value in profiles/*.json (`sources[]`: url, publisher, inspection date, licence, revision):
+cited per value in profiles/*.json (`sources[]`: url, publisher, inspection date, licence, revision).
+Full licence texts and the dependency table are in THIRD_PARTY_NOTICES.md:
 
 - Chrome DevTools emulated device descriptors (EmulatedDevices.ts), Chromium Authors — BSD-3-Clause.
   https://chromium.googlesource.com/devtools/devtools-frontend

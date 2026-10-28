@@ -2,7 +2,7 @@
   "name": "foldproof",
   "version": "0.1.0",
   "description": "Prove your UI survives the fold, the rotate, and the resize. Sourced device profiles, transition scenarios, state-preservation oracles and a SARIF evidence record for web apps and AI agents.",
-  "license": "Apache-2.0",
+  "license": "Apache-2.0 AND CDLA-Permissive-2.0",
   "type": "module",
   "bin": {
     "foldproof": "./dist/cli.js"

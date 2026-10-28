@@ -744,7 +744,7 @@ Visible assistant phase: `commentary`.
 ::codex-realtime-inline{}
 The documents will go in your current local directory:
 
-[/Users/echo/Projects/active/responsivness](/Users/echo/Projects/active/responsivness)
+[<project-dir>](<project-dir>)
 
 I’ll use that location as requested.
 ~~~~

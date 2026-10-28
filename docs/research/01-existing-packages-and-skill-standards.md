@@ -1,6 +1,6 @@
 # Existing packages and agent-skill standards (live inspection)
 
-**Inspection date: 28 October 2026.** Every repository below was cloned (shallow) into `/Users/echo/.claude/jobs/521762a0/tmp/pkgs/<name>` or read through the GitHub API with the authenticated `gh` CLI. Star counts, licenses and push dates come from `gh api repos/<owner>/<repo>` on that date. File trees, line counts and quoted rules come from the checked-out files, not from READMEs. Where a claim could not be verified against a primary source it is marked **unverified**.
+**Inspection date: 28 October 2026.** Every repository below was cloned (shallow) into `<local-tmp>/pkgs/<name>` or read through the GitHub API with the authenticated `gh` CLI. Star counts, licenses and push dates come from `gh api repos/<owner>/<repo>` on that date. File trees, line counts and quoted rules come from the checked-out files, not from READMEs. Where a claim could not be verified against a primary source it is marked **unverified**.
 
 This document goes deeper than [existing-work.md](../existing-work.md) and [sources.md](../sources.md): it records what each package *actually checks*, whether it has tests, whether it handles transitions, what the current skill-packaging standards require, what we may legally reuse, and the exact gaps left open.
 
