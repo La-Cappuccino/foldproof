@@ -6,8 +6,10 @@ viewport on. Unfold → fold → unfold within the debounce window leaves the ed
 (narrow) layout and the draft gone, while the viewport is wide. A single-transition scenario can never
 reproduce it; only a sequence with a minimum observation window can.
 
-**Real-world basis:** the "stuck layout after fold/unfold" complaints (Facebook, Discord) in r/GalaxyFold
-(research 05 run 2), Google adaptive `Config_Combinations` ("combinations of configuration changes, such as
+**Real-world basis:** the "stuck layout after fold/unfold" reports — Discord "keeps showing chats and sidebars
+as if it were still twice as wide" after a fold or split-screen (Discord Support community post 19290961918359)
+and Facebook stuck on the inner-screen layout after folding (techissuestoday.com, both via research 05) —
+and Google adaptive `Config_Combinations` ("combinations of configuration changes, such as
 window resizing followed by device rotation, or rotation followed by device folding or unfolding").
 The quad-council (seats A and B) named this as the missing fixture class.
 

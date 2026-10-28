@@ -13,8 +13,9 @@ there. It does not claim a pass when the emulation did not take effect. And it n
 
 ## Why
 
-- Google counts more than 580 million large-screen Android devices and ignores orientation and resizability
-  restrictions from Android 16/17 (Play target deadline August 2027).
+- Google counts more than 580 million large-screen Android devices. From Android 16 (API 36) orientation,
+  resizability and aspect-ratio restrictions no longer apply on screens of 600 dp and wider; the temporary
+  opt-out ends when apps target API 37.
 - Apple ships iPhone Duo (23 Oct 2026) and requires Duo screenshots from April 2027.
 - Of the 19 responsive/adaptive packages we inspected, none executes a transition and asserts that state
   survived. Vendors ship code-audit skills; the verification layer was missing.

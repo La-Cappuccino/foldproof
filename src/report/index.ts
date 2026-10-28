@@ -166,9 +166,15 @@ export function toMarkdown(report: RunReport): string {
     if (r.gaps.length) lines.push('', `  Profile gaps: ${r.gaps.join('; ')}`);
     lines.push('');
   }
-  const untested = report.coverage.filter((c) => c.kind === 'open' || c.kind === 'review' || c.kind === 'notApplicable');
-  lines.push(`## Untested`, '', untested.length ? `${untested.length} expected check(s) did not reach pass/fail:` : 'Every expected check reached pass or fail.', '');
-  for (const u of untested) lines.push(`- \`${u.rule}\` ${u.scenarioId} @ ${u.profileId} step ${u.step}: **${u.kind}** — ${u.reason ?? ''}`);
+  const inconclusive = report.coverage.filter((c) => c.kind === 'open' || c.kind === 'review');
+  const notApplicable = report.coverage.filter((c) => c.kind === 'notApplicable');
+  lines.push(`## Untested`, '');
+  lines.push(inconclusive.length ? `**Inconclusive (${inconclusive.length})** — expected checks that reached neither pass nor fail. These are gaps:` : 'No inconclusive checks: every expected check reached pass, fail or a by-design not-applicable.', '');
+  for (const u of inconclusive) lines.push(`- \`${u.rule}\` ${u.scenarioId} @ ${u.profileId} step ${u.step}: **${u.kind}** — ${u.reason ?? ''}`);
+  if (notApplicable.length) {
+    lines.push('', `**Not applicable by design (${notApplicable.length})** — the rule does not apply to this configuration (for example no occluding hinge). Not a gap:`, '');
+    for (const u of notApplicable) lines.push(`- \`${u.rule}\` ${u.scenarioId} @ ${u.profileId} step ${u.step}: ${u.reason ?? ''}`);
+  }
   lines.push('', `## Rules`, '', `| rule | relates to | help |`, `|---|---|---|`);
   for (const [id, h] of Object.entries(RULE_HELP)) lines.push(`| \`${id}\` | ${h.relatesTo} | ${h.helpUri} |`);
   return lines.join('\n') + '\n';

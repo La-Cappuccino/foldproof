@@ -4,7 +4,7 @@ Sourced, versioned descriptions of display configurations: phones, foldables in 
 
 Validate: `npx tsx src/cli.ts profiles validate`. List: `profiles list`. Inspect how the web adapter would emulate one: `profiles show <id>`.
 
-Research behind the numbers: [docs/research/02-device-profile-sources.md](../docs/research/02-device-profile-sources.md). Licence: [LICENSE](LICENSE) (CDLA-Permissive-2.0 for the corpus; upstream data keeps its own licence per source, see the repository NOTICE).
+Research behind the numbers: [docs/research/02-device-profile-sources.md](../docs/research/02-device-profile-sources.md). The generator writes only the profile JSON files; `LICENSE` and this README are maintained by hand. Licence: [LICENSE](LICENSE) (CDLA-Permissive-2.0 for the corpus; upstream data keeps its own licence per source, see the repository NOTICE).
 
 ## Provenance kinds
 
@@ -23,6 +23,7 @@ Rules the validator enforces:
 - `unknowns` is required even when empty and is a list of `{ field, reason }`, so a gap names the field it belongs to;
 - `logical` and `usable` may be empty for an inventory-only profile, but then `unknowns` must carry an entry whose `field` starts with `logical`;
 - a posture's `web.segments` is 2 exactly when the posture names an active `display_feature`, otherwise 1; a `folded` posture must name one;
+- a posture carries `orientation`, the orientation it and its display feature are expressed in; the resolver uses it when a scenario gives none, and the validator checks that the feature's css_px bounds fit the logical size of that (panel, orientation);
 - `keyboard_height` appears only with a cited measurement; otherwise it is absent and listed in `unknowns`;
 - registries that disagree are both recorded, linked through `conflicts_with`, never averaged;
 - browser capability support is not stored in profiles; it is generated into `engines/` from MDN browser-compat-data.
@@ -39,7 +40,7 @@ For each panel it emulates, a `logical` entry with `unit: "css_px"` and a `usabl
 
 Display features are in CSS px when the adapter can emulate them. A `fold` with `occlusion: "none"` is a guideline (flexible screen); a `hinge` with `occlusion: "full"` must be avoided by controls (Surface Duo is the canonical fixture).
 
-Feature bounds are written in the orientation the registry publishes them in, and the resolver does not rotate them. For book-fold phones a `vertical` fold uses portrait coordinates and a `horizontal` fold (tabletop) uses landscape coordinates, matching DevTools `vertical-spanned` and `horizontal-spanned`. Surface Duo is the reverse: its `vertical` hinge belongs to the 1114x720 landscape span and its `horizontal` hinge to the 720x1114 portrait span. A scenario that targets `tabletop` must set the matching `orientation`, otherwise the fold line lands at the wrong offset. Each feature's `derivation` names the orientation it assumes.
+Feature bounds are written in the orientation the registry publishes them in, and the resolver does not rotate them. For book-fold phones a `vertical` fold uses portrait coordinates and a `horizontal` fold (tabletop) uses landscape coordinates, matching DevTools `vertical-spanned` and `horizontal-spanned`: the fold stays at half the portrait width and reads as horizontal only when the phone is held landscape. Surface Duo and the Zenbook Fold are the reverse: their `vertical` hinge belongs to the landscape span (1114x720, 1706x1280) and their `horizontal` hinge to the portrait span (720x1114, 1280x1706). Each posture records that orientation in `postures[].orientation`, so `profiles show` and a scenario without an orientation hint resolve the right span; a scenario may still override it. Each feature's `derivation` names the orientation it assumes.
 
 ## Adding a profile
 
@@ -48,7 +49,7 @@ Feature bounds are written in the orientation the registry publishes them in, an
 3. Add `panels` (physical px, diagonal, ppi, Android density when known).
 4. Add `logical` sizes per panel and orientation with `scale`. Registry values are `published` with a `registry` string; anything you computed is `derived` with the formula.
 5. Add `usable` viewports. If you only know the panel, say so in `derivation` and set insets to 0; zero means "not published", never "none".
-6. Foldables: add `display_features` (fold or hinge, bounds, unit, occlusion) and `postures` (`closed`, `flat`, `half_opened`, `book`, `tabletop`, `tent`) with `web: { posture, segments }` and, for Android, `android_state`. If the real fold bounds are unknown, derive a centre line, state the derivation, and list the real bounds in `unknowns`.
+6. Foldables: add `display_features` (fold or hinge, bounds, unit, occlusion) and `postures` (`closed`, `flat`, `half_opened`, `book`, `tabletop`, `tent`) with `orientation`, `web: { posture, segments }` and, for Android, `android_state`. If the real fold bounds are unknown, derive a centre line, state the derivation, and list the real bounds in `unknowns`.
 7. Fill `inputs` and, for cars, `operating_states`. Add `keyboard_height` only with a cited measurement URL.
 8. If another profile or registry disagrees, add both and link them with `conflicts_with`. Do not pick a winner.
 9. Write `unknowns` as `{ field, reason }`. Anything you wanted to record but could not source goes here.

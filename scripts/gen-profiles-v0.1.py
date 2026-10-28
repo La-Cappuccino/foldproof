@@ -84,7 +84,7 @@ S_TN3192 = src('apple-tn3192', 'https://developer.apple.com/documentation/techno
                note='UIRequiresFullScreen deprecated in iPadOS 26; from iOS/iPadOS 27 the key no longer opts out of resizing. sizeRestrictions.minimumSize is a preferred minimum (example 500 pt); no system minimum or maximum window size published.')
 S_HIG_LAYOUT = src('apple-hig-layout', 'https://developer.apple.com/design/human-interface-guidelines/layout', 'Apple (Human Interface Guidelines)', 'vendor-fact',
                    quote="Respecting the safe area is essential to make sure system UI and hardware features like the Dynamic Island don't obstruct content and controls.", note='No numeric Dynamic Island or safe-area values on the page; no device dimension table (refers to Design Resources).')
-S_DERIV = src('foldproof-derivation', RESEARCH, 'foldproof (this corpus)', 'CC-BY-4.0', kind='derived',
+S_DERIV = src('foldproof-derivation', RESEARCH, 'foldproof (this corpus)', 'CDLA-Permissive-2.0', kind='derived',
               note='Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`.')
 
 
@@ -141,8 +141,9 @@ def inputs_touch(source_ref='playwright', keyboard='soft'):
     return {'pointer': 'coarse', 'hover': 'none', 'touch': True, 'keyboard': keyboard, 'source_ref': source_ref}
 
 
-def posture(name, panel, web_posture, android_state, source_ref, feature=None, angles=None):
-    p = {'name': name, 'panel': panel, 'web': {'posture': web_posture, 'segments': 2 if feature else 1}, 'android_state': android_state}
+def posture(name, panel, web_posture, android_state, source_ref, feature=None, angles=None, orientation='portrait'):
+    """orientation = the orientation this posture and its display feature are expressed in (resolver default)."""
+    p = {'name': name, 'panel': panel, 'orientation': orientation, 'web': {'posture': web_posture, 'segments': 2 if feature else 1}, 'android_state': android_state}
     if angles: p['hinge_angle_range_deg'] = list(angles)
     if feature: p['display_feature'] = feature
     p['source_ref'] = source_ref
@@ -188,7 +189,7 @@ def foldable_postures(prefix, posture_src='samsung-flex-mode', angles=None):
         posture('flat', 'inner', 'continuous', 'FLAT', posture_src, angles=a.get('flat')),
         posture('half_opened', 'inner', 'folded', 'HALF_OPENED', posture_src, feature=f'{prefix}-fold-vertical', angles=a.get('half_opened')),
         posture('book', 'inner', 'folded', 'HALF_OPENED', posture_src, feature=f'{prefix}-fold-vertical', angles=a.get('half_opened')),
-        posture('tabletop', 'inner', 'folded', 'HALF_OPENED', posture_src, feature=f'{prefix}-fold-horizontal', angles=a.get('half_opened')),
+        posture('tabletop', 'inner', 'folded', 'HALF_OPENED', posture_src, feature=f'{prefix}-fold-horizontal', angles=a.get('half_opened'), orientation='landscape'),
     ]
 
 
@@ -237,9 +238,9 @@ profiles.append(profile(
     ],
     postures=[
         posture('closed', 'single', 'continuous', None, 'w3c-device-posture'),
-        posture('flat', 'inner', 'continuous', 'FLAT', 'w3c-device-posture', feature='duo-hinge-vertical'),
-        posture('book', 'inner', 'folded', 'HALF_OPENED', 'w3c-device-posture', feature='duo-hinge-vertical'),
-        posture('tabletop', 'inner', 'folded', 'HALF_OPENED', 'w3c-device-posture', feature='duo-hinge-horizontal'),
+        posture('flat', 'inner', 'continuous', 'FLAT', 'w3c-device-posture', feature='duo-hinge-vertical', orientation='landscape'),
+        posture('book', 'inner', 'folded', 'HALF_OPENED', 'w3c-device-posture', feature='duo-hinge-vertical', orientation='landscape'),
+        posture('tabletop', 'inner', 'folded', 'HALF_OPENED', 'w3c-device-posture', feature='duo-hinge-horizontal', orientation='portrait'),
     ],
     inputs=inputs_touch('chrome-devtools'),
     unknowns=[
@@ -470,10 +471,10 @@ profiles.append(profile(
     ],
     postures=[
         posture('closed', 'single', 'continuous', None, 'w3c-device-posture'),
-        posture('flat', 'inner', 'continuous', None, 'w3c-device-posture'),
-        posture('half_opened', 'inner', 'folded', None, 'w3c-device-posture', feature='zenbook-fold-vertical'),
-        posture('book', 'inner', 'folded', None, 'w3c-device-posture', feature='zenbook-fold-vertical'),
-        posture('tabletop', 'inner', 'folded', None, 'w3c-device-posture', feature='zenbook-fold-horizontal'),
+        posture('flat', 'inner', 'continuous', None, 'w3c-device-posture', orientation='landscape'),
+        posture('half_opened', 'inner', 'folded', None, 'w3c-device-posture', feature='zenbook-fold-vertical', orientation='landscape'),
+        posture('book', 'inner', 'folded', None, 'w3c-device-posture', feature='zenbook-fold-vertical', orientation='landscape'),
+        posture('tabletop', 'inner', 'folded', None, 'w3c-device-posture', feature='zenbook-fold-horizontal', orientation='portrait'),
     ],
     inputs={'pointer': 'coarse', 'hover': 'none', 'touch': True, 'keyboard': 'soft', 'source_ref': 'chrome-devtools'},
     unknowns=[

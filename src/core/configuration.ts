@@ -64,9 +64,9 @@ export function resolveConfiguration(profile: Profile, target: ConfigurationTarg
   if (logicalForPanel.length === 0) {
     return { error: `profile ${profile.id} has no css_px logical size for panel "${panel}"`, notExecutable: true };
   }
-  // orientation: explicit → (same panel) previous → the panel's first published entry (its natural orientation)
+  // orientation: explicit → the posture's declared orientation → (same panel) previous → the panel's first published entry
   const samePanel = previous?.panel === panel;
-  const orientation: Orientation = target.orientation ?? (samePanel ? previous!.orientation : logicalForPanel[0]!.orientation);
+  const orientation: Orientation = target.orientation ?? postureDef?.orientation ?? (samePanel ? previous!.orientation : logicalForPanel[0]!.orientation);
   let logical = logicalForPanel.find((l) => l.orientation === orientation);
   let swapped = false;
   if (!logical) {
