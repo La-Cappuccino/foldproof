@@ -126,6 +126,20 @@ describe('state policies', () => {
     expect(dumped).not.toContain('secret-token-value');
     expect(dumped).toContain('http://app.test/login?<redacted>');
   });
+  it('URL redaction survives parser-differential inputs: brackets and quotes in the query, uppercase schemes, fragments', () => {
+    const cases = [
+      "see (http://app.test/p?token=sec)ret-part)",
+      "x [HTTPS://App.Test/p?a=1]secret-two]",
+      "y http://app.test/p?q=it's-secret-three' ok",
+      'z Http://app.test/p#frag-secret-four',
+      'w ws://app.test/socket?key=secret-five',
+    ];
+    for (const c of cases) {
+      const out = oracles.redactUrlsInText(c);
+      for (const secret of ['ret-part', 'secret-two', 'secret-three', 'secret-four', 'secret-five', 'token=', 'a=1', 'key=']) expect(out, c).not.toContain(secret);
+    }
+    expect(oracles.redactUrlsInText('plain text without urls')).toBe('plain text without urls');
+  });
   it('a failing custom probe is open, not pass — but a confirmed loss still fails', () => {
     const probe = { before: { ok: false, error: 'window.missing is undefined' }, after: { ok: false, error: 'window.missing is undefined' } };
     expect(oracles.statePreserved(snap(), snap(), policies, [], probe).kind).toBe('open');
