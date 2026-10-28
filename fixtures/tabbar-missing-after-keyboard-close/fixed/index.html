@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+<title>Search (fixed: tab bar visibility follows the current viewport, not a cached height)</title>
+<style>
+  body { margin: 0; font: 16px/1.4 system-ui, sans-serif; color: #111; }
+  .app { min-height: 100dvh; box-sizing: border-box; padding-bottom: 72px; }
+  header { padding: 12px 16px; border-bottom: 1px solid #ddd; }
+  h1 { margin: 0 0 8px; font-size: 20px; }
+  label { display: block; margin-bottom: 6px; }
+  input { width: 100%; box-sizing: border-box; min-height: 44px; font: inherit; padding: 8px 12px; border: 1px solid #999; border-radius: 6px; }
+  main { padding: 16px; }
+  p { margin: 0 0 12px; }
+  nav { position: fixed; left: 0; right: 0; bottom: 0; display: flex; background: #fff; border-top: 1px solid #ddd; }
+  nav a { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 56px; color: #222; text-decoration: none; }
+  nav.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Catalogue</h1>
+    <label for="q">Search the catalogue</label>
+    <input id="q" name="q" type="search" autocomplete="off">
+  </header>
+  <main>
+    <p>Type to search. Results appear here.</p>
+  </main>
+</div>
+<nav id="tabbar" aria-label="Main">
+  <a id="tab-home" href="#home">Home</a>
+  <a id="tab-search" href="#search">Search</a>
+  <a id="tab-profile" href="#profile">Profile</a>
+</nav>
+<script>
+  // FIXED: derive "keyboard is up" from the CURRENT viewport relative to the CURRENT screen on every
+  // resize. No cached height, so a rotation, Split View or unfold between keyboard-open and keyboard-close
+  // cannot strand the tab bar in the hidden state.
+  const tabbar = document.getElementById('tabbar');
+  function sync() {
+    const keyboardLikelyOpen = window.innerHeight < screen.height * 0.75;
+    tabbar.classList.toggle('hidden', keyboardLikelyOpen);
+  }
+  window.addEventListener('resize', sync);
+  sync();
+</script>
+</body>
+</html>

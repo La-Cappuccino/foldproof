@@ -1,0 +1,11 @@
+interface:
+  display_name: foldproof
+  short_description: Verify a web task survives fold, rotate, resize and keyboard transitions with emulated evidence.
+  default_prompt: Run foldproof against this app for the task I describe and summarise the report, including what stayed untested.
+  brand_color: "#1F6FEB"
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - node
+    - npx

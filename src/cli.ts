@@ -110,5 +110,7 @@ scenarios
 
 const { registerRunCommands } = await import('./commands/run.js');
 registerRunCommands(program);
+const { registerQuickCommand } = await import('./commands/quick.js');
+registerQuickCommand(program);
 
 await program.parseAsync(process.argv);

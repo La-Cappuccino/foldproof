@@ -1,0 +1,18 @@
+foldproof: 1
+id: rotate-loses-scroll-and-selection-broken
+title: "Broken: rotating mid-read jumps to the top and drops focus and the selection in the margin note"
+profiles: [google-pixel-10-pro, google-pixel-tablet]
+task:
+  url: /rotate-loses-scroll-and-selection/broken/
+  ready: { selector: "#save" }
+  controls: ["#save"]
+  state: { form: all, focus: same-element, selection: exact, scroll: anchor }
+  setup:
+    - { scrollTo: "#p10" }
+    - { fill: "#note", value: "draft" }
+    - { focus: "#note", select: [1, 3] }
+steps:
+  - transition: rotate
+    assert: [reachable, state-preserved, no-remount]
+expect: { verdict: fail, rules: [state-preserved] }
+tags: [fixture, rotation, phone, tablet]

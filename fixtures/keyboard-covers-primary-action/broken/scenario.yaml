@@ -1,0 +1,19 @@
+foldproof: 1
+id: keyboard-covers-primary-action-broken
+title: "Broken: the soft keyboard covers the pinned Pay button; the task cannot be finished without dismissing the keyboard"
+profiles: [google-pixel-10-pro]
+task:
+  url: /keyboard-covers-primary-action/broken/
+  ready: { selector: "#pay" }
+  controls: ["#pay"]
+  state: { form: all, focus: same-element, selection: exact, scroll: anchor }
+  setup:
+    - { fill: "#amount", value: "1250" }
+    - { focus: "#amount" }
+steps:
+  - transition: { kind: keyboard-open, to: { keyboard: { height: 300 } } }
+    assert: [reachable, state-preserved]
+  - transition: keyboard-close
+    assert: [reachable, state-preserved]
+expect: { verdict: fail, rules: [reachable] }
+tags: [fixture, keyboard, phone]

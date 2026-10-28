@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+<title>Search (broken: the tab bar never returns after the keyboard closes)</title>
+<style>
+  body { margin: 0; font: 16px/1.4 system-ui, sans-serif; color: #111; }
+  .app { min-height: 100dvh; box-sizing: border-box; padding-bottom: 72px; }
+  header { padding: 12px 16px; border-bottom: 1px solid #ddd; }
+  h1 { margin: 0 0 8px; font-size: 20px; }
+  label { display: block; margin-bottom: 6px; }
+  input { width: 100%; box-sizing: border-box; min-height: 44px; font: inherit; padding: 8px 12px; border: 1px solid #999; border-radius: 6px; }
+  main { padding: 16px; }
+  p { margin: 0 0 12px; }
+  nav { position: fixed; left: 0; right: 0; bottom: 0; display: flex; background: #fff; border-top: 1px solid #ddd; }
+  nav a { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 56px; color: #222; text-decoration: none; }
+  nav.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Catalogue</h1>
+    <label for="q">Search the catalogue</label>
+    <input id="q" name="q" type="search" autocomplete="off">
+  </header>
+  <main>
+    <p>Type to search. Results appear here.</p>
+  </main>
+</div>
+<nav id="tabbar" aria-label="Main">
+  <a id="tab-home" href="#home">Home</a>
+  <a id="tab-search" href="#search">Search</a>
+  <a id="tab-profile" href="#profile">Profile</a>
+</nav>
+<script>
+  // BROKEN: the window height is read ONCE at load and treated as "the keyboard-closed height" forever.
+  // The tab bar hides when the keyboard shrinks the viewport (legitimate) but is only shown again when
+  // innerHeight is EXACTLY the cached value. After a rotation (or Split View, or an unfold) the closed
+  // height differs, so the tab bar never comes back. Real-world class: ionic-framework #31642
+  // ("ion-tab-bar stays hidden after keyboard closes once window height changed"), docs/research/04 §1.2.
+  const tabbar = document.getElementById('tabbar');
+  const initialHeight = window.innerHeight;
+  window.addEventListener('resize', () => {
+    if (window.innerHeight < initialHeight - 100) tabbar.classList.add('hidden');
+    else if (window.innerHeight === initialHeight) tabbar.classList.remove('hidden');
+  });
+</script>
+</body>
+</html>

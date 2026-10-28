@@ -1,0 +1,47 @@
+{
+  "skill_name": "foldproof",
+  "evals": [
+    {
+      "id": "reads-untested-before-claiming",
+      "prompt": "Here is foldproof-report/report.md from a run against our compose page on google-pixel-9-pro-fold. Did the draft survive unfolding? Report shows state-preserved pass, no-remount pass, env-self-check open at step 1 with 'emulation not effective: segments expected 2, observed 1'. Can we ship?",
+      "expected_output": "States that the transition result is inconclusive (open) because the environment self-check failed, so the state-preserved and no-remount passes are blocked and cannot be trusted; recommends running doctor / checking Chromium and re-running; does not say the draft survived.",
+      "files": [],
+      "assertions": ["mentions env-self-check or 'emulation not effective'", "does not claim pass or ship-ready", "names the exit code 2 or 'inconclusive'"]
+    },
+    {
+      "id": "writes-valid-scenario-with-operate",
+      "prompt": "Write a foldproof scenario for our checkout at /checkout: the user types a card number in #card and presses #pay; after unfolding a Pixel 9 Pro Fold the payment must still go through and show #receipt.",
+      "expected_output": "A YAML with foldproof: 1, profiles [google-pixel-9-pro-fold], start { posture: closed }, task.url /checkout, controls [#pay, #card], a fill setup step, steps: unfold with assert preset@1, then operate { target: '#pay', expect: { visible: '#receipt' } }, and a note to validate with scenarios validate.",
+      "files": [],
+      "assertions": ["contains 'foldproof: 1'", "contains an operate step with expect visible #receipt", "controls include #pay and #card", "mentions scenarios validate"]
+    },
+    {
+      "id": "keyboard-approximation-honesty",
+      "prompt": "Our fixed footer CTA passed foldproof's keyboard-open step on google-pixel-10-pro. Does that mean it is not covered by the keyboard on real Android phones?",
+      "expected_output": "Explains that keyboard-open is an approximation (overlay for resizes-visual, shrink for resizes-content), names which one applied per the report's emulation field, and says a real-device check is still needed; does not claim real-keyboard coverage.",
+      "files": [],
+      "assertions": ["mentions keyboard-overlay-approx or keyboard-shrink", "says real keyboard not emulated", "does not say 'proven'"]
+    },
+    {
+      "id": "legit-change-is-not-loss",
+      "prompt": "foldproof fails state-preserved on our editor after rotate with 'localStorage key draft changed' but our autosave intentionally rewrites the draft with a timestamp inside the JSON. Should we disable autosave?",
+      "expected_output": "No: narrow the storage policy (declare only the keys whose value must be identical, or move the timestamp to a separate key such as draft:savedAt which is an allowed addition), keep the app behaviour; cites the state-policies reference.",
+      "files": [],
+      "assertions": ["recommends adjusting the storage policy, not the app", "mentions additions are allowed or a separate key"]
+    },
+    {
+      "id": "negative-does-not-overclaim-wcag",
+      "prompt": "All foldproof rules passed for our app on four foldable profiles. Write the one-line statement for our accessibility conformance report.",
+      "expected_output": "Refuses to word it as WCAG conformance; offers instead an evidence statement: emulated Chromium runs on named profiles passed foldproof's transition checks relating to WCAG 1.3.4/1.4.10 and Google adaptive Config_Changes; physical-device and full WCAG evaluation remain outstanding.",
+      "files": [],
+      "assertions": ["does not state WCAG conformance", "uses 'relates to' or equivalent", "mentions emulated evidence"]
+    },
+    {
+      "id": "round-trip-and-settle",
+      "prompt": "Users report the editor empties when they fold and unfold a Galaxy Fold quickly, but our single unfold scenario passes. What should the scenario look like?",
+      "expected_output": "A multi-step scenario: unfold, fold, unfold with assert on the last step, with per-step settle overrides (min_ms 0 on the fast steps, min_ms around 1200 on the final step) so a debounced handler fires inside the observation window; references the stale-async-layout-after-round-trip fixture.",
+      "files": [],
+      "assertions": ["uses three steps unfold/fold/unfold", "mentions settle.min_ms", "mentions the round-trip fixture or debounced handler"]
+    }
+  ]
+}
