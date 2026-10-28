@@ -13,7 +13,8 @@ profiles and reproducible failure fixtures, not in a screenshot at one size.
 - [x] P1 Research fan-out (last30days, Perplexity ×4, 4 agents) → docs/research/00–05 (all in Brain)
 - [x] P2 Synthesis → docs/SPEC-v1.md (goal, non-goals, slices, acceptance) — working name foldproof
 - [x] P3 Quad-council review (4/4 seats: ship with changes) → docs/plan/council-2026-10-28.md → SPEC v1.1
-- [ ] P4 Slice 1 (vertical): revised schemas, recorder, attach/transition/assert (unfold), 3 oracles + env self-check, fixture 2, SARIF+MD
+- [x] P4 Slice 1 (vertical) DONE 2026-10-28 12:25: fixture draft-lost-on-unfold broken fails exactly state-preserved+no-remount on Surface Duo + Pixel 9 Pro Fold; fixed passes incl. hinge + operate; exit 0
+  - open item: Duo portrait-spanned (720×1114) path observed 726×1124 once before the orientation fix — re-check when tabletop scenarios land
 - [ ] P5 Slice 2: all transitions (rotate, resize, keyboard ×2, fold/posture), operate/outcome, steps, settle, coverage manifest, exit codes, JUnit, masking
 - [ ] P6 Slice 3: fixtures 1,3–7 + positive controls; `fixtures verify`; CI matrix (3 runs, CPU throttle)
 - [ ] P7 Slice 4: skill package + launcher + manifests + evals + zero-config run

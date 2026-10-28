@@ -1,0 +1,21 @@
+foldproof
+Copyright 2026 Allan Kisuule
+
+Licensed under the Apache License, Version 2.0 (code) — see LICENSE.
+The device-profile corpus in profiles/ is licensed under CDLA-Permissive-2.0 — see profiles/LICENSE.
+
+This product includes data derived from third-party sources, each retained under its own terms and
+cited per value in profiles/*.json (`sources[]`: url, publisher, inspection date, licence, revision):
+
+- Chrome DevTools emulated device descriptors (EmulatedDevices.ts), Chromium Authors — BSD-3-Clause.
+  https://chromium.googlesource.com/devtools/devtools-frontend
+- Playwright device descriptors (deviceDescriptorsSource.json), Microsoft Corporation — Apache-2.0.
+  https://github.com/microsoft/playwright
+- Android Open Source Project SDK device definitions (devices.xml, nexus.xml, tv.xml, automotive.xml),
+  The Android Open Source Project — Apache-2.0. https://android.googlesource.com/platform/tools/base
+- MDN browser-compat-data, Mozilla Contributors — CC0-1.0. https://github.com/mdn/browser-compat-data
+- Vendor technical specifications quoted as facts (Apple, Google, Samsung, Microsoft, OnePlus, LG):
+  cited verbatim as "vendor-fact"; facts are not copyrighted, quotes are attributed.
+
+Transformed values are marked `kind: derived` with their formula; nothing in the corpus is marked
+`measured` unless this project measured it with the named tool on the named date.

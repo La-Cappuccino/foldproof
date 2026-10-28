@@ -4,7 +4,7 @@ Sourced, versioned descriptions of display configurations: phones, foldables in 
 
 Validate: `npx tsx src/cli.ts profiles validate`. List: `profiles list`. Inspect how the web adapter would emulate one: `profiles show <id>`.
 
-Research behind the numbers: [docs/research/02-device-profile-sources.md](../docs/research/02-device-profile-sources.md). Licence: [LICENSE](LICENSE) (CC BY 4.0 for the corpus; upstream data keeps its own licence per source).
+Research behind the numbers: [docs/research/02-device-profile-sources.md](../docs/research/02-device-profile-sources.md). Licence: [LICENSE](LICENSE) (CDLA-Permissive-2.0 for the corpus; upstream data keeps its own licence per source, see the repository NOTICE).
 
 ## Provenance kinds
 

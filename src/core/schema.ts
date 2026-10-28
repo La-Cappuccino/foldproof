@@ -229,6 +229,17 @@ export const Profile = z
     p.usable.forEach((x, i) => {
       if (!panelNames.has(x.panel)) ctx.addIssue({ code: 'custom', message: `usable entry refers to undeclared panel "${x.panel}"`, path: ['usable', i, 'panel'] });
     });
+    for (const [name, arr] of [
+      ['logical', p.logical],
+      ['usable', p.usable],
+    ] as const) {
+      const seen = new Set<string>();
+      arr.forEach((x, i) => {
+        const k = `${x.panel}/${x.orientation}/${x.unit}`;
+        if (seen.has(k)) ctx.addIssue({ code: 'custom', message: `duplicate ${name} entry for ${k}`, path: [name, i] });
+        seen.add(k);
+      });
+    }
     if (p.logical.length === 0 && !p.unknowns.some((u) => u.field.startsWith('logical'))) {
       ctx.addIssue({ code: 'custom', message: 'a profile without logical sizes must list "logical" in unknowns with a reason', path: ['unknowns'] });
     }
@@ -374,7 +385,14 @@ export const Scenario = z
       })
       .strict(),
     steps: z.array(Step).default([]),
-    settle: z.object({ quiet_frames: z.number().int().min(1).default(2), max_ms: z.number().int().min(100).default(3000) }).strict().default({ quiet_frames: 2, max_ms: 3000 }),
+    settle: z
+      .object({
+        quiet_frames: z.number().int().min(1).default(2),
+        min_ms: z.number().int().min(0).default(0).describe('observe at least this long before accepting quiescence (catches debounced handlers)'),
+        max_ms: z.number().int().min(100).default(3000),
+      })
+      .strict()
+      .default({ quiet_frames: 2, min_ms: 0, max_ms: 3000 }),
     static: z.array(RuleId.extract(['no-horizontal-overflow', 'target-size'])).default([]),
     transient: z.array(Locator).default([]),
     mask: z.array(Locator).default([]).describe('selectors masked in screenshots'),

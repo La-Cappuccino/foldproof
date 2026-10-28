@@ -172,7 +172,7 @@ export const RECORDER_SOURCE = String.raw`
     url: location.href,
   });
   // Observe until quiescence: quietFrames consecutive animation frames with no mutation and no viewport change.
-  fp.observe = ({ quietFrames, maxMs }) => new Promise((resolve) => {
+  fp.observe = ({ quietFrames, minMs = 0, maxMs }) => new Promise((resolve) => {
     const t0 = now();
     const frames = [];
     let quiet = 0, lastMut = fp.mutations, lastW = innerWidth, lastH = innerHeight, lastDpr = devicePixelRatio;
@@ -183,7 +183,7 @@ export const RECORDER_SOURCE = String.raw`
       const stable = fp.mutations === lastMut && innerWidth === lastW && innerHeight === lastH && devicePixelRatio === lastDpr;
       lastMut = fp.mutations; lastW = innerWidth; lastH = innerHeight; lastDpr = devicePixelRatio;
       quiet = stable ? quiet + 1 : 0;
-      if (quiet >= quietFrames) return resolve({ settled: true, ms: Math.round(t - t0), frames });
+      if (quiet >= quietFrames && t - t0 >= minMs) return resolve({ settled: true, ms: Math.round(t - t0), frames });
       if (t - t0 > maxMs) return resolve({ settled: false, ms: Math.round(t - t0), frames });
       requestAnimationFrame(tick);
     };
