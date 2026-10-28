@@ -30,12 +30,12 @@ The "Untested" ledger (coverage manifest with `open`/`review`/`notApplicable` re
 - Car and TV execution — profiles exist; web adapter reports `notApplicable` with the reason.
 - `input-change` transitions (no driver, no rule in v0.1 → not in the schema).
 - A device allowlist that drives layout. Profiles seed tests; layouts respond to space and capabilities.
-- Firefox/WebKit fold emulation (no engine supports it); they get viewport/rotation/media parity, labelled.
+- Firefox/WebKit (no engine supports fold emulation); v0.1 refuses them outright rather than reporting partial results. Parity mode is a v0.2 item.
 - WCAG conformance claims. Rules link to the clause they *relate to*; a pass is evidence, not conformance.
 
 ## 4. Constraints and verified platform facts
 
-- **Stack:** TypeScript, Node ≥ 20, ESM; `playwright` peer `>=1.64 <2` (Chromium 156 bundled). Plain-HTML fixtures served from `http://localhost` by the CLI (secure context; viewport meta declared).
+- **Stack:** TypeScript, Node ≥ 22.12, ESM; `playwright` peer `>=1.64 <2` (Chromium 156 bundled). Plain-HTML fixtures served from `http://localhost` by the CLI (secure context; viewport meta declared).
 - **Verified 2026-10-28 (research 00 + council corrections):**
   - Viewport segments: inline `displayFeature` on `Emulation.setDeviceMetricsOverride` works while Playwright's viewport emulation is active; the dedicated `setDisplayFeaturesOverride` is a no-op there. One feature only (crbug 40113439).
   - Posture: `Emulation.setDevicePostureOverride` flips `(device-posture: folded)` live, **if** a MediaQueryList for it exists before the override (sentinel via `addInitScript`). On localhost `navigator.devicePosture` and `navigator.virtualKeyboard` exist (the earlier "absent" finding was an about:blank artefact).

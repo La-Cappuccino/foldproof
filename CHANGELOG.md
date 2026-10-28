@@ -31,6 +31,6 @@ fixture benchmark.
 - `foldproof quick <url>` zero-config smoke run.
 
 ### Known limits
-- Chromium only for folds and posture; Firefox/WebKit viewport-only.
+- Chromium only; the adapter refuses Firefox and WebKit rather than reporting partial results. Node ≥ 22.12.
 - Keyboard is approximated; no engine shows a real keyboard.
 - Android and iOS adapters are documented recipes, not implementations (v0.2).

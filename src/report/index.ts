@@ -2,6 +2,8 @@
  * Evidence records: coverage manifest, SARIF 2.1.0 (canonical), JUnit XML (CI side-channel), Markdown (humans + agents).
  */
 import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import type { RunReport, ScenarioResult, CoverageRow, ResultKind, Finding } from '../core/types.js';
 import { RULE_HELP, ORACLE_VERSION } from '../oracles/index.js';
 import type { Scenario, Profile, RuleId } from '../core/schema.js';
@@ -30,7 +32,7 @@ export function reconcileCoverage(manifest: CoverageRow[], results: ScenarioResu
     const res = results.find((r) => r.scenarioId === row.scenarioId && r.profileId === row.profileId);
     if (!res) return { ...row, kind: 'open', reason: 'not executed' };
     if (res.verdict === 'notApplicable') return { ...row, kind: 'notApplicable', reason: res.steps[0]?.findings[0]?.message ?? 'profile not executable' };
-    const step = res.steps.find((s) => s.index === row.step && s.kind !== 'operate') ?? res.steps[row.step];
+    const step = res.steps.find((s) => s.index === row.step);
     const findings = step?.findings.filter((f) => f.rule === row.rule) ?? [];
     if (!findings.length) return { ...row, kind: 'open', reason: 'not executed (runner stopped early)' };
     const worst = pickWorst(findings.map((f) => f.kind));
@@ -110,8 +112,10 @@ export function toSarif(report: RunReport): Record<string, unknown> {
   };
 }
 
+const DIAGNOSTIC_RULES = new Set(['no-horizontal-overflow', 'target-size', 'straddles-fold-line']);
+
 function toUri(p: string): string {
-  return p.startsWith('file:') ? p : `file://${p.startsWith('/') ? '' : '/'}${p}`;
+  return p.startsWith('file:') || /^[a-z]+:\/\//.test(p) ? p : pathToFileURL(path.resolve(p)).href;
 }
 
 // ---------- JUnit ----------
@@ -128,7 +132,11 @@ export function toJUnit(report: RunReport): string {
       for (const f of s.findings) {
         total++;
         const name = `step ${s.index} ${s.label} :: ${f.rule}`;
-        if (f.kind === 'fail') {
+        if (f.kind === 'fail' && DIAGNOSTIC_RULES.has(f.rule)) {
+          // diagnostics never fail the run: surface as skipped-with-warning so CI dashboards agree with the exit code
+          skipped++;
+          cases.push(`    <testcase name="${esc(name)}" classname="${esc(`${r.scenarioId}.${r.profileId}`)}"><skipped message="${esc(`warning (diagnostic): ${f.message}`)}"/></testcase>`);
+        } else if (f.kind === 'fail') {
           failures++;
           cases.push(`    <testcase name="${esc(name)}" classname="${esc(`${r.scenarioId}.${r.profileId}`)}"><failure message="${esc(f.message)}" type="${f.rule}"/></testcase>`);
         } else if (f.kind === 'pass') cases.push(`    <testcase name="${esc(name)}" classname="${esc(`${r.scenarioId}.${r.profileId}`)}"/>`);

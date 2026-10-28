@@ -1,16 +1,13 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
 import { loadProfiles, loadScenarios, formatIssues } from './core/load.js';
 import { resolveConfiguration, isResolveError, expectedSignals } from './core/configuration.js';
 import { executablePanels } from './core/schema.js';
+import { packageInfo } from './core/package-root.js';
 
-const require = createRequire(import.meta.url);
-const pkg = require('../package.json') as { version: string };
-
-export const PKG_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const pkg = packageInfo();
+export const PKG_ROOT = pkg.root;
 
 const program = new Command();
 program

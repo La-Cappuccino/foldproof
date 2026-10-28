@@ -46,6 +46,8 @@ jobs:
         run: FOLDPROOF_REPEAT=3 npm run test:fixtures
       - name: fixture matrix under 4x CPU throttle
         run: FOLDPROOF_REPEAT=1 FOLDPROOF_CPU_THROTTLE=4 npm run test:fixtures
+      - name: packed-package smoke test (build → pack → install into an empty dir → run)
+        run: npm run smoke:pack
       - uses: actions/upload-artifact@v4
         if: always()
         with:

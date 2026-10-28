@@ -11,7 +11,19 @@ export interface ExpectedSignals {
   cssPosture: 'continuous' | 'folded';
   segments: 1 | 2;
   segmentRects: { x: number; y: number; w: number; h: number }[] | null;
-  orientation: 'portrait' | 'landscape';
+  /** what CDP screenOrientation was set to (the device's physical orientation) */
+  screenOrientation: 'portrait' | 'landscape';
+  /** what `(orientation: …)` evaluates to for the layout viewport (a split window can differ from the screen) */
+  cssOrientation: 'portrait' | 'landscape';
+}
+
+export interface DisplayFeatureEmulation {
+  orientation: 'vertical' | 'horizontal';
+  offset: number;
+  maskLength: number;
+  occlusion: 'none' | 'full';
+  /** true when derived by rotating the profile's feature with the panel (no registry entry for this orientation) */
+  rotated?: boolean;
 }
 
 export interface ResolvedConfiguration {
@@ -22,23 +34,22 @@ export interface ResolvedConfiguration {
   posture: PostureName | null;
   /** CSS px layout viewport before any keyboard approximation */
   viewport: { w: number; h: number };
+  /** an explicit viewport set by resize/split; carried across keyboard transitions on the same panel/orientation */
+  explicitViewport: { w: number; h: number } | null;
   deviceScaleFactor: number;
   isMobile: boolean;
   hasTouch: boolean;
-  displayFeature: { orientation: 'vertical' | 'horizontal'; offset: number; maskLength: number; occlusion: 'none' | 'full' } | null;
+  displayFeature: DisplayFeatureEmulation | null;
   webPosture: 'continuous' | 'folded';
   expectedSegments: 1 | 2;
-  /** requested soft keyboard; the adapter chooses the approximation and reports it */
   keyboard: { height: number } | null;
   inputs: { pointer: 'fine' | 'coarse' | 'none'; hover: 'hover' | 'none' };
   sourceRefs: string[];
-  /** anything the profile could not supply; surfaces in the report */
   gaps: string[];
 }
 
 export interface ResolveError {
   error: string;
-  /** true when the profile simply is not executable on the web adapter (→ notApplicable) */
   notExecutable?: boolean;
 }
 
@@ -50,7 +61,6 @@ export function resolveConfiguration(profile: Profile, target: ConfigurationTarg
   const gaps: string[] = [];
   const sourceRefs = new Set<string>();
 
-  // panel: explicit → inferred from the requested posture → previous → the only panel → inner
   const postureOwner = target.posture && !target.panel ? profile.postures.find((p) => p.name === target.posture)?.panel : undefined;
   const panel: PanelName = target.panel ?? postureOwner ?? previous?.panel ?? (profile.panels.length === 1 ? profile.panels[0]!.name : 'inner');
   if (!profile.panels.some((p) => p.name === panel)) return { error: `profile ${profile.id} has no panel "${panel}"` };
@@ -61,10 +71,8 @@ export function resolveConfiguration(profile: Profile, target: ConfigurationTarg
   if (postureDef && postureDef.panel !== panel) return { error: `posture "${posture}" belongs to panel "${postureDef.panel}", not "${panel}"` };
 
   const logicalForPanel = profile.logical.filter((l) => l.panel === panel && l.unit === 'css_px');
-  if (logicalForPanel.length === 0) {
-    return { error: `profile ${profile.id} has no css_px logical size for panel "${panel}"`, notExecutable: true };
-  }
-  // orientation: explicit → the posture's declared orientation → (same panel) previous → the panel's first published entry
+  if (logicalForPanel.length === 0) return { error: `profile ${profile.id} has no css_px logical size for panel "${panel}"`, notExecutable: true };
+
   const samePanel = previous?.panel === panel;
   const orientation: Orientation = target.orientation ?? postureDef?.orientation ?? (samePanel ? previous!.orientation : logicalForPanel[0]!.orientation);
   let logical = logicalForPanel.find((l) => l.orientation === orientation);
@@ -78,9 +86,11 @@ export function resolveConfiguration(profile: Profile, target: ConfigurationTarg
   sourceRefs.add(logical.source_ref);
 
   const usable = profile.usable.find((u) => u.panel === panel && u.orientation === orientation && u.unit === 'css_px');
+  const sameFrame = samePanel && previous!.orientation === orientation;
+  const explicitViewport = target.viewport ? { w: target.viewport.w, h: target.viewport.h } : sameFrame ? (previous!.explicitViewport ?? null) : null;
   let viewport: { w: number; h: number };
-  if (target.viewport) {
-    viewport = { w: target.viewport.w, h: target.viewport.h };
+  if (explicitViewport) {
+    viewport = { ...explicitViewport };
   } else if (usable) {
     viewport = { w: usable.layout_viewport.w, h: usable.layout_viewport.h };
     sourceRefs.add(usable.source_ref);
@@ -93,7 +103,7 @@ export function resolveConfiguration(profile: Profile, target: ConfigurationTarg
 
   const keyboard = target.keyboard ? { height: target.keyboard.height } : previous?.keyboard ?? null;
 
-  let displayFeature: ResolvedConfiguration['displayFeature'] = null;
+  let displayFeature: DisplayFeatureEmulation | null = null;
   let webPosture: 'continuous' | 'folded' = 'continuous';
   let expectedSegments: 1 | 2 = 1;
   if (postureDef) {
@@ -107,10 +117,28 @@ export function resolveConfiguration(profile: Profile, target: ConfigurationTarg
         expectedSegments = 1;
       } else {
         sourceRefs.add(feat.source_ref);
-        displayFeature =
+        const native: DisplayFeatureEmulation =
           feat.orientation === 'vertical'
             ? { orientation: 'vertical', offset: feat.bounds.x, maskLength: feat.bounds.w, occlusion: feat.occlusion }
             : { orientation: 'horizontal', offset: feat.bounds.y, maskLength: feat.bounds.h, occlusion: feat.occlusion };
+        // the feature is published in the posture's orientation; if the panel is rotated, the same physical
+        // hinge becomes the other axis at the same offset (a vertical hinge at x=540 of a landscape span is a
+        // horizontal hinge at y=540 of the portrait span)
+        // registries publish a feature in the panel's natural (first published) orientation unless the posture says otherwise
+        const nativeOrientation: Orientation = postureDef.orientation ?? logicalForPanel[0]!.orientation;
+        if (nativeOrientation !== orientation) {
+          displayFeature = { ...native, orientation: native.orientation === 'vertical' ? 'horizontal' : 'vertical', rotated: true };
+          gaps.push(`display feature ${feat.id} rotated with the panel from ${nativeOrientation} to ${orientation} (derived: same offset ${native.offset}, same mask ${native.maskLength})`);
+        } else {
+          displayFeature = native;
+        }
+        // sanity: the feature must fit the viewport along its axis
+        const extent = displayFeature.orientation === 'vertical' ? viewport.w : viewport.h;
+        if (displayFeature.offset + displayFeature.maskLength > extent + 1) {
+          gaps.push(`display feature ${feat.id} (${displayFeature.orientation} at ${displayFeature.offset}+${displayFeature.maskLength}) does not fit the ${viewport.w}x${viewport.h} viewport; emulating without segments`);
+          displayFeature = null;
+          expectedSegments = 1;
+        }
       }
     }
   }
@@ -124,12 +152,13 @@ export function resolveConfiguration(profile: Profile, target: ConfigurationTarg
     orientation,
     posture,
     viewport,
+    explicitViewport,
     deviceScaleFactor: logical.scale,
     isMobile: coarse && profile.inputs.touch,
     hasTouch: profile.inputs.touch,
     displayFeature,
     webPosture,
-    expectedSegments,
+    expectedSegments: displayFeature ? 2 : 1,
     keyboard,
     inputs: { pointer: profile.inputs.pointer, hover: profile.inputs.hover },
     sourceRefs: [...sourceRefs],
@@ -161,7 +190,8 @@ export function expectedSignals(cfg: ResolvedConfiguration, effectiveViewport?: 
     cssPosture: cfg.webPosture,
     segments: cfg.displayFeature ? 2 : 1,
     segmentRects,
-    orientation: vp.w >= vp.h ? 'landscape' : 'portrait',
+    screenOrientation: cfg.orientation,
+    cssOrientation: vp.w >= vp.h ? 'landscape' : 'portrait',
   };
 }
 
@@ -169,7 +199,6 @@ export function applyTransition(profile: Profile, current: ResolvedConfiguration
   const to: ConfigurationTarget = { ...transition.to };
   switch (transition.kind) {
     case 'fold': {
-      // fold = the profile's closed posture (whichever panel owns it); else half_opened on the current panel
       if (!to.posture) {
         const closed = profile.postures.find((p) => p.name === 'closed' && (!to.panel || p.panel === to.panel));
         const half = profile.postures.find((p) => p.name === 'half_opened' && p.panel === (to.panel ?? current.panel));
@@ -181,7 +210,6 @@ export function applyTransition(profile: Profile, current: ResolvedConfiguration
       break;
     }
     case 'unfold': {
-      // unfold = the profile's flat posture (prefer the inner panel)
       if (!to.posture) {
         const flats = profile.postures.filter((p) => p.name === 'flat' && (!to.panel || p.panel === to.panel));
         const pick = flats.find((p) => p.panel === 'inner') ?? flats[0];
@@ -207,10 +235,8 @@ export function applyTransition(profile: Profile, current: ResolvedConfiguration
         else return { error: `keyboard-open requires to.keyboard.height (profile ${profile.id} has no sourced keyboard_height)` };
       }
       break;
-    case 'keyboard-close': {
-      const r = resolveConfiguration(profile, { ...to, keyboard: undefined }, { ...current, keyboard: null });
-      return r;
-    }
+    case 'keyboard-close':
+      return resolveConfiguration(profile, { ...to, keyboard: undefined }, { ...current, keyboard: null });
   }
   return resolveConfiguration(profile, to, current);
 }
