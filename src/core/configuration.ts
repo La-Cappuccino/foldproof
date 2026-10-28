@@ -74,7 +74,9 @@ export function resolveConfiguration(profile: Profile, target: ConfigurationTarg
   if (logicalForPanel.length === 0) return { error: `profile ${profile.id} has no css_px logical size for panel "${panel}"`, notExecutable: true };
 
   const samePanel = previous?.panel === panel;
-  const orientation: Orientation = target.orientation ?? postureDef?.orientation ?? (samePanel ? previous!.orientation : logicalForPanel[0]!.orientation);
+  const samePosture = samePanel && previous!.posture === posture;
+  // orientation: explicit → (unchanged panel+posture) previous → the posture's declared orientation → (same panel) previous → first entry
+  const orientation: Orientation = target.orientation ?? (samePosture ? previous!.orientation : postureDef?.orientation ?? (samePanel ? previous!.orientation : logicalForPanel[0]!.orientation));
   let logical = logicalForPanel.find((l) => l.orientation === orientation);
   let swapped = false;
   if (!logical) {
@@ -191,7 +193,7 @@ export function expectedSignals(cfg: ResolvedConfiguration, effectiveViewport?: 
     segments: cfg.displayFeature ? 2 : 1,
     segmentRects,
     screenOrientation: cfg.orientation,
-    cssOrientation: vp.w >= vp.h ? 'landscape' : 'portrait',
+    cssOrientation: vp.w > vp.h ? 'landscape' : 'portrait', // CSS: landscape iff width > height; square is portrait
   };
 }
 

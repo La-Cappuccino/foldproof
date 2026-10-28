@@ -18,7 +18,7 @@ profiles and reproducible failure fixtures, not in a screenshot at one size.
 - [x] P5 Slice 2 DONE: rotate/resize/keyboard(shrink+overlay)/fold/unfold/posture, operate, steps + per-step settle (min_ms), coverage manifest, exit codes 0–3, JUnit, masking, axe target-size, SARIF validated against OASIS schema
 - [x] P6 Slice 3 DONE: 9 fixtures / 25 scenarios all match (7 broken fail only their named rules, 2 positives + all fixed pass); CI matrix 3 runs + 4× CPU throttle in ci.yml; `npm run test:fixtures` green locally
 - [x] P7 Slice 4 DONE: SKILL.md (98 lines) + launcher + plugin manifests + evals (6) + codex metadata + templates; `skills-ref validate` ✓, `claude plugin validate --strict` ✓; `quick <url>` works (3 controls discovered, pass ×2)
-- [ ] P8 Slice 5: corpus (agent, parallel), engines from BCD, README/CONTRIBUTING/NOTICE/licences, GitHub repo + CI + SARIF Action, npm pack; Codex review; council score
+- [~] P8 Slice 5: corpus 18 ✓ (posture.orientation filled, Zenbook registry error recorded), engines from BCD ✓, README/CONTRIBUTING/NOTICE/licences/CHANGELOG ✓, CI (3 runs + throttle + packed smoke + SARIF upload) ✓, council scored ✓; Codex round 1 = "not ready" (6 blocking/15 major/4 minor) → all 25 fixed in 733daef, gates green (77 unit, 25/25 fixtures, 5/5 examples, doctor, smoke:pack); Codex round 2 in flight; GitHub repo + push + draft PR pending the verdict
 - [ ] P9 Commit/push, Brain persist, final mark-it-down, report
 
 ## Decisions log (append as made)

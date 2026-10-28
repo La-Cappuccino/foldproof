@@ -85,8 +85,10 @@ Exit codes: `0` all required pass · `1` any fail · `2` required coverage incon
 - **Legitimate change is not loss**: autosave may add storage keys, media may advance, reflow may change
   `scrollY`. If a correct app fails `state-preserved`, narrow the policy (`storage: [keys]`,
   `scroll_tolerance_px`), do not weaken the app.
-- **Never call `page.setViewportSize` yourself** when using the Playwright API: it resets DPR and drops the
-  hinge. Use `fp.transition(...)`.
+- **Never call `page.setViewportSize` or `page.screenshot` yourself** when using the Playwright API: both make
+  Playwright resend its own viewport and the emulated device silently reverts to the context size. Use
+  `fp.transition(...)` and `fp.session.screenshot(file, mask)`. If it happens anyway, the next assertion's
+  environment recheck reports `open`, never a false pass.
 - Fixtures in `fixtures/` are the benchmark: `node scripts/foldproof.mjs fixtures verify` must report every
   broken variant failing on exactly its named rules. Use them to calibrate before trusting a new oracle.
 

@@ -695,7 +695,8 @@
                       },
                       "url": {
                         "description": "substring or regex /…/ the final URL must match",
-                        "type": "string"
+                        "type": "string",
+                        "minLength": 1
                       },
                       "text": {
                         "type": "object",
@@ -706,7 +707,8 @@
                             "description": "CSS selector, or role=<role>[name=<accessible name>]"
                           },
                           "contains": {
-                            "type": "string"
+                            "type": "string",
+                            "minLength": 1
                           }
                         },
                         "required": [
@@ -717,7 +719,8 @@
                       },
                       "custom": {
                         "description": "JS expression that must be truthy",
-                        "type": "string"
+                        "type": "string",
+                        "minLength": 1
                       }
                     },
                     "additionalProperties": false

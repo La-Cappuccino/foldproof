@@ -65,11 +65,9 @@ export interface CustomProbe {
 }
 
 export function statePreserved(before: StateSnapshot, after: StateSnapshot, policies: StatePolicies, anchors: { container: string; ok: boolean | null; detail: string }[], custom?: { before: CustomProbe; after: CustomProbe }): Finding {
-  if (custom && (!custom.before.ok || !custom.after.ok)) {
-    return { rule: 'state-preserved', kind: 'open', message: `custom state probe failed (${custom.before.ok ? '' : 'before: ' + custom.before.error}${!custom.before.ok && !custom.after.ok ? '; ' : ''}${custom.after.ok ? '' : 'after: ' + custom.after.error}); the expression must evaluate in the page`, details: { custom: { before: custom.before.error ?? null, after: custom.after.error ?? null } } };
-  }
   const losses: string[] = [];
   const notes: string[] = [];
+  const customFailed = !!custom && (!custom.before.ok || !custom.after.ok);
   if (policies.form !== 'none') {
     for (const [k, v] of Object.entries(before.form)) {
       if (!(k in after.form)) losses.push(`form field ${k} disappeared`);
@@ -95,7 +93,9 @@ export function statePreserved(before: StateSnapshot, after: StateSnapshot, poli
   if (policies.history === 'no-loss') {
     if (after.historyLength < before.historyLength) losses.push(`history length shrank ${before.historyLength} → ${after.historyLength}`);
     if (before.historyState !== null && before.historyState !== 'null' && after.historyState !== before.historyState) losses.push('history.state changed');
-    if (redactUrl(after.url, true) !== redactUrl(before.url, true)) losses.push(`navigated: ${redactUrl(before.url)} → ${redactUrl(after.url)}`);
+    // compare the real fragment-stripped URLs (a changed query string is a navigation); redact only what is exported
+    const stripFragment = (u: string) => u.split('#')[0];
+    if (stripFragment(after.url) !== stripFragment(before.url)) losses.push(`navigated: ${redactUrl(before.url)} → ${redactUrl(after.url)}${redactUrl(before.url) === redactUrl(after.url) ? ' (query string changed)' : ''}`);
   }
   if (policies.media === 'progress') {
     for (const [k, m] of Object.entries(before.media)) {
@@ -107,11 +107,12 @@ export function statePreserved(before: StateSnapshot, after: StateSnapshot, poli
       }
     }
   }
-  if (custom && JSON.stringify(custom.before.value) !== JSON.stringify(custom.after.value)) losses.push('custom app state changed');
+  if (custom && !customFailed && JSON.stringify(custom.before.value) !== JSON.stringify(custom.after.value)) losses.push('custom app state changed');
+  if (customFailed) notes.push(`custom state probe failed (${custom!.before.ok ? '' : 'before: ' + custom!.before.error}${!custom!.before.ok && !custom!.after.ok ? '; ' : ''}${custom!.after.ok ? '' : 'after: ' + custom!.after.error}); the expression must evaluate in the page`);
   return {
     rule: 'state-preserved',
-    kind: losses.length ? 'fail' : 'pass',
-    message: losses.length ? `state lost: ${losses.join('; ')}` : `state preserved (${[policies.form !== 'none' && 'form', policies.focus !== 'none' && 'focus', policies.selection !== 'none' && 'selection', policies.scroll !== 'none' && 'scroll-anchor', policies.storage.length && 'storage', policies.history !== 'none' && 'history', policies.media !== 'none' && 'media', custom && 'custom'].filter(Boolean).join(', ')})${notes.length ? `; notes: ${notes.join('; ')}` : ''}`,
+    kind: losses.length ? 'fail' : customFailed ? 'open' : 'pass',
+    message: losses.length ? `state lost: ${losses.join('; ')}${customFailed ? `; ${notes[notes.length - 1]}` : ''}` : customFailed ? `incomplete: ${notes[notes.length - 1]}` : `state preserved (${[policies.form !== 'none' && 'form', policies.focus !== 'none' && 'focus', policies.selection !== 'none' && 'selection', policies.scroll !== 'none' && 'scroll-anchor', policies.storage.length && 'storage', policies.history !== 'none' && 'history', policies.media !== 'none' && 'media', custom && 'custom'].filter(Boolean).join(', ')})${notes.length ? `; notes: ${notes.join('; ')}` : ''}`,
     details: { before: maskSnapshot(before), after: maskSnapshot(after), anchors, losses, notes },
   };
 }

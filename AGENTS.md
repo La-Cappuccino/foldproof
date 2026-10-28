@@ -11,7 +11,11 @@ The skill is the user-facing contract; the code is what it runs.
 - `npm run schemas` after touching `src/core/schema.ts`; commit the regenerated `schemas/*.json`.
 
 ## Invariants (do not "fix" these into the textbook version)
-- Device metrics are owned by `WebSession` through CDP. Never call `page.setViewportSize`.
+- Device metrics are owned by `WebSession` through CDP. Never call `page.setViewportSize` or `page.screenshot`:
+  Playwright sends its own metrics through a private CDP session and Chromium then ignores our identical re-send,
+  leaving the page at the context viewport (verified 2026-10-28). Screenshots go through `WebSession.screenshot`
+  (`Page.captureScreenshot` on our session), and every assertion and operation re-observes the environment first
+  (`Foldproof.recheckEnv`) so a foreign reset becomes `open`, never a false pass.
 - Fold emulation uses the inline `displayFeature` field of `Emulation.setDeviceMetricsOverride`; the dedicated
   `setDisplayFeaturesOverride` is a verified no-op while Playwright viewport emulation is active (Chromium 156).
 - Posture uses `Emulation.setDevicePostureOverride`, readable only through MediaQueryLists created before the
