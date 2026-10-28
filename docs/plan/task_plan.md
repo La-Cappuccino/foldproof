@@ -15,9 +15,9 @@ profiles and reproducible failure fixtures, not in a screenshot at one size.
 - [x] P3 Quad-council review (4/4 seats: ship with changes) → docs/plan/council-2026-10-28.md → SPEC v1.1
 - [x] P4 Slice 1 (vertical) DONE 2026-10-28 12:25: fixture draft-lost-on-unfold broken fails exactly state-preserved+no-remount on Surface Duo + Pixel 9 Pro Fold; fixed passes incl. hinge + operate; exit 0
   - open item: Duo portrait-spanned (720×1114) path observed 726×1124 once before the orientation fix — re-check when tabletop scenarios land
-- [ ] P5 Slice 2: all transitions (rotate, resize, keyboard ×2, fold/posture), operate/outcome, steps, settle, coverage manifest, exit codes, JUnit, masking
-- [ ] P6 Slice 3: fixtures 1,3–7 + positive controls; `fixtures verify`; CI matrix (3 runs, CPU throttle)
-- [ ] P7 Slice 4: skill package + launcher + manifests + evals + zero-config run
+- [x] P5 Slice 2 DONE: rotate/resize/keyboard(shrink+overlay)/fold/unfold/posture, operate, steps + per-step settle (min_ms), coverage manifest, exit codes 0–3, JUnit, masking, axe target-size, SARIF validated against OASIS schema
+- [~] P6 Slice 3: fixtures orientation-locked-layout, control-under-hinge, stale-async-round-trip DONE (all match); keyboard-covers-primary-action, rotate-loses-scroll, tabbar-missing, positives → build-fixtures agent in flight; CI matrix (3 runs) in ci.yml (CPU throttle TODO)
+- [x] P7 Slice 4 DONE: SKILL.md (98 lines) + launcher + plugin manifests + evals (6) + codex metadata + templates; `skills-ref validate` ✓, `claude plugin validate --strict` ✓; `quick <url>` works (3 controls discovered, pass ×2)
 - [ ] P8 Slice 5: corpus (agent, parallel), engines from BCD, README/CONTRIBUTING/NOTICE/licences, GitHub repo + CI + SARIF Action, npm pack; Codex review; council score
 - [ ] P9 Commit/push, Brain persist, final mark-it-down, report
 
