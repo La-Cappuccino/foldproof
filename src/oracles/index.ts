@@ -194,12 +194,14 @@ export function redactUrlsInText(s: string): string {
     .split(/(\s+)/)
     .map((token) => {
       if (!token.includes('://')) return token;
-      const at = token.lastIndexOf('://');
+      // cut the WHOLE token at its first ? or # first, so a URL nested inside a query can never be chosen as "the" URL
+      const cut = token.search(/[?#]/);
+      const headToken = cut === -1 ? token : token.slice(0, cut);
+      const at = headToken.lastIndexOf('://');
+      if (at === -1) return '<unparseable url>'; // the only "://" sat inside the query/fragment
       let start = at;
-      while (start > 0 && /[a-z0-9+.-]/i.test(token[start - 1]!)) start--;
-      const url = token.slice(start);
-      const cut = url.search(/[?#]/);
-      const head = (cut === -1 ? url : url.slice(0, cut)).replace(/[)\]'".,;]+$/, '');
+      while (start > 0 && /[a-z0-9+.-]/i.test(headToken[start - 1]!)) start--;
+      const head = headToken.slice(start).replace(/[)\]'".,;]+$/, '');
       const redacted = redactUrl(head);
       return cut === -1 ? redacted : `${redacted}?<redacted>`;
     })

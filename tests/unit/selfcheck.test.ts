@@ -136,6 +136,8 @@ describe('state policies', () => {
       'glued id_http://app.test/p?token=secret-six and 9https://app.test/q?k=secret-seven',
       'nested:https://app.test/p?token=secret-eight',
       'creds https://user:secret-nine@app.test/p and custom://host/secret-ten?x=1',
+      'nested https://a.test/p?next=https://b.test/x&token=secret-eleven',
+      'fragment-first https://a.test/p#x://y?token=secret-twelve',
     ];
     // linear time on pathological input (no catastrophic backtracking)
     const big = 'a'.repeat(200_000) + ' ' + ':'.repeat(5000);
@@ -144,7 +146,7 @@ describe('state policies', () => {
     expect(Date.now() - t0).toBeLessThan(500);
     for (const c of cases) {
       const out = oracles.redactUrlsInText(c);
-      for (const secret of ['ret-part', 'secret-two', 'secret-three', 'secret-four', 'secret-five', 'secret-six', 'secret-seven', 'secret-eight', 'secret-nine', 'secret-ten', 'user:', 'token=', 'a=1', 'key=', 'k=']) expect(out, c).not.toContain(secret);
+      for (const secret of ['ret-part', 'secret-two', 'secret-three', 'secret-four', 'secret-five', 'secret-six', 'secret-seven', 'secret-eight', 'secret-nine', 'secret-ten', 'secret-eleven', 'secret-twelve', 'b.test', 'user:', 'token=', 'a=1', 'key=', 'k=']) expect(out, c).not.toContain(secret);
     }
     expect(oracles.redactUrlsInText('plain text without urls')).toBe('plain text without urls');
   });
