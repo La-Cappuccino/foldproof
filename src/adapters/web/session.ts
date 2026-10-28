@@ -207,27 +207,49 @@ export class WebSession {
    * through its own session and Chromium then ignores our identical re-send, silently leaving the page at the
    * context viewport (verified 2026-10-28). Masked selectors are hidden with a temporary stylesheet.
    */
-  async screenshot(file: string, mask: string[]): Promise<void> {
+  async screenshot(file: string, mask: string[]): Promise<boolean> {
     const STYLE_ID = '__foldproof_mask';
     try {
       if (mask.length) {
-        await this.page.evaluate(
-          ({ id, selectors }) => {
+        // resolve every mask with the same locator engine as controls (CSS or role=…), stamp the matches, hide the
+        // stamped elements, then CONFIRM each one is hidden; fail closed (no screenshot) if any is not
+        const confirmed = await this.page.evaluate(
+          ({ id, locators }) => {
+            const fp = (window as unknown as { __foldproof: { query(l: string, h?: boolean): Element[] } }).__foldproof;
+            const els: Element[] = [];
+            for (const l of locators) {
+              try {
+                els.push(...fp.query(l, true));
+              } catch {
+                return false; // an unparseable mask is a failure, not a silent no-op
+              }
+            }
+            for (const e of els) e.setAttribute('data-foldproof-mask', '');
             const st = document.createElement('style');
             st.id = id;
-            st.textContent = `${selectors.join(',')}{visibility:hidden !important}`;
+            st.textContent = '[data-foldproof-mask],[data-foldproof-mask] *{visibility:hidden !important}';
             document.documentElement.appendChild(st);
+            return els.every((e) => getComputedStyle(e).visibility === 'hidden');
           },
-          { id: STYLE_ID, selectors: mask },
+          { id: STYLE_ID, locators: mask },
         );
+        if (!confirmed) return false;
       }
       const { data } = (await this.cdp.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false } as never)) as { data: string };
       const { writeFile } = await import('node:fs/promises');
       await writeFile(file, Buffer.from(data, 'base64'));
+      return true;
     } catch {
-      /* a failed screenshot never changes a verdict */
+      return false; // a failed screenshot never changes a verdict and never writes an unmasked image
     } finally {
-      if (mask.length) await this.page.evaluate((id) => document.getElementById(id)?.remove(), STYLE_ID).catch(() => undefined);
+      if (mask.length) {
+        await this.page
+          .evaluate((id) => {
+            document.getElementById(id)?.remove();
+            for (const e of Array.from(document.querySelectorAll('[data-foldproof-mask]'))) e.removeAttribute('data-foldproof-mask');
+          }, STYLE_ID)
+          .catch(() => undefined);
+      }
     }
   }
 

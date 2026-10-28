@@ -123,8 +123,9 @@ async function targetSize(page: import('playwright').Page): Promise<Finding> {
 async function screenshot(fp: Foldproof, opts: RunOptions, scenario: Scenario, label: string): Promise<void> {
   if (!opts.artifactsDir) return;
   const file = path.join(opts.artifactsDir, `${scenario.id}--${fp.profile.id}--${label}.png`);
-  await fp.session.screenshot(file, scenario.mask);
-  fp.currentStep().artifacts.screenshot = file;
+  const written = await fp.session.screenshot(file, scenario.mask);
+  if (written) fp.currentStep().artifacts.screenshot = file;
+  else fp.currentStep().findings.push({ rule: 'env-self-check', kind: 'review', message: `screenshot skipped: a mask could not be applied or confirmed (${scenario.mask.join(', ') || 'no mask'})` });
 }
 
 function finish(partial: Omit<ScenarioResult, 'verdict' | 'matchedExpectation' | 'durationMs'>, scenario: Scenario, t0: number): ScenarioResult {
