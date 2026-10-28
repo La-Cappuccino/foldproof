@@ -233,7 +233,10 @@ export class WebSession {
           for (const e of els) e.setAttribute('data-foldproof-mask', '');
           const st = document.createElement('style');
           st.id = id;
-          st.textContent = '[data-foldproof-mask],[data-foldproof-mask] *{visibility:hidden !important}' + (cssRules.length ? `\n${cssRules.join(',')}{visibility:hidden !important}` : '');
+          st.textContent =
+            '[data-foldproof-mask],[data-foldproof-mask] *{visibility:hidden !important}\n' +
+            '[data-foldproof-mask]::before,[data-foldproof-mask]::after,[data-foldproof-mask] *::before,[data-foldproof-mask] *::after{content:none !important;visibility:hidden !important;display:none !important}' +
+            (cssRules.length ? `\n${cssRules.join(',')}{visibility:hidden !important}` : '');
           document.documentElement.appendChild(st);
           // belt and braces: an opaque fixed box over each masked rect, so a descendant forcing itself visible is still covered
           for (const e of els) {
@@ -247,8 +250,18 @@ export class WebSession {
         // confirm: every masked element is hidden, every descendant is hidden, and any on-screen part of its rect
         // hit-tests to a mask box (not to page content)
         const boxes = Array.from(document.querySelectorAll('[data-foldproof-mask-box]'));
+        // generated content can render outside the element's rect and cannot be boxed: it must be gone
+        const pseudoVisible = (n: Element) =>
+          ['::before', '::after'].some((p) => {
+            const cs = getComputedStyle(n, p);
+            return cs.content !== 'none' && cs.content !== 'normal' && cs.display !== 'none' && cs.visibility !== 'hidden';
+          });
         for (const e of els) {
           if (!e.hasAttribute('data-foldproof-mask') || getComputedStyle(e).visibility !== 'hidden') return { ok: false, reason: 'a masked element is not hidden', count: els.length };
+          if (pseudoVisible(e)) return { ok: false, reason: 'a masked element keeps visible generated content (::before/::after)', count: els.length };
+          for (const d of Array.from(e.querySelectorAll('*'))) {
+            if (pseudoVisible(d)) return { ok: false, reason: 'a descendant of a masked element keeps visible generated content', count: els.length };
+          }
           for (const d of Array.from(e.querySelectorAll('*'))) if (getComputedStyle(d).visibility !== 'hidden' && getComputedStyle(d).display !== 'none') {
             // a descendant overrides visibility: the box must cover it
             const r = d.getBoundingClientRect();
