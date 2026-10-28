@@ -187,15 +187,23 @@ function mask(_v: unknown): string {
 
 /** Replace every URL inside free text with its origin + path (query and fragment carry tokens). */
 export function redactUrlsInText(s: string): string {
-  // redact the WHOLE whitespace-delimited token around any "://" (glued prefixes such as id_http:// or 9https://
-  // included); consume to whitespace so a query containing )]'" cannot leak its tail; an unparseable token
-  // becomes "<unparseable url>", which over-redacts rather than leaking
-  return s.replace(/\S+:\/\/\S+/g, (m) => {
-    const cut = m.search(/[?#]/);
-    const head = cut === -1 ? m : m.slice(0, cut);
-    const redacted = redactUrl(head.replace(/[)\]'".,;]+$/, ''));
-    return cut === -1 ? redacted : `${redacted}?<redacted>`;
-  });
+  // Linear: split on whitespace and only touch tokens containing "://". The whole token is replaced (a glued prefix
+  // such as id_ or 9 is dropped, never echoed); the URL is parsed from the innermost "scheme://"; only http(s)/ws(s)
+  // are rendered as origin + path, anything else becomes "<unparseable url>" (over-redaction, never a leak).
+  return s
+    .split(/(\s+)/)
+    .map((token) => {
+      if (!token.includes('://')) return token;
+      const at = token.lastIndexOf('://');
+      let start = at;
+      while (start > 0 && /[a-z0-9+.-]/i.test(token[start - 1]!)) start--;
+      const url = token.slice(start);
+      const cut = url.search(/[?#]/);
+      const head = (cut === -1 ? url : url.slice(0, cut)).replace(/[)\]'".,;]+$/, '');
+      const redacted = redactUrl(head);
+      return cut === -1 ? redacted : `${redacted}?<redacted>`;
+    })
+    .join('');
 }
 
 /** Deep copy with every string URL-redacted; used on exported steps, findings and details. */
@@ -214,6 +222,8 @@ export function redactDeep<T>(value: T): T {
 export function redactUrl(u: string, forCompare = false): string {
   try {
     const url = new URL(u);
+    // only web schemes render; origin never includes userinfo (username/password are dropped by construction)
+    if (!['http:', 'https:', 'ws:', 'wss:'].includes(url.protocol) || url.origin === 'null') return '<unparseable url>';
     const hasQuery = url.search.length > 0;
     return `${url.origin}${url.pathname}${hasQuery ? (forCompare ? '?<query>' : '?<redacted>') : ''}`;
   } catch {
