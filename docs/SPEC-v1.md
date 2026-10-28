@@ -1,173 +1,186 @@
-# Spec: foldproof v0.1 — prove an interface stays usable across configurations and transitions
+# Spec: foldproof v0.1 — verify that a task survives display configurations and transitions
 
-Status: draft for council review, 2026-10-28. Supersedes `docs/plan/architecture-hypothesis.md`.
-Inputs: `docs/research/00–05` (all sources verified 2026-10-28), `docs/vision.md`, `docs/validation.md`.
-Working name **foldproof** (npm, GitHub handle, PyPI all free on 2026-10-28; two empty 0-star repos share the name). The name lives in one place (`package.json` + skill dir) and is Allan's call; the alternative is `stillusable`.
+Revision 1.1, 2026-10-28. Revision 1.0 (council input) is in git history; the council verdict and the changes it caused are in `docs/plan/council-2026-10-28.md`. Inputs: `docs/research/00–05` (verified 2026-10-28), `docs/vision.md`, `docs/validation.md`.
+
+Working name **foldproof** (npm, GitHub, PyPI free on 2026-10-28). Allan's call; alternative `stillusable`.
 
 ## 1. Goal
 
-Give developers and AI agents a way to **prove**, with reproducible evidence, that a named task in an interface is still completable after the interface is opened at a documented device configuration (startup class) and after it goes through a transition (fold, unfold, rotate, resize, split, keyboard open/close, input change) — and to state honestly what was *not* checked.
+Give developers and AI agents reproducible, emulated evidence that a **declared task** in a web interface still works after the interface is opened at a documented device configuration (startup class) and after it goes through display transitions — fold, unfold, posture change, rotate, resize, split, keyboard open and close — and state honestly what was *not* checked.
 
-The decision this drives: "can we ship this UI to foldables, tablets, large screens and resizing windows?" answered by a machine-readable record, not a screenshot at 375 px.
+The decision this drives: "can we ship this UI to foldables, tablets, large screens and resizing windows?" answered by a machine-readable record of task continuity, not by a screenshot at 375 px.
 
-Why now (research 04): Google counts >580 M large-screen Android devices and removes the orientation/resizability opt-out at API 37 (Play deadline Aug 2027); Apple ships iPhone Duo since 2026-10-23 and requires Duo screenshots from April 2027; 44 verified GitHub issues cluster at transitions (keyboard overlap most common, fold/unfold fastest-growing); EN 301 549 + EAA make reflow and orientation legal requirements in the EU/EEA. No vendor or OSS package executes a transition and asserts state (research 01 gaps G2–G5, 04 §4.1).
+Why now (research 04): >580 M large-screen Android devices; Android removes the orientation/resizability opt-out at API 37 (Play deadline Aug 2027); Apple ships iPhone Duo since 2026-10-23 and requires Duo screenshots from April 2027; 44 verified GitHub issues cluster at transitions (keyboard overlap most common, fold/unfold fastest-growing); EN 301 549 + EAA make reflow and orientation legal requirements in the EU/EEA. Of the 19 packages inspected (research 01), none executes a transition and asserts task continuity; vendors ship code-audit skills (Apple App Resizability, Google adaptive), not the verification layer.
 
-## 2. Non-goals (v0.1)
+## 2. What makes it worth a senior engineer's time (council §2)
 
-- Runtime AI layout generation or per-resize model inference. foldproof verifies; it does not render.
-- iOS automation (Duo simulator only via private HID events, research 01 G10) — profiles exist, results are `review: needs physical validation`.
-- Car and TV *execution* — profiles and acceptance rules exist; results are `notApplicable` on the web adapter with the reason stated.
-- Pixel-diff visual regression and LLM judges (ReFLAIR-style) in the pass/fail path. Both can be layered later; v0.1 oracles are deterministic.
-- A device-model allowlist that drives layout. Profiles seed tests; layouts should respond to space and capabilities (concepts.md).
-- Firefox/WebKit fold emulation (not available in any engine). They get viewport/rotation/media parity only, labelled as such.
+Not the device presets, not axe, not SARIF plumbing. These four things:
 
-## 3. Constraints
+1. **A task-continuity contract** that runs inside the user's own authenticated Playwright suite: `foldproof/playwright` — `attach(page, profile)`, `transition('unfold')`, `assert(task)`. YAML scenarios compile to it; it is the primary API.
+2. **Transition drivers that own the browser's metrics** (CDP, never `setViewportSize`), with an environment self-check after every change so a result is never a false pass on a failed emulation.
+3. **Oracles nobody ships**: anchor-based scroll continuity, stamp-based remount detection, per-frame continuity log decided at quiescence, hit-test reachability without a real click, explicit `operate` outcome.
+4. **A public benchmark**: broken/fixed fixture pairs that reproduce real issues (ionic #31642, flutter #190508, Signal #15000 classes) plus positive controls, so detection *and* false-alarm rates are measurable for any tool.
 
-- **Stack:** TypeScript, Node ≥ 20, `@playwright/test` 1.64.x as a peer dependency (Chromium 156 bundled). ESM. No framework in fixtures (plain HTML/JS) so failures are deterministic.
-- **Chromium-only fold emulation**, via CDP `Emulation.setDeviceMetricsOverride` with inline `displayFeature` + `devicePosture` (VERIFIED in research 00/03; the dedicated `setDisplayFeaturesOverride` is a no-op while Playwright's viewport emulation is active). Re-apply after every `setViewportSize`. Chromium accepts one display feature (crbug 40113439). `navigator.devicePosture` is absent in Chromium 156 → posture asserted via `matchMedia` only.
-- **Virtual keyboard** cannot be shown in any desktop engine. Emulate the two documented layouts: `resizes-content` (shrink layout viewport) and `keyboard-inset` env injection; `resizes-visual` occlusion is reported as `review`.
-- **Skill packaging:** Agent Skills spec (agentskills.io): `name` = directory, SKILL.md < 500 lines, references one hop, `scripts/` `assets/` `evals/`. Claude Code: `.claude-plugin/plugin.json` + `marketplace.json`, no `bin/` at plugin root, no `claude-`/`anthropic-` prefix. Validate with `skills-ref validate` and `claude plugin validate --strict`.
-- **Licensing:** Apache-2.0 (code), CC BY 4.0 (profile corpus, `profiles/LICENSE`), NOTICE for Chromium (BSD-3) and Playwright (Apache-2.0) device data, DCO sign-off. Do not copy from `responsive-craft` (no licence) or `vercel-labs/agent-skills` (no root LICENSE).
-- **Evidence record:** SARIF 2.1.0 canonical (`kind: pass|fail|open|review|notApplicable`), JUnit XML side-channel, Markdown summary for humans and agents.
-- No Android SDK or Xcode on the build machine: the Android adapter is an interface + recipes in v0.1, implemented in v0.2 on a machine with the emulator.
+The "Untested" ledger (coverage manifest with `open`/`review`/`notApplicable` reasons) stays first-class.
 
-## 4. Product shape
+## 3. Non-goals (v0.1)
+
+- Runtime AI layout generation; pixel-diff visual regression; LLM judges in the pass/fail path.
+- iOS automation (Duo simulator only via private HID events) — profiles exist; results are `review`.
+- Car and TV execution — profiles exist; web adapter reports `notApplicable` with the reason.
+- `input-change` transitions (no driver, no rule in v0.1 → not in the schema).
+- A device allowlist that drives layout. Profiles seed tests; layouts respond to space and capabilities.
+- Firefox/WebKit fold emulation (no engine supports it); they get viewport/rotation/media parity, labelled.
+- WCAG conformance claims. Rules link to the clause they *relate to*; a pass is evidence, not conformance.
+
+## 4. Constraints and verified platform facts
+
+- **Stack:** TypeScript, Node ≥ 20, ESM; `playwright` peer `>=1.64 <2` (Chromium 156 bundled). Plain-HTML fixtures served from `http://localhost` by the CLI (secure context; viewport meta declared).
+- **Verified 2026-10-28 (research 00 + council corrections):**
+  - Viewport segments: inline `displayFeature` on `Emulation.setDeviceMetricsOverride` works while Playwright's viewport emulation is active; the dedicated `setDisplayFeaturesOverride` is a no-op there. One feature only (crbug 40113439).
+  - Posture: `Emulation.setDevicePostureOverride` flips `(device-posture: folded)` live, **if** a MediaQueryList for it exists before the override (sentinel via `addInitScript`). On localhost `navigator.devicePosture` and `navigator.virtualKeyboard` exist (the earlier "absent" finding was an about:blank artefact).
+  - DPR and viewport change mid-session via CDP without reload (3 → 2, state intact). `page.setViewportSize` resets DPR and drops the display feature → foldproof owns all metrics.
+  - No desktop engine shows a real keyboard. Two labelled approximations: `keyboard-shrink` (layout viewport minus height; the `interactive-widget=resizes-content` behaviour) and `keyboard-overlay-approx` (opaque fixed overlay of the keyboard height with hit-testing; the Chrome-Android/iOS default `resizes-visual` behaviour). `env(keyboard-inset-*)` cannot be injected and is not claimed.
+- **Packaging:** Agent Skills spec (name = dir, SKILL.md < 500 lines, references one hop, `scripts/` `assets/` `evals/`); Claude Code `.claude-plugin/plugin.json` + `marketplace.json`, no `bin/` at plugin root, no `claude-`/`anthropic-` prefix; `skills-ref validate` + `claude plugin validate --strict` in CI.
+- **Licensing:** Apache-2.0 (code), CDLA-Permissive-2.0 (`profiles/`, covers EU database rights), NOTICE for Chromium BSD-3, Playwright Apache-2.0, AOSP Apache-2.0, MDN CC0; DCO sign-off. Imported material keeps its upstream terms; transformed values are marked `derived`.
+- **Evidence:** SARIF 2.1.0 canonical; JUnit XML side-channel; Markdown summary.
+- No Android SDK or Xcode on the build machine: Android adapter = experimental interface + recipes in v0.1.
+
+## 5. Product shape
 
 ```
 foldproof/                                  # repo root = plugin root = marketplace root
 ├── .claude-plugin/{plugin.json, marketplace.json}
-├── skills/foldproof/                       # the agent skill (spec-compliant); `npx skills add` target
-│   ├── SKILL.md                            # workflow router, < 500 lines
-│   ├── references/{concepts-and-units, transitions, state-assertions, evidence-report,
-│   │               device-profiles, platform-boundaries, android, ios}.md
-│   ├── scripts/foldproof.mjs               # launcher: runs the CLI by interpreter (`node scripts/foldproof.mjs …`)
+├── skills/foldproof/                       # Agent Skill; `npx skills add` target
+│   ├── SKILL.md                            # router, < 500 lines
+│   ├── references/{concepts-and-units, transitions, state-policies, evidence-report, device-profiles,
+│   │               platform-boundaries, playwright-api, android, ios}.md
+│   ├── scripts/foldproof.mjs               # launcher: local node_modules/.bin → ../../dist/cli.js → npx -y foldproof@<version>
 │   ├── assets/{scenario.template.yaml, report-template.md}
-│   ├── agents/openai.yaml                  # Codex metadata
-│   └── evals/evals.json                    # prompt → expected behaviour, with/without skill
+│   ├── agents/openai.yaml
+│   └── evals/evals.json
 ├── src/
-│   ├── core/        # schema types (zod), loaders, validators, units, provenance checks
-│   ├── adapters/web # Playwright+CDP driver: open-at-profile, transitions, snapshots
-│   ├── oracles/     # reachability, state-diff, overflow, overlap, clipping, target-size (axe), hinge-occlusion, element-loss
-│   ├── report/      # SARIF 2.1.0, JUnit, Markdown; coverage + "untested" section
-│   └── cli.ts       # run · profiles · scenarios · fixtures · report · doctor
-├── schemas/         # JSON Schema for profile, scenario, result (generated from zod, committed)
-├── profiles/        # sourced corpus (CC BY 4.0): one JSON per device/registry entry + scenarios
-├── scenarios/       # reusable transition scenarios (YAML), validated against schemas/
-├── fixtures/<name>/{broken,fixed}/index.html + scenario.yaml   # known failures, both variants
-├── tests/           # unit (core, oracles, report) + fixture matrix (broken FAILS, fixed PASSES)
-├── .github/workflows/ci.yml
-├── README.md · LICENSE · NOTICE · CONTRIBUTING.md · CHANGELOG.md · AGENTS.md · skills.sh.json
-└── package.json     # name foldproof, bin → dist/cli.js, files whitelist
+│   ├── core/        # zod schemas, loaders, configuration resolver, provenance validator, hashing
+│   ├── playwright/  # PUBLIC API: attach · transition · task · assert · operate · report (foldproof/playwright)
+│   ├── adapters/web # CDP driver, recorder (addInitScript), keyboard approximations, env self-check, doctor
+│   ├── oracles/     # reachable, state-policies, no-remount, hinge, element-loss(scoped), static diagnostics
+│   ├── report/      # coverage manifest, SARIF 2.1.0, JUnit, Markdown
+│   ├── commands/    # run · profiles · scenarios · fixtures · report · doctor
+│   └── cli.ts
+├── schemas/         # JSON Schema (generated from zod, committed; CI fails on drift)
+├── profiles/        # sourced corpus (CDLA-Permissive-2.0) + LICENSE + README
+├── engines/         # browser capability tables generated from @mdn/browser-compat-data (pinned version recorded)
+├── scenarios/       # built-in scenarios (used by zero-config run) 
+├── fixtures/<name>/{broken,fixed}/index.html + scenario.yaml + ISSUE.md (the real issue it reproduces)
+├── tests/           # unit · adapter (localhost) · fixture matrix (broken FAILS on its rule, fixed PASSES, unrelated rules clean)
+├── .github/workflows/{ci.yml, foldproof-sarif-action}   # Action uploads SARIF to code scanning
+├── README.md · LICENSE · NOTICE · CONTRIBUTING.md · CHANGELOG.md · AGENTS.md · skills.sh.json · package.json
 ```
 
-One npm package in v0.1 (simplicity first); split into `@foldproof/*` only when the Android adapter lands.
+One npm package. `exports`: `.` (core), `./playwright` (public API). The CLI is a thin consumer of `./playwright`.
 
-## 5. Data model
+## 6. Data model
 
-### 5.1 Profile (`profiles/*.json`, schema `schemas/profile.schema.json`)
-From research 02 §5. Required: `id`, `revision`, `kind` (device | emulator-profile | registry-entry), `platform`, `sources[]` (url, publisher, inspected, licence, kind: published | derived | measured, quote?), `panels[]`, `logical[]` (unit css_px | dp | pt, w, h, scale, derivation, source_ref), `usable` (layout viewport, insets, cutouts, unit), `inputs[]`, `capabilities` (web: device_posture_api, viewport_segments… with browser+version from BCD), `unknowns[]` (may be empty, must exist). Foldables add `display_features[]` (bounds, orientation, occlusion, source_ref) and `postures[]` (name, web_posture, android_state, hinge_angle_range?). Optional `conflicts_with[]` (never silently reconciled), `supersedes`.
+### 6.1 Profile (`profiles/*.json`)
+Sourced **device and registry facts only**. Required: `id`, `revision`, `kind` (device | emulator-profile | registry-entry), `platform`, `name`, `sources[]` (id, url, publisher, inspected, licence, kind published|derived|measured, `revision` = upstream commit/version when a registry, quote?), `panels[]`, `inputs`, `unknowns[]` (typed: `{field, reason}`), and the optional geometry: `logical[]`, `usable[]`, `display_features[]`, `postures[]` (each with `web: { posture: continuous|folded, segments: 1|2 }` so the self-check expectation is data, not code), `operating_states[]`, `conflicts_with[]`, `keyboard_height_css_px` (optional, kind derived from a cited community measurement, else absent).
 
-Validator rules (fail the build): every numeric field has a unit; every published number has a `source_ref`; every derived number states its formula; `unknowns` present; conflicting registries both recorded.
+Removed from the profile (council): browser `capabilities` (now `engines/*.json`), illustrative window sizes, any `measured` value nobody measured.
 
-### 5.2 v0.1 corpus (≥ 14 profiles, each with provenance per research 02 §6)
-Galaxy Z Fold 7 cover + inner (Playwright, Apache-2.0); Galaxy Z Fold 6 and Pixel 9 Pro Fold (DevTools BSD-3, hinge, `conflicts_with` Playwright); Surface Duo spanned (DevTools, 34 px opaque hinge — canonical occlusion fixture); Asus Zenbook Fold (DevTools); AOSP "7.6 Fold-in with outer display" (Apache-2.0, hinge + posture angle ranges); Pixel 10 Pro Fold (vendor px, CSS unknown → `unknowns`); Pixel 10 Pro + iPhone 17 Pro keyboard-open (Playwright; keyboard height `measured`); Pixel Tablet split-screen (AOSP); iPad Pro 11 Stage Manager (Playwright; window size illustrative); ultrawide 3440×1440 and tall 1080×1920 (derived, formula shown); Android TV 1080p (AOSP + overscan); Android Automotive 1024p parked/driving (AOSP; web adapter `notApplicable`); iPhone Duo inner/outer (Apple spec px; points unknown).
+Validator: every number has a unit; every published number a `source_ref`; derived numbers state a formula; `unknowns` present; conflicts kept; a folded posture needs a display feature; a posture's `web.segments` must be consistent with its display feature (2 iff a feature is active). A profile is **executable on web** iff it has css_px `logical` + `usable` for a panel; others are valid inventory and `run` reports them `notApplicable: profile not executable (reason)`.
 
-### 5.3 Scenario (`scenarios/*.yaml`, schema `schemas/scenario.schema.json`)
+### 6.2 Scenario (`*.yaml`, versioned)
 ```yaml
-id: fold7-unfold-keeps-draft
-title: Unfolding mid-draft keeps the draft and the Send control reachable
-profile: samsung-galaxy-z-fold7            # startup configuration
-start: { panel: outer, posture: closed, orientation: portrait }
+foldproof: 1
+id: unfold-keeps-draft
+title: Unfolding mid-draft keeps the draft; Send stays reachable and works
+profiles: [microsoft-surface-duo, google-pixel-9-pro-fold]     # or { class: foldable }
+start: { panel: single, posture: closed }                      # names validated against the profile
 task:
-  url: /compose                            # resolved against --base-url
-  controls: ["#send", "#save-draft"]       # must remain reachable + operable
-  setup:                                   # small action vocabulary, or `script: ./setup.mjs` exporting setup(page)
-    - { fill: "#body", value: "Hei Per, vedlagt er…" }
-    - { scrollTo: 900 }
-    - { focus: "#body", select: [4, 7] }
-transition: { kind: unfold, to: { panel: inner, posture: flat } }   # kinds: fold unfold posture rotate resize split keyboard-open keyboard-close input-change
-assert:                                    # defaults apply when omitted; each maps to a SARIF rule + helpUri (WCAG / Google tier)
-  - reachable: controls
-  - state-preserved: [form, scroll, focus, selection, history, storage, media]
-  - no-remount: controls
-  - no-horizontal-overflow
-  - no-overlap: interactive
-  - target-size: { min: 24, unit: css_px }
-  - not-occluded-by-hinge: controls
-  - no-element-loss
-sampling: { during_ms: 600, every_ms: 50 } # observe interruption, not only the end state
+  url: /compose
+  ready: { selector: "#send" }                                   # readiness, bounded by settle.max_ms
+  controls: ["#send", "role=button[name='Save draft']"]          # CSS or role+name; must resolve to exactly one element
+  state:                                                         # preservation policies (defaults shown)
+    form: all            # exact value equality (declared list or all inputs)
+    focus: same-element  # same element key
+    selection: exact
+    scroll: anchor       # first fully visible element per scroll container stays in viewport (tolerance_px: 0)
+    storage: ["draft"]   # declared keys only: present before ⇒ present after with equal value; additions allowed
+    history: no-loss     # length not decreased; declared state keys equal
+    media: progress      # not paused unless paused before; currentTime_after ≥ currentTime_before
+    custom: "window.__app.state()"   # optional; deep-equal
+  setup: [ { fill: "#body", value: "Hei Per, vedlagt er…" }, { scrollTo: "#para-12" }, { focus: "#body", select: [4, 7] } ]
+  # script: ./setup.mjs   # exports setup(page, ctx) for real apps (auth, seed data)
+steps:
+  - transition: unfold                       # kinds: fold unfold posture rotate resize split keyboard-open keyboard-close
+    assert: preset@1                         # = [reachable, state-preserved, no-remount, not-occluded-by-hinge, no-element-loss(controls)]
+  - transition: { kind: keyboard-open, to: { keyboard: { height: 300 } } }   # mode chosen from <meta viewport interactive-widget> + engine default
+    assert: [reachable]
+  - operate: { target: "#send", expect: { visible: ".sent" } }   # explicit outcome; the only real click
+settle: { quiet_frames: 2, max_ms: 3000 }
+static: [no-horizontal-overflow, target-size]                     # opt-in diagnostics, level warning
+expect: { verdict: fail, rules: [state-preserved, no-remount] }   # fixtures only
+transient: [".toast"]                                             # excluded from element-loss
 ```
+`steps: []` ⇒ startup-only (startup asserts: reachable, fills-viewport, static). Unknown keys are rejected. Every default is printed in the resolved plan (`--plan`).
 
-### 5.4 Result (SARIF 2.1.0 + `schemas/result.schema.json` for the property bag)
-One `rule` per assertion (`helpUri` → WCAG 1.3.4/1.4.10/2.5.8, Google `Config_Changes`/`Touch_Targets`, EN 301 549 11.1.4.10). One `result` per (scenario × assertion) with `kind`, `level`, `logicalLocations` (selector, role, accessible name), `attachments` (before/during/after PNG, state diff JSON, trace on fail), `properties` {profileId, profileRevision, transition, engine, engineVersion, emulation: 'cdp-displayFeature' | 'viewport-only', evidenceLevel: 'emulated' | 'physical', unitsDeclared}. Coverage summary lists every scenario and every assertion that was `open`/`notApplicable`/`review` with its reason. A healer-skipped or blocked check is never `pass`.
+### 6.3 Result
+SARIF 2.1.0: one `rule` per assertion (`helpUri` → WCAG 1.3.4/1.4.10/2.5.8, Google `Config_Changes`/`Touch_Targets`, EN 301 549 11.1.4.10, marked "relates to"); one `result` per (scenario × profile × step × rule) with `kind` pass|fail|open|review|notApplicable, `level` error for fail else none, `locations[{ physicalLocation: scenario file + line, logicalLocations: [{ kind: element, fullyQualifiedName: selector, properties: { role, name } }] }]`, attachments (before/after PNG, continuity log, state diff with values masked), `properties` { profileId, profileRevision, panel, posture, orientation, viewport, dpr, emulation per signal, evidenceLevel, engine, engineVersion, appBuild, scenarioHash, oracleVersion, observations }. The **coverage manifest** is computed before execution; every expected (scenario × profile × step × rule) ends in exactly one kind. Exit codes: 0 all required pass · 1 any fail · 2 required coverage inconclusive (`open`) · 3 runner error.
 
-## 6. Oracles (deterministic, research 03 §4.5)
+## 7. Oracles (decided at quiescence; per-frame log attached)
 
-| Assertion | Computation |
+| Rule | Computation |
 |---|---|
-| reachable | `scrollIntoViewIfNeeded` → in viewport → `elementFromPoint` at centre resolves to the control or a descendant → enabled → a real click dispatches (no-op handler stub tolerated) |
-| state-preserved | snapshot {url, history.state, scrollY per scroll container, activeElement, selection, form values, local/sessionStorage, media currentTime/paused} before, every `every_ms` during, after; diff keyed by field; app may expose `window.__foldproofState()` for custom state |
-| no-remount | stamp controls with a `data-foldproof-stamp` before; after, same selector must carry the stamp (detects unmount/remount that loses focus even when values are restored) |
-| no-horizontal-overflow | `scrollingElement.scrollWidth > innerWidth` or any visible element `right > innerWidth` |
-| no-overlap | pairwise intersection of visible interactive rects excluding ancestor/descendant pairs |
-| clipping | `scrollWidth > clientWidth` with `overflow: hidden` on text containers of the controls |
-| target-size | axe-core `target-size` (WCAG 2.5.8, 24 CSS px) via `@axe-core/playwright`, enabled explicitly |
-| not-occluded-by-hinge | control rect ∩ mask region `[offset, offset+maskLength]` (vertical or horizontal) is empty |
-| no-element-loss | accessible name+role set of interactive elements after ⊇ before (minus elements the scenario declares transient) |
-| orientation-both | the task's controls pass `reachable` in both orientations (WCAG 1.3.4) |
+| env-self-check (always, before any rule) | expected vs observed after each configuration change: innerWidth/innerHeight, DPR, CSS posture (sentinel MQL), JS posture when present, segment rects (±1 px), orientation. Mismatch ⇒ dependent results `open: emulation not effective`. |
+| reachable | control resolves to exactly one element; `scrollIntoViewIfNeeded`; in viewport; `elementFromPoint` at centre + 4 inset points resolves to it or a descendant (another interactive element ⇒ `covered-by`); enabled, not `inert`, `pointer-events` not none; Playwright `click({ trial: true })`. Never a real click. |
+| state-preserved | per-field policies (§6.2); raw diff kept as evidence; values masked in exports. |
+| no-remount | stamp controls (`data-foldproof-stamp`) + retain node references in the recorder; after: same node identity (not just the attribute). Transient loss (stamp missing in some frames, present at quiescence) ⇒ `review`. |
+| not-occluded-by-hinge | only when `maskLength > 0`: control rect ∩ mask = ∅ else fail. `maskLength == 0` ⇒ `notApplicable: no occluding hinge`. Separate advisory `straddles-fold-line` (`review`) in folded posture only. |
+| no-element-loss | scoped to `controls` + declared `landmarks`; loss = no element after with the same role + accessible name and not in `transient`. Whole-page diff = diagnostic. |
+| operate | the declared target gets a real click once; `expect` (visible selector / url / text / custom) within settle; before-snapshot taken first. |
+| fills-viewport (startup) | `documentElement.clientWidth` within tolerance of viewport width; no letterbox. |
+| static (opt-in) | `no-horizontal-overflow` = `scrollingElement.scrollWidth > documentElement.clientWidth` (elements listed as diagnostics); `target-size` via axe `target-size`. Level warning. |
 
-## 7. Adapter contract (so Android/iOS can plug in later)
+Settle: `quiet_frames` consecutive animation frames with no DOM mutations and no viewport change, after `ready`, capped at `max_ms` (timeout ⇒ `open: did not settle`).
+
+## 8. Public API (`foldproof/playwright`) — experimental in v0.1
 
 ```ts
-interface Adapter {
-  id: 'web-chromium' | 'web-webkit' | 'web-firefox' | 'android-emulator' | 'ios-simulator';
-  capabilities(profile): { fold: boolean; posture: boolean; keyboard: 'resizes-content' | 'inset' | 'real' | 'none'; rotate: boolean; split: boolean };
-  open(profile, start, task): Session;        // launch at the documented configuration
-  transition(session, transition): void;      // drive it; re-apply emulation after viewport changes
-  snapshot(session): StateSnapshot;           // engine-agnostic shape
-  geometry(session): ElementRects;            // for oracles
-  close(session): Artifacts;                  // screenshots, trace
-}
+const fp = await attach(page, { profile: 'microsoft-surface-duo', start: { posture: 'closed' } }); // before goto: installs recorder + sentinels, owns metrics
+await page.goto('/compose'); /* user auth, seeding */
+const task = await fp.task({ controls: ['#send'], state: { form: 'all', storage: ['draft'] } });
+await task.checkpoint();                 // before-snapshot + stamps
+await fp.transition('unfold');           // CDP; env self-check
+const r = await task.assert('preset@1'); // findings[]
+await fp.operate('#send', { expect: { visible: '.sent' } });
+const sarif = fp.report();               // or fp.toSarif(), fp.toJUnit(), fp.toMarkdown()
 ```
-Unsupported capability ⇒ the runner emits `notApplicable` (adapter cannot) or `review` (emulation cannot prove it) with the reason text, never `pass`.
+The YAML runner is `runScenario(scenario, profiles, { baseUrl })` built on this API. Adapter interface for Android/iOS is internal and marked unstable.
 
-## 8. Slices (agile; each ends at a reviewable checkpoint)
+## 9. Slices (vertical first — council)
 
-| # | Scope | Output | Checkpoint / acceptance |
-|---|---|---|---|
-| 1 | Core: zod schemas → JSON Schema, profile + scenario loaders, provenance validator, ≥ 14 sourced profiles, CLI `profiles list/show/validate`, `scenarios validate` | `src/core`, `schemas/`, `profiles/`, `scenarios/` | `foldproof profiles validate` passes on the corpus; unit test proves a profile without a unit or source is rejected; conflicts are listed, not merged |
-| 2 | Web adapter + oracles + report + `run` | `src/adapters/web`, `src/oracles`, `src/report`, `dist/cli.js` | `foldproof run` on a trivial page emits SARIF + JUnit + MD; posture/segments verified via matchMedia inside the run (self-check rule); `doctor` detects a Chromium that honours the inline override |
-| 3 | Fixtures: 5 known failures × {broken, fixed} + `fixtures serve/verify` | `fixtures/`, `tests/fixtures.test.ts` | every `broken/` FAILS on its named assertion and every `fixed/` PASSES, 3 consecutive runs, in CI on macOS + ubuntu |
-| 4 | Skill package: SKILL.md, 8 references, launcher script, evals.json, plugin manifests, `skills.sh.json` | `skills/foldproof/`, `.claude-plugin/` | `skills-ref validate` + `claude plugin validate --strict` pass; SKILL.md < 500 lines; an agent following SKILL.md on fixture 2 reaches the correct verdict (eval) |
-| 5 | Docs + release: README quick start (timed < 5 min from clean clone), CONTRIBUTING (DCO), CHANGELOG, NOTICE, GitHub repo + CI, v0.1.0 tag | repo public under Allan's GitHub | Codex review + council verdict carry no blocking defect; README quick start reproduced by a fresh subagent |
+| # | Scope | Checkpoint |
+|---|---|---|
+| 1 | Revised schemas + validator; profiles: Surface Duo, Pixel 9 Pro Fold (hinge data), Galaxy Z Fold 7 (no hinge → review path), Pixel 10 Pro (keyboard); recorder + sentinels; `attach/transition('unfold'/'fold')/task/assert` with env-self-check, reachable, state-preserved (form/focus/selection/scroll-anchor/storage), no-remount, hinge; fixture 2 `draft-lost-on-unfold` broken/fixed; SARIF + MD | fixture 2 broken fails `state-preserved` + `no-remount` and nothing else; fixed passes all; env self-check proves segments; Surface Duo hinge path exercised |
+| 2 | rotate, resize/split, keyboard-shrink + keyboard-overlay-approx, posture; `operate`; `steps` sequences; settle; coverage manifest + exit codes; JUnit; masking; `run` + `--plan` | each transition has a passing and a failing fixture-level test; exit codes documented and tested |
+| 3 | Fixtures 1 `orientation-locked-layout`, 3 `keyboard-covers-primary-action` (100vh clip + overlay), 4 `control-under-hinge` (Surface Duo), 5 `rotate-loses-scroll-and-selection`, 6 `tabbar-missing-after-keyboard-close` (round trip), 7 `stale-async-layout-after-round-trip`; positives `nav-collapses-correctly`, `autosave-updates-storage`; `fixtures serve/verify`; CI matrix (3 runs + `setCPUThrottlingRate(4)`) | every broken fails only its named rules; every fixed and every positive passes; deterministic |
+| 4 | Skill (SKILL.md + 9 references + launcher + evals ≥ 5 incl. negative) + plugin manifests + `skills.sh.json`; zero-config `foldproof run <url>` | `skills-ref validate` + `claude plugin validate --strict`; skill-only install from an unrelated directory runs fixture 2 and reaches the right verdict |
+| 5 | Corpus → ≥ 14 (executable count reported separately); `engines/` from BCD; README (first line says "emulated evidence"), CONTRIBUTING (DCO), CHANGELOG, NOTICE, licences; GitHub repo + CI + SARIF upload Action; `npm pack` and publish gate | Codex review + council score; README quick start (browser cached) reproduced by a fresh subagent in < 5 min |
 
-Fixtures (slice 3): (1) `save-offscreen-at-folded-width` — fixed-width toolbar, startup class; (2) `draft-lost-on-unfold` — layout switch re-renders the editor, transition class; (3) `keyboard-covers-primary-action` — fixed footer CTA vs `resizes-content`; (4) `control-under-hinge` — button straddles the hinge at book/tabletop posture; (5) `rotate-loses-scroll-and-selection` — orientation handler re-navigates. Each `fixed/` is the minimal correct version so the diff teaches the fix.
-
-## 9. Assumptions (risky ones flagged ⚠️)
-
-- ⚠️ Chromium-only fold emulation is acceptable for v0.1; WebKit/Firefox parity is viewport-only and labelled.
-- ⚠️ A single npm package + Playwright peer dependency is an acceptable install cost for the skill (Impeccable sets the precedent with `npx impeccable`).
-- ⚠️ Name `foldproof` and Apache-2.0 / CC BY 4.0 / DCO are accepted; changing them later is a one-file edit plus a rename.
-- Plain-HTML fixtures are representative enough to prove detection; framework fixtures (React/Next) come in v0.2.
-- The inline `displayFeature` CDP path keeps working in Chromium ≥ 156; `doctor` probes it so a regression is reported, not hidden.
-- Android adapter in v0.2 on a machine with the SDK; its interface is frozen in v0.1.
-
-## 10. Key decisions to verify (Allan)
-
-1. Name: **foldproof** (recommended) vs `stillusable`.
-2. Licence split: Apache-2.0 code + CC BY 4.0 corpus + DCO.
-3. Web-first, Chromium-only fold emulation in v0.1; Android v0.2; iOS reported as `review`.
-4. TypeScript single package with Playwright as peer dependency.
-5. Publish under Allan's GitHub (`La-Cappuccino`) as a public repo named after the package; npm publish deferred to a manual step.
-6. The scenario DSL (§5.3) is the public contract agents write; `script:` hooks exist for real apps.
+## 10. Assumptions (⚠️ risky)
+- ⚠️ Chromium-only fold emulation accepted for v0.1; other engines labelled viewport-only.
+- ⚠️ The keyboard approximations are labelled and never claim real-keyboard coverage; a default fixed-footer case stays `review` for the real-keyboard class.
+- ⚠️ Name foldproof, licences, single package, GitHub under `La-Cappuccino` — reversible but not free once public.
+- Plain-HTML fixtures suffice to prove detection and false-alarm behaviour in v0.1.
 
 ## 11. Acceptance (feeds /verify-loop)
+1. `npm test` green: unit + adapter + fixture matrix; matrix deterministic over 3 runs with 4× CPU throttle on macOS and ubuntu.
+2. Mutation tests: a profile missing a unit, a source, `unknowns`, or a derivation is rejected; an inconsistent `web.segments` is rejected.
+3. Every run emits SARIF valid against the 2.1.0 schema (checked in CI), JUnit, and MD with an "Untested" section; the coverage manifest denominator equals expected (scenario × profile × step × rule).
+4. Env self-check: a deliberately broken emulation (test double) yields `open`, never `pass`.
+5. Positive controls pass; broken fixtures fail only their named rules.
+6. `skills-ref validate` + `claude plugin validate --strict` pass; SKILL.md < 500 lines; skill-only install works from an unrelated directory.
+7. Codex (`cx`, flagship) review + council score recorded; no blocking finding open at tag.
+8. No text in the repo claims proof, physical-device validation, or WCAG conformance.
 
-1. `npm test` green: unit + fixture matrix; fixture matrix deterministic over 3 runs on macOS and ubuntu CI.
-2. `foldproof profiles validate` passes; mutation test: removing a unit, a source or `unknowns` fails validation.
-3. `foldproof run` on all 5 fixtures emits SARIF that validates against the SARIF 2.1.0 schema, plus JUnit and MD; the MD has an "Untested" section listing every `open`/`review`/`notApplicable` with a reason.
-4. Live self-check inside every Chromium run: after a fold transition, `matchMedia('(horizontal-viewport-segments: 2)')` (or vertical) must match, else the run is `open: emulation not effective` — never `pass`.
-5. `skills-ref validate skills/foldproof` and `claude plugin validate --strict` pass; SKILL.md < 500 lines; evals.json has ≥ 5 cases incl. one negative.
-6. README quick start executed by a fresh subagent from a clean clone in < 5 minutes.
-7. Second-model critic (Codex via `cx`, flagship) + quad-council: no blocking finding open at release.
-8. Nothing in the repo claims physical-device validation; every emulated result says so.
+## 12. Decisions for Allan (proceeding under these; one-line reversals)
+1. Name **foldproof**. 2. Apache-2.0 + CDLA-Permissive-2.0 + DCO. 3. Web-first, Chromium fold emulation; Android v0.2. 4. Single package, Playwright peer. 5. Public repo under `La-Cappuccino/foldproof`; npm publish is the one outward step left for Allan to run. 6. The YAML in §6.2 and the API in §8 are experimental public contracts until v0.2.

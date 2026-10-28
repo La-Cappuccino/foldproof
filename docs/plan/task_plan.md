@@ -12,11 +12,13 @@ profiles and reproducible failure fixtures, not in a screenshot at one size.
 - [x] P0 git init + worktree isolation
 - [x] P1 Research fan-out (last30days, Perplexity ×4, 4 agents) → docs/research/00–05 (all in Brain)
 - [x] P2 Synthesis → docs/SPEC-v1.md (goal, non-goals, slices, acceptance) — working name foldproof
-- [ ] P3 Quad-council review of the spec → fold verdict into spec → mark-it-down
-- [ ] P4 Build slice 1: profiles schema + sourced profiles + fixtures + web adapter + SKILL.md
-- [ ] P5 Verify: tests pass, adapter proves fail→fixed on fixtures, Codex review, council
-- [ ] P6 Package hygiene: README, LICENSE, CONTRIBUTING, CI, CHANGELOG
-- [ ] P7 Commit, Brain persist, mark-it-down final, report
+- [x] P3 Quad-council review (4/4 seats: ship with changes) → docs/plan/council-2026-10-28.md → SPEC v1.1
+- [ ] P4 Slice 1 (vertical): revised schemas, recorder, attach/transition/assert (unfold), 3 oracles + env self-check, fixture 2, SARIF+MD
+- [ ] P5 Slice 2: all transitions (rotate, resize, keyboard ×2, fold/posture), operate/outcome, steps, settle, coverage manifest, exit codes, JUnit, masking
+- [ ] P6 Slice 3: fixtures 1,3–7 + positive controls; `fixtures verify`; CI matrix (3 runs, CPU throttle)
+- [ ] P7 Slice 4: skill package + launcher + manifests + evals + zero-config run
+- [ ] P8 Slice 5: corpus (agent, parallel), engines from BCD, README/CONTRIBUTING/NOTICE/licences, GitHub repo + CI + SARIF Action, npm pack; Codex review; council score
+- [ ] P9 Commit/push, Brain persist, final mark-it-down, report
 
 ## Decisions log (append as made)
 - 2026-10-28 Repo initialised at /Users/echo/Projects/active/responsivness (was not git).
@@ -26,6 +28,13 @@ profiles and reproducible failure fixtures, not in a screenshot at one size.
   Fold→unfold mid-session works without reload (transition tests are possible). Chromium-only.
 - 2026-10-28 Skill packaging follows the Agent Skills spec (agentskills.io): SKILL.md + scripts/ +
   references/ + assets/; validate with `skills-ref validate`; ship marketplace.json + npx skills add.
+
+- 2026-10-28 Council (4/4): reachable = hit-test + trial click, never a real click; state policies per field;
+  self-check expected-vs-observed; keyboard overlay approx; observers before trigger + quiescence; generic
+  geometry demoted to diagnostics; DSL gets version + steps + operate; vertical slice first.
+- 2026-10-28 VERIFIED after council: navigator.devicePosture + virtualKeyboard EXIST on localhost (secure
+  context); sentinel MQL needed before override; DPR changes mid-session via CDP; never use setViewportSize.
+- 2026-10-28 Licence: Apache-2.0 code, CDLA-Permissive-2.0 for profiles/, NOTICE for upstream data (flag for Allan).
 
 ## Open questions (resolve by research or by stated assumption)
 - Package name (dir typo "responsivness" is not the public name)

@@ -1,0 +1,332 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "asus-zenbook-fold",
+  "revision": 1,
+  "kind": "device",
+  "platform": "windows",
+  "name": "ASUS Zenbook 17 Fold OLED (UX9702)",
+  "vendor": "ASUS",
+  "sources": [
+    {
+      "id": "chrome-devtools",
+      "url": "https://github.com/ChromeDevTools/devtools-frontend/blob/main/front_end/models/emulation/EmulatedDevices.ts",
+      "publisher": "Chromium (DevTools)",
+      "inspected": "2026-10-28",
+      "licence": "BSD-3-Clause",
+      "kind": "published",
+      "note": "screen.vertical/horizontal in CSS px, device-pixel-ratio, spanned modes with hinge rect {x,y,width,height} in CSS px."
+    },
+    {
+      "id": "w3c-device-posture",
+      "url": "https://www.w3.org/TR/device-posture/",
+      "publisher": "W3C Devices and Sensors WG",
+      "inspected": "2026-10-28",
+      "licence": "W3C-document-licence",
+      "kind": "published",
+      "quote": "continuous | folded",
+      "note": "Candidate Recommendation Draft 2026-10-26. continuous = flat or fully closed; folded = book or laptop posture."
+    },
+    {
+      "id": "mdn-bcd",
+      "url": "https://github.com/mdn/browser-compat-data",
+      "publisher": "MDN",
+      "inspected": "2026-10-28",
+      "licence": "CC0-1.0",
+      "kind": "published",
+      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "inner",
+      "physical_px": {
+        "w": 2559.0,
+        "h": 1920.0
+      },
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "name": "single",
+      "physical_px": {
+        "w": 1279.5,
+        "h": 1920.0
+      },
+      "source_ref": "chrome-devtools"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 1706,
+      "h": 1280,
+      "scale": 1.5,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Asus Zenbook Fold vertical-spanned"
+    },
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 1280,
+      "h": 1706,
+      "scale": 1.5,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Asus Zenbook Fold horizontal-spanned"
+    },
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 853,
+      "h": 1280,
+      "scale": 1.5,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Asus Zenbook Fold vertical"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 1280,
+      "h": 853,
+      "scale": 1.5,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Asus Zenbook Fold horizontal"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 1706,
+        "h": 1280
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 1280,
+        "h": 1706
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 853,
+        "h": 1280
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 1280,
+        "h": 853
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    }
+  ],
+  "display_features": [
+    {
+      "id": "zenbook-fold-vertical",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "vertical",
+      "bounds": {
+        "x": 800,
+        "y": 0,
+        "w": 107,
+        "h": 1280
+      },
+      "unit": "css_px",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "published",
+      "derivation": "DevTools hinge {x:800,y:0,width:107,height:1280} drawn with contentColor alpha 0.2 (translucent) unlike Surface Duo alpha 1.0; single flexible OLED so occlusion none, width 107 css_px kept as the registry fold region",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "id": "zenbook-fold-horizontal",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "horizontal",
+      "bounds": {
+        "x": 0,
+        "y": 800,
+        "w": 1706,
+        "h": 107
+      },
+      "unit": "css_px",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "published",
+      "derivation": "DevTools hinge {x:0,y:800,width:1706,height:107}, alpha 0.2",
+      "source_ref": "chrome-devtools"
+    }
+  ],
+  "postures": [
+    {
+      "name": "closed",
+      "panel": "single",
+      "web_posture": "continuous",
+      "android_state": null,
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "flat",
+      "panel": "inner",
+      "web_posture": "continuous",
+      "android_state": null,
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "half_opened",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": null,
+      "display_feature": "zenbook-fold-vertical",
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "book",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": null,
+      "display_feature": "zenbook-fold-vertical",
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "tabletop",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": null,
+      "display_feature": "zenbook-fold-horizontal",
+      "source_ref": "w3c-device-posture"
+    }
+  ],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "source_ref": "chrome-devtools"
+  },
+  "capabilities": {
+    "web": {
+      "device_posture_api": {
+        "supported": true,
+        "since": "chrome 132",
+        "source_ref": "mdn-bcd"
+      },
+      "viewport_segments": {
+        "supported": true,
+        "since": "chrome 138",
+        "source_ref": "mdn-bcd"
+      },
+      "window_management": {
+        "supported": true,
+        "since": "chrome 100",
+        "source_ref": "mdn-bcd"
+      },
+      "visual_viewport": {
+        "supported": true,
+        "since": "chrome 61",
+        "source_ref": "mdn-bcd"
+      },
+      "virtual_keyboard_api": {
+        "supported": true,
+        "since": "chrome 94",
+        "source_ref": "mdn-bcd"
+      },
+      "interactive_widget": {
+        "supported": true,
+        "since": "chrome 108",
+        "source_ref": "chrome-viewport-resize"
+      }
+    }
+  },
+  "operating_states": [],
+  "conflicts_with": [],
+  "unknowns": [
+    "DevTools lists capabilities [\"touch\"] only; the detachable hardware keyboard, touchpad and pen are not in the registry, so inputs record touch-only. A Windows session with a mouse would be pointer fine / hover.",
+    "Vendor panel resolution and diagonal not verified; physical_px derived from DevTools css_px x 1.5.",
+    "Fold region 107 css_px is the DevTools drawing, not a measured fold; whether Chrome on Windows exposes a 107 px segment gap is unmeasured.",
+    "Windows posture reporting (continuous vs folded) on this device is unmeasured."
+  ],
+  "tags": [
+    "foldable",
+    "laptop",
+    "chromium"
+  ]
+}

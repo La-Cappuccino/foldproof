@@ -1,0 +1,209 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "google-pixel-10-pro",
+  "revision": 1,
+  "kind": "device",
+  "platform": "android",
+  "name": "Google Pixel 10 Pro",
+  "vendor": "Google",
+  "sources": [
+    {
+      "id": "playwright",
+      "url": "https://github.com/microsoft/playwright/blob/main/packages/isomorphic/deviceDescriptorsSource.json",
+      "publisher": "Microsoft (Playwright)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "note": "207 entries on main at inspection; file moved here from playwright-core/src/server. viewport = layout viewport after browser UI; screen = full screen in CSS px."
+    },
+    {
+      "id": "aosp-nexus-xml",
+      "url": "https://android.googlesource.com/platform/tools/base/+/mirror-goog-studio-main/sdklib/src/main/resources/com/android/sdklib/devices/nexus.xml",
+      "publisher": "AOSP (platform/tools/base sdklib)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "note": "Google device emulator profiles (Pixel Fold, Pixel 9 Pro Fold, Pixel 10 Pro Fold, Pixel Tablet, Pixel 10 Pro). One pixel-density per profile, applied to the folded region too."
+    },
+    {
+      "id": "android-screen-densities",
+      "url": "https://developer.android.com/training/multiscreen/screendensities",
+      "publisher": "Google (Android Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "px = dp * (dpi / 160)",
+      "note": "mdpi 160 = 1.0 baseline; xhdpi 320 = 2.0; xxhdpi 480 = 3.0; 420dpi = 2.625; 390dpi = 2.4375."
+    },
+    {
+      "id": "mdn-bcd",
+      "url": "https://github.com/mdn/browser-compat-data",
+      "publisher": "MDN",
+      "inspected": "2026-10-28",
+      "licence": "CC0-1.0",
+      "kind": "published",
+      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "single",
+      "physical_px": {
+        "w": 1280,
+        "h": 2856
+      },
+      "diagonal_in": 6.3,
+      "density_dpi": 480,
+      "source_ref": "aosp-nexus-xml"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 427,
+      "h": 952,
+      "scale": 3,
+      "kind": "published",
+      "source_ref": "playwright",
+      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: Pixel 10 Pro"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 952,
+      "h": 427,
+      "scale": 3,
+      "kind": "published",
+      "source_ref": "playwright",
+      "registry": "playwright main (inspected 2026-10-28) deviceDescriptorsSource.json: Pixel 10 Pro landscape"
+    },
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "dp",
+      "w": 426.67,
+      "h": 952,
+      "scale": 3,
+      "kind": "derived",
+      "derivation": "dp = px / (480 / 160) = px / 3: 1280 / 3 = 426.67; 2856 / 3 = 952 (AOSP nexus.xml pixel_10_pro xxhdpi)",
+      "source_ref": "aosp-nexus-xml"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "single",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 427,
+        "h": 876
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "published",
+      "derivation": "layout_viewport is the Playwright `viewport` (screen minus browser UI); insets 0 = no separate system-inset data published, not a claim of none",
+      "source_ref": "playwright"
+    },
+    {
+      "panel": "single",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 900,
+        "h": 375
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "published",
+      "derivation": "layout_viewport is the Playwright `viewport` (screen minus browser UI); insets 0 = no separate system-inset data published, not a claim of none",
+      "source_ref": "playwright"
+    }
+  ],
+  "display_features": [],
+  "postures": [],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "source_ref": "playwright"
+  },
+  "capabilities": {
+    "web": {
+      "device_posture_api": {
+        "supported": true,
+        "since": "chrome 132",
+        "source_ref": "mdn-bcd"
+      },
+      "viewport_segments": {
+        "supported": true,
+        "since": "chrome 138",
+        "source_ref": "mdn-bcd"
+      },
+      "window_management": {
+        "supported": true,
+        "since": "chrome 100",
+        "source_ref": "mdn-bcd"
+      },
+      "visual_viewport": {
+        "supported": true,
+        "since": "chrome 61",
+        "source_ref": "mdn-bcd"
+      },
+      "virtual_keyboard_api": {
+        "supported": true,
+        "since": "chrome 94",
+        "source_ref": "mdn-bcd"
+      },
+      "interactive_widget": {
+        "supported": true,
+        "since": "chrome 108",
+        "source_ref": "chrome-viewport-resize"
+      }
+    }
+  },
+  "operating_states": [],
+  "conflicts_with": [],
+  "unknowns": [
+    "Playwright reports 427 css_px width (1280 / 3 = 426.67 rounded up); the AOSP panel is 1280 px wide. Recorded as published registry value plus derived dp; not a conflict between profiles.",
+    "Soft keyboard height is measured, not published. Chrome 108+ default interactive-widget=resizes-visual: the layout viewport keeps its height and visualViewport.height shrinks.",
+    "System insets and cutout geometry not published; insets 0."
+  ],
+  "tags": [
+    "phone",
+    "keyboard",
+    "chromium"
+  ]
+}

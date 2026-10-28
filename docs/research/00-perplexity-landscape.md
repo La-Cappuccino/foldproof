@@ -135,6 +135,13 @@ Experiment scripts: `verify.mjs`, `verify2.mjs`, `verify3.mjs` (job tmp dir; rep
 | Transition mid-session (re-send metrics without `displayFeature`, posture `continuous`) | **Works without reload**: segments collapse to `[[0,0,1000,900]]`, `matchMedia('(horizontal-viewport-segments: 2)')` fires `change` (false), posture query fires `change` (false). No `segmentschange` event observed on `window.viewport` in this build; `matchMedia` listeners are the reliable signal. |
 | Horizontal hinge (tabletop) `orientation:"horizontal", offset:440, maskLength:20` | **Works**: segments `[[0,0,1000,440],[0,460,1000,440]]`. |
 
+**Correction 2026-10-28 (after council review, verified with `verify4–6.mjs`):**
+- The "`navigator.devicePosture` is absent" result above was **confounded**: the probes ran on `about:blank` via `setContent`, which is not a secure context. On `http://localhost` (potentially trustworthy origin) with the same Chromium 156 and no flags: `isSecureContext === true`, `'devicePosture' in navigator === true`, `'virtualKeyboard' in navigator === true`, `window.viewport.segments` present. Fixtures and probes must be served from localhost.
+- A `matchMedia('(device-posture: folded)')` created **after** the posture override reads `false` unless a MediaQueryList for that feature (or a stylesheet using it) already existed; a sentinel MQL installed via `addInitScript` before navigation reads correctly and fires `change`. The adapter installs sentinels for posture and segment counts before any override.
+- `Emulation.setDevicePostureOverride` is the live posture mechanism after load; the inline `devicePosture` field only takes effect when sent before navigation.
+- `deviceScaleFactor` and viewport can change mid-session via `setDeviceMetricsOverride` without reload (DPR 3 → 2, `loads` stays 1, draft/selection/scroll intact). Playwright's `page.setViewportSize` resets DPR and drops the display feature, so foldproof owns every metrics change and never calls `setViewportSize`.
+- With `mobile: true` and no `<meta name=viewport>`, Chromium lays out at 980 px; fixtures must declare the viewport meta.
+
 **Adapter decision:** the web adapter emulates folds via the inline `displayFeature`/`devicePosture`
 fields of `Emulation.setDeviceMetricsOverride` (what Chrome DevTools Device Mode itself uses), and
 attempts the dedicated commands first with a probe so the code self-upgrades when a Chromium build

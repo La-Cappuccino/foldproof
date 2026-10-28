@@ -1,0 +1,345 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "id": "chrome-devtools-galaxy-z-fold6",
+  "revision": 1,
+  "kind": "registry-entry",
+  "platform": "android",
+  "name": "Chrome DevTools emulated device: Galaxy Z Fold 6",
+  "vendor": "Samsung",
+  "sources": [
+    {
+      "id": "chrome-devtools",
+      "url": "https://github.com/ChromeDevTools/devtools-frontend/blob/main/front_end/models/emulation/EmulatedDevices.ts",
+      "publisher": "Chromium (DevTools)",
+      "inspected": "2026-10-28",
+      "licence": "BSD-3-Clause",
+      "kind": "published",
+      "note": "screen.vertical/horizontal in CSS px, device-pixel-ratio, spanned modes with hinge rect {x,y,width,height} in CSS px."
+    },
+    {
+      "id": "androidx-foldingfeature",
+      "url": "https://android.googlesource.com/platform/frameworks/support/+/androidx-main/window/window/src/main/java/androidx/window/layout/FoldingFeature.kt",
+      "publisher": "AOSP (androidx.window)",
+      "inspected": "2026-10-28",
+      "licence": "Apache-2.0",
+      "kind": "published",
+      "note": "State FLAT | HALF_OPENED; Orientation VERTICAL | HORIZONTAL; OcclusionType NONE (flexible screen, treat as guideline) | FULL (hinge is part of the window); isSeparating true for hinges always and for folds when not FLAT."
+    },
+    {
+      "id": "w3c-device-posture",
+      "url": "https://www.w3.org/TR/device-posture/",
+      "publisher": "W3C Devices and Sensors WG",
+      "inspected": "2026-10-28",
+      "licence": "W3C-document-licence",
+      "kind": "published",
+      "quote": "continuous | folded",
+      "note": "Candidate Recommendation Draft 2026-10-26. continuous = flat or fully closed; folded = book or laptop posture."
+    },
+    {
+      "id": "mdn-bcd",
+      "url": "https://github.com/mdn/browser-compat-data",
+      "publisher": "MDN",
+      "inspected": "2026-10-28",
+      "licence": "CC0-1.0",
+      "kind": "published",
+      "note": "browser-compat-data v8.1.7: Navigator.devicePosture chrome 132; Viewport.segments chrome 138; Window.getScreenDetails chrome 100; VisualViewport chrome 61 / safari 13 / firefox 91; VirtualKeyboard chrome 94. Safari desktop: none of posture/segments/window-management; safari_ios devicePosture 27 behind a flag."
+    },
+    {
+      "id": "chrome-viewport-resize",
+      "url": "https://developer.chrome.com/blog/viewport-resize-behavior",
+      "publisher": "Google (Chrome Developers)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "published",
+      "quote": "Chrome on Android will no longer resize the Layout Viewport",
+      "note": "Chrome 108 default interactive-widget=resizes-visual on Android; Safari iOS resizes visual viewport only; Firefox resizes both."
+    },
+    {
+      "id": "foldproof-derivation",
+      "url": "https://github.com/La-Cappuccino/foldproof/blob/main/docs/research/02-device-profile-sources.md",
+      "publisher": "foldproof (this corpus)",
+      "inspected": "2026-10-28",
+      "licence": "CC-BY-4.0",
+      "kind": "derived",
+      "note": "Values computed by the corpus author from the other listed sources; each derived entry states its formula in `derivation`."
+    }
+  ],
+  "panels": [
+    {
+      "name": "inner",
+      "physical_px": {
+        "w": 1953.0,
+        "h": 2257.5
+      },
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "name": "outer",
+      "physical_px": {
+        "w": 1081.5,
+        "h": 2541.0
+      },
+      "source_ref": "chrome-devtools"
+    }
+  ],
+  "logical": [
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 744,
+      "h": 860,
+      "scale": 2.625,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Galaxy Z Fold 6 vertical-spanned"
+    },
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 860,
+      "h": 744,
+      "scale": 2.625,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Galaxy Z Fold 6 horizontal-spanned"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "w": 412,
+      "h": 968,
+      "scale": 2.625,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Galaxy Z Fold 6 vertical"
+    },
+    {
+      "panel": "outer",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "w": 968,
+      "h": 412,
+      "scale": 2.625,
+      "kind": "published",
+      "source_ref": "chrome-devtools",
+      "registry": "devtools-frontend main (inspected 2026-10-28) EmulatedDevices.ts: Galaxy Z Fold 6 horizontal"
+    }
+  ],
+  "usable": [
+    {
+      "panel": "inner",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 744,
+        "h": 860
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "inner",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 860,
+        "h": 744
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "outer",
+      "orientation": "portrait",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 412,
+        "h": 968
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "panel": "outer",
+      "orientation": "landscape",
+      "unit": "css_px",
+      "layout_viewport": {
+        "w": 968,
+        "h": 412
+      },
+      "insets": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "cutouts": [],
+      "kind": "derived",
+      "derivation": "DevTools publishes screen size only; layout viewport = screen because browser UI height is not in the registry; insets 0 = not published",
+      "source_ref": "chrome-devtools"
+    }
+  ],
+  "display_features": [
+    {
+      "id": "dt-fold6-fold-vertical",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "vertical",
+      "bounds": {
+        "x": 372,
+        "y": 0,
+        "w": 0,
+        "h": 860
+      },
+      "unit": "css_px",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "published",
+      "derivation": "DevTools hinge {x:372,y:0,width:0,height:860} drawn with contentColor alpha 0.2 (translucent) = flexible fold, not an opaque hinge",
+      "source_ref": "chrome-devtools"
+    },
+    {
+      "id": "dt-fold6-fold-horizontal",
+      "panel": "inner",
+      "type": "fold",
+      "orientation": "horizontal",
+      "bounds": {
+        "x": 0,
+        "y": 372,
+        "w": 860,
+        "h": 0
+      },
+      "unit": "css_px",
+      "occlusion": "none",
+      "is_separating": true,
+      "kind": "published",
+      "derivation": "DevTools hinge {x:0,y:372,width:860,height:0}, alpha 0.2",
+      "source_ref": "chrome-devtools"
+    }
+  ],
+  "postures": [
+    {
+      "name": "closed",
+      "panel": "outer",
+      "web_posture": "continuous",
+      "android_state": null,
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "flat",
+      "panel": "inner",
+      "web_posture": "continuous",
+      "android_state": "FLAT",
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "half_opened",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": "HALF_OPENED",
+      "display_feature": "dt-fold6-fold-vertical",
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "book",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": "HALF_OPENED",
+      "display_feature": "dt-fold6-fold-vertical",
+      "source_ref": "w3c-device-posture"
+    },
+    {
+      "name": "tabletop",
+      "panel": "inner",
+      "web_posture": "folded",
+      "android_state": "HALF_OPENED",
+      "display_feature": "dt-fold6-fold-horizontal",
+      "source_ref": "w3c-device-posture"
+    }
+  ],
+  "inputs": {
+    "pointer": "coarse",
+    "hover": "none",
+    "touch": true,
+    "keyboard": "soft",
+    "source_ref": "chrome-devtools"
+  },
+  "capabilities": {
+    "web": {
+      "device_posture_api": {
+        "supported": true,
+        "since": "chrome 132",
+        "source_ref": "mdn-bcd"
+      },
+      "viewport_segments": {
+        "supported": true,
+        "since": "chrome 138",
+        "source_ref": "mdn-bcd"
+      },
+      "window_management": {
+        "supported": true,
+        "since": "chrome 100",
+        "source_ref": "mdn-bcd"
+      },
+      "visual_viewport": {
+        "supported": true,
+        "since": "chrome 61",
+        "source_ref": "mdn-bcd"
+      },
+      "virtual_keyboard_api": {
+        "supported": true,
+        "since": "chrome 94",
+        "source_ref": "mdn-bcd"
+      },
+      "interactive_widget": {
+        "supported": true,
+        "since": "chrome 108",
+        "source_ref": "chrome-viewport-resize"
+      }
+    }
+  },
+  "operating_states": [],
+  "conflicts_with": [
+    {
+      "profile_id": "samsung-galaxy-z-fold6",
+      "field": "logical.inner",
+      "note": "DevTools spanned 744x860 @2.625 vs Playwright 928x1080 @2; see the device profile for the device-px comparison."
+    }
+  ],
+  "unknowns": [
+    "physical_px is derived (css_px x device-pixel-ratio) and does not match Playwright; registry entry, not device truth.",
+    "Browser UI height not in the registry."
+  ],
+  "tags": [
+    "foldable",
+    "registry",
+    "chromium"
+  ]
+}
