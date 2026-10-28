@@ -31,7 +31,7 @@ Companion docs: [validation strategy](../validation.md) · [Perplexity landscape
 ### 1.1 Setup used
 
 ```bash
-mkdir -p ~/.claude/jobs/521762a0/tmp/pw-experiments && cd $_
+mkdir -p <local-tmp>/pw-experiments && cd $_
 npm i -D playwright@1.64.1 @playwright/test@1.64.1 @axe-core/playwright@4.14.0
 npx playwright install chromium webkit firefox   # chromium-1248, webkit-2370, firefox-1555
 ```
