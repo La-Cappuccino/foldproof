@@ -2,8 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import Ajv04 from 'ajv-draft-04';
-import addFormats from 'ajv-formats';
+import { createRequire } from 'node:module';
+// ajv-draft-04 and ajv-formats are CommonJS with `export =`; require() keeps the NodeNext type-check happy
+const require = createRequire(import.meta.url);
+const Ajv04 = require('ajv-draft-04') as new (opts: Record<string, unknown>) => { compile(s: unknown): ((d: unknown) => boolean) & { errors?: unknown[] } };
+const addFormats = require('ajv-formats') as (ajv: unknown) => void;
 import { toSarif, toJUnit, toMarkdown, coverageManifest, reconcileCoverage, exitCode } from '../../src/report/index.js';
 import { Scenario, Profile } from '../../src/core/schema.js';
 import { foldable } from './schema.test.js';
