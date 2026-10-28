@@ -23,7 +23,7 @@ profiles and reproducible failure fixtures, not in a screenshot at one size.
 - [x] P9 DONE: public repo https://github.com/La-Cappuccino/foldproof (main = bootstrap docs), branch build-v1 pushed over SSH, draft PR #1 open; Brain notes: research 00–05, spec, council, milestone, Codex lessons, screenshot gotcha; npm publish left for Allan (`npm publish --access public`)
 
 ## Decisions log (append as made)
-- 2026-10-28 Repo initialised at /Users/echo/Projects/active/responsivness (was not git).
+- 2026-10-28 Repo initialised at <project-dir> (was not git).
 - 2026-10-28 VERIFIED: foldable emulation on web is feasible today via Playwright CDPSession +
   inline `displayFeature`/`devicePosture` on `Emulation.setDeviceMetricsOverride` (Chromium 156).
   Dedicated `setDisplayFeaturesOverride` is a no-op in that build; `navigator.devicePosture` absent.

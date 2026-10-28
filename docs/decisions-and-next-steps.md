@@ -16,7 +16,7 @@
 | Intend to release an open-source effort. | [Message 42](conversation-archive.md#message-42-user). |
 | Preserve and organize the discussion into multiple local Markdown files in the current directory. | [Message 46](conversation-archive.md#message-46-user), [message 48](conversation-archive.md#message-48-user), [message 50](conversation-archive.md#message-50-user), and [message 52](conversation-archive.md#message-52-user). |
 
-The confirmed destination is `/Users/echo/Projects/active/responsivness`. The user's repeated clarification settled the location; no further destination approval was pending.
+The confirmed destination is `<project-dir>`. The user's repeated clarification settled the location; no further destination approval was pending.
 
 ## Findings and corrections that guide these documents
 

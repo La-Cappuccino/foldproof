@@ -1,7 +1,7 @@
 # Research 03 — Testing and emulation tooling (web, Android, iOS), oracles and evidence formats
 
 Inspected 28 October 2026. Experiments ran on this Mac (Apple Silicon, macOS 25.6, Node 26.7.0) in
-`/Users/echo/.claude/jobs/521762a0/tmp/pw-experiments` (scripts `exp1`–`exp7`, `report-shape/`).
+`<local-tmp>/pw-experiments` (scripts `exp1`–`exp7`, `report-shape/`).
 Every snippet is tagged **VERIFIED** (executed here, output quoted) or **UNVERIFIED** (from docs or
 source only). No Android SDK or Xcode is installed on this Mac (`adb`, `emulator`, `simctl` absent;
 only Command Line Tools), so every Android/iOS command is UNVERIFIED and is cited to AOSP source
@@ -650,4 +650,4 @@ Formats
 Local experiment scripts (VERIFIED outputs quoted above): `exp1-basic.mjs`, `exp2-foldable-cdp.mjs`,
 `exp3-foldable-order-flags.mjs`, `exp4-keyboard-safearea.mjs`, `exp5-features-reload.mjs`,
 `exp6-features-noviewport.mjs`, `exp7-axe-state.mjs`, `report-shape/` in
-`/Users/echo/.claude/jobs/521762a0/tmp/pw-experiments/`.
+`<local-tmp>/pw-experiments/`.

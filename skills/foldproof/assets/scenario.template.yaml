@@ -22,7 +22,7 @@ task:
     media: progress                          # not paused unless paused before; never rewinds
     # custom: "window.__app.state()"         # JS expression, deep-equal
   setup:                                     # small vocabulary; use `script:` for real apps (auth, seeding)
-    - { fill: "#body", value: "Hei Per, vedlagt er avtalen." }
+    - { fill: "#body", value: "Hei, vedlagt er avtalen." }
     - { focus: "#body", select: [4, 7] }
     - { scrollTo: "#para-12" }
   # script: ./setup.mjs                      # exports setup(page, { profile, scenario })

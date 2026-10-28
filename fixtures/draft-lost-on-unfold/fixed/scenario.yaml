@@ -9,7 +9,7 @@ task:
   controls: ["#send", "role=button[name='Save draft']"]
   state: { form: all, focus: same-element, selection: exact, scroll: anchor }
   setup:
-    - { fill: "#body", value: "Hei Per, vedlagt er avtalen vi diskuterte." }
+    - { fill: "#body", value: "Hei, vedlagt er avtalen vi diskuterte." }
     - { focus: "#body", select: [4, 7] }
 steps:
   - transition: unfold

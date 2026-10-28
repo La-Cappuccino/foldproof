@@ -9,7 +9,7 @@ task:
   controls: ["#save"]
   state: { form: all, focus: same-element, selection: exact, scroll: none }
   setup:
-    - { fill: "#body", value: "Ring Per om avtalen" }
+    - { fill: "#body", value: "Ring kunden om avtalen" }
     - { focus: "#body", select: [0, 4] }
 steps:
   - transition: unfold

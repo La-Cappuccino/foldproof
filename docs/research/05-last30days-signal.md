@@ -4,10 +4,10 @@ Captured 2026-10-28 by research-last30days. Two runs of the `/last30days` engine
 
 Raw files (engine output plus the WebSearch Supplemental Results appendix):
 
-- `/Users/echo/Documents/Last30Days/ai-agent-skills-for-responsive-and-adaptive-ui-testing-on-foldables-and-large-screens-raw-v3.md`
-- `/Users/echo/Documents/Last30Days/foldable-phone-app-layout-problems-raw-v3.md`
+- `<local-last30days-dir>/ai-agent-skills-for-responsive-and-adaptive-ui-testing-on-foldables-and-large-screens-raw-v3.md`
+- `<local-last30days-dir>/foldable-phone-app-layout-problems-raw-v3.md`
 
-Engine invocation artifacts: `/Users/echo/.claude/jobs/521762a0/tmp/` (plan JSONs, engine stdout/stderr, run script).
+Engine invocation artifacts: `<local-tmp>/` (plan JSONs, engine stdout/stderr, run script).
 
 ---
 

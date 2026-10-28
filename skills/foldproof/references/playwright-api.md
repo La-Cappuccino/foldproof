@@ -76,7 +76,7 @@ test('unfolding mid-draft keeps the draft and Send works', async ({ browser }) =
     await fp.verifyStart();
 
     const task = await fp.task({ controls: ['#send', "role=button[name='Save draft']"], state: { form: 'all', storage: ['draft'] } });
-    await page.fill('#body', 'Hei Per, vedlagt er avtalen.');
+    await page.fill('#body', 'Hei, vedlagt er avtalen.');
     await page.locator('#body').evaluate((el) => (el as HTMLTextAreaElement).setSelectionRange(4, 7));
     await task.checkpoint();
 

@@ -44,7 +44,7 @@ task:
   ready: { selector: "#send" }
   controls: ["#send", "role=button[name='Save draft']"]
   state: { form: all, storage: ["draft"] }
-  setup: [{ fill: "#body", value: "Hei Per, vedlagt er avtalen." }, { focus: "#body", select: [4, 7] }]
+  setup: [{ fill: "#body", value: "Hei, vedlagt er avtalen." }, { focus: "#body", select: [4, 7] }]
 steps:
   - transition: unfold
     assert: preset@1          # reachable, state-preserved, no-remount, not-occluded-by-hinge, no-element-loss
@@ -101,7 +101,7 @@ Zenbook Fold, AOSP foldables, Pixel 10 Pro, iPhone 17 Pro, Pixel Tablet, iPad Pr
 desktop windows, Android TV, Android Automotive, iPhone Duo). Every number carries a unit and a source with
 URL, publisher, inspection date, licence and upstream revision. Registry conflicts are kept side by side, never
 averaged. Unknowns are listed. `npx foldproof profiles show <id>` prints the resolved emulation per posture.
-Licence CDLA-Permissive-2.0; upstream attribution in `NOTICE`.
+Licence CDLA-Permissive-2.0; upstream attribution in `NOTICE` and `THIRD_PARTY_NOTICES.md`.
 
 `fixtures/` — the public benchmark: broken/fixed pairs that reproduce real failure classes, plus positive
 controls that must pass. `npx foldproof fixtures verify` must report every broken variant failing on exactly
