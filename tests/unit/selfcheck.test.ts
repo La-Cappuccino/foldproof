@@ -117,7 +117,14 @@ describe('state policies', () => {
     expect(f.message).toMatch(/localStorage key draft removed/);
     expect(f.message).toMatch(/scroll position lost/);
     const dumped = JSON.stringify(f);
-    for (const secret of ['secret-text-value', 'secret-storage-value', 'secret-history', 'secret-query']) expect(dumped).not.toContain(secret);
+    for (const secret of ['secret-text-value', 'secret-storage-value', 'secret-history', 'secret-query', '17 chars', 's…e']) expect(dumped).not.toContain(secret);
+  });
+  it('deep redaction strips URL queries from any exported string, including nested error text', () => {
+    const step = { findings: [{ message: 'runner error: page.goto: net::ERR at http://app.test/login?token=secret-token-value#frag', details: { stack: ['see https://app.test/x?k=secret-token-value'] } }] };
+    const out = oracles.redactDeep(step);
+    const dumped = JSON.stringify(out);
+    expect(dumped).not.toContain('secret-token-value');
+    expect(dumped).toContain('http://app.test/login?<redacted>');
   });
   it('a failing custom probe is open, not pass — but a confirmed loss still fails', () => {
     const probe = { before: { ok: false, error: 'window.missing is undefined' }, after: { ok: false, error: 'window.missing is undefined' } };

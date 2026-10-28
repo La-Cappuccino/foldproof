@@ -10,7 +10,7 @@ import { stepTransition, stepRules, STARTUP_RULES } from '../core/schema.js';
 import { resolveConfiguration, isResolveError } from '../core/configuration.js';
 import type { ScenarioResult, Finding, StepResult } from '../core/types.js';
 import { Foldproof, describe } from './index.js';
-import { ORACLE_VERSION } from '../oracles/index.js';
+import { ORACLE_VERSION, redactDeep } from '../oracles/index.js';
 
 export interface RunOptions {
   baseUrl: string;
@@ -128,7 +128,9 @@ async function screenshot(fp: Foldproof, opts: RunOptions, scenario: Scenario, l
   else fp.currentStep().findings.push({ rule: 'env-self-check', kind: 'review', message: `screenshot skipped: a mask could not be applied or confirmed (${scenario.mask.join(', ') || 'no mask'})` });
 }
 
-function finish(partial: Omit<ScenarioResult, 'verdict' | 'matchedExpectation' | 'durationMs'>, scenario: Scenario, t0: number): ScenarioResult {
+function finish(partialRaw: Omit<ScenarioResult, 'verdict' | 'matchedExpectation' | 'durationMs'>, scenario: Scenario, t0: number): ScenarioResult {
+  // everything that leaves the runner is URL-redacted (Playwright error text can embed the navigated URL)
+  const partial = { ...partialRaw, steps: redactDeep(partialRaw.steps), gaps: redactDeep(partialRaw.gaps) };
   const all = partial.steps.flatMap((s) => s.findings);
   const required = all.filter((f) => !['no-horizontal-overflow', 'target-size', 'straddles-fold-line'].includes(f.rule));
   const envNotApplicable = required.length === 1 && required[0]!.rule === 'env-self-check' && required[0]!.kind === 'notApplicable';
