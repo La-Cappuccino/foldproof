@@ -71,10 +71,13 @@ describe('environment self-check (acceptance 11.4)', () => {
     const k: ResolvedConfiguration = { ...cfg, displayFeature: null, keyboard: { height: 300 } };
     const a: AppliedConfiguration = { cfg: k, effectiveViewport: k.viewport, keyboardMode: 'keyboard-overlay-approx', emulation: ['cdp-metrics', 'keyboard-overlay-approx'], expected: expectedSignals(k) };
     const base = { ...good, hSegs: 1 as const, segments: [{ x: 0, y: 0, w: 1114, h: 720 }] };
-    expect(session.selfCheck(a, { ...base, keyboardOverlay: { present: true, height: 300, bottom: 720, visible: true, hit: true } }, settled).kind).toBe('pass');
+    const ok9 = Array(9).fill(true);
+    expect(session.selfCheck(a, { ...base, keyboardOverlay: { present: true, height: 300, bottom: 720, left: 0, width: 1114, visible: true, hits: ok9 } }, settled).kind).toBe('pass');
     expect(session.selfCheck(a, { ...base, keyboardOverlay: null }, settled).message).toMatch(/keyboard overlay missing/);
-    expect(session.selfCheck(a, { ...base, keyboardOverlay: { present: true, height: 300, bottom: 720, visible: false, hit: false } }, settled).message).toMatch(/not visible/);
-    expect(session.selfCheck(a, { ...base, keyboardOverlay: { present: true, height: 120, bottom: 720, visible: true, hit: true } }, settled).message).toMatch(/height expected 300/);
+    expect(session.selfCheck(a, { ...base, keyboardOverlay: { present: true, height: 300, bottom: 720, left: 0, width: 1114, visible: false, hits: Array(9).fill(false) } }, settled).message).toMatch(/not visible/);
+    expect(session.selfCheck(a, { ...base, keyboardOverlay: { present: true, height: 120, bottom: 720, left: 0, width: 1114, visible: true, hits: ok9 } }, settled).message).toMatch(/height expected 300/);
+    // a 30 px wide overlay (page CSS narrowed it) must not count as verified
+    expect(session.selfCheck(a, { ...base, keyboardOverlay: { present: true, height: 300, bottom: 720, left: 0, width: 30, visible: true, hits: [true, false, false, true, false, false, true, false, false] } }, settled).message).toMatch(/does not span the viewport width/);
   });
 });
 
@@ -116,8 +119,18 @@ describe('state policies', () => {
     const dumped = JSON.stringify(f);
     for (const secret of ['secret-text-value', 'secret-storage-value', 'secret-history', 'secret-query']) expect(dumped).not.toContain(secret);
   });
-  it('a failing custom probe is open, not pass', () => {
-    const f = oracles.statePreserved(snap(), snap(), policies, [], { before: { ok: false, error: 'window.missing is undefined' }, after: { ok: false, error: 'window.missing is undefined' } });
-    expect(f.kind).toBe('open');
+  it('a failing custom probe is open, not pass — but a confirmed loss still fails', () => {
+    const probe = { before: { ok: false, error: 'window.missing is undefined' }, after: { ok: false, error: 'window.missing is undefined' } };
+    expect(oracles.statePreserved(snap(), snap(), policies, [], probe).kind).toBe('open');
+    const f = oracles.statePreserved(snap(), snap({ form: { '#body': '' } }), policies, [], probe);
+    expect(f.kind).toBe('fail');
+    expect(f.message).toMatch(/form field #body changed/);
+  });
+  it('a changed query string is a navigation even though the exported URL is redacted', () => {
+    const f = oracles.statePreserved(snap({ url: 'http://x/path?draft=keep' }), snap({ url: 'http://x/path?draft=lost' }), policies, []);
+    expect(f.kind).toBe('fail');
+    expect(f.message).toMatch(/query string changed/);
+    expect(JSON.stringify(f)).not.toContain('draft=lost');
+    expect(oracles.statePreserved(snap({ url: 'http://x/path?a=1#top' }), snap({ url: 'http://x/path?a=1#bottom' }), policies, []).kind).toBe('pass');
   });
 });

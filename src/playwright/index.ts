@@ -93,6 +93,20 @@ export class Foldproof {
     return false;
   }
 
+  /**
+   * Re-observe the environment now (no settle) and compare with the current configuration. A page can navigate,
+   * remove the keyboard overlay or change size between a verified transition and an assertion; a stale pass must
+   * not gate a fresh claim. A mismatch is recorded on the current step and makes the environment unverified.
+   */
+  async recheckEnv(): Promise<boolean> {
+    if (!this.envVerified()) return false;
+    const observed = await this.session.observe();
+    const fresh = this.session.selfCheck(this.current, observed);
+    if (fresh.kind === 'pass') return true;
+    this.currentStep().findings.push({ ...fresh, message: `environment changed since it was verified: ${fresh.message}` });
+    return false;
+  }
+
   /** Verify the start configuration once the page is loaded (call after goto). */
   async verifyStart(): Promise<{ selfCheck: Finding; settle: SettleResult }> {
     const t0 = Date.now();
@@ -174,20 +188,32 @@ export class Task {
     this.before = await this.passive();
   }
 
-  /** Block dependent passes when the emulation for the current configuration was not verified. */
-  private gate(findings: Finding[]): Finding[] {
-    if (this.fp.envVerified()) return findings;
+  /** Block dependent passes when the emulation for the current configuration is not (still) verified. */
+  private gate(findings: Finding[], verified: boolean): Finding[] {
+    if (verified) return findings;
     return findings.map((f) => (f.kind === 'pass' ? { ...f, kind: 'open' as const, message: `blocked: emulation not verified (${f.message})` } : f));
   }
 
-  /** Startup-only rules: reachable + fills-viewport (+ diagnostics). Active probes restore scroll afterwards. */
+  /** Active probes (scrollIntoView, hit-test, trial click) inside a save/restore of every scroll position. */
+  private async activeProbes(): Promise<{ geom: scripts.GeometryReport; trial: Record<string, { ok: boolean; error?: string }> }> {
+    const saved = await this.page.evaluate(scripts.saveScrollScript);
+    try {
+      const geom = await this.page.evaluate(scripts.geometryScript, this.controls);
+      const trial = await this.trialClicks();
+      return { geom, trial };
+    } finally {
+      await this.page.evaluate(scripts.restoreScrollScript, saved).catch(() => undefined);
+    }
+  }
+
+  /** Startup-only rules: reachable + fills-viewport (+ diagnostics). */
   async assertStartup(extra: RuleId[] = []): Promise<Finding[]> {
-    const geom = await this.page.evaluate(scripts.geometryScript, this.controls);
-    const trial = await this.trialClicks();
+    const verified = await this.fp.recheckEnv();
+    const { geom, trial } = await this.activeProbes();
     const findings: Finding[] = [...oracles.reachable(geom, trial), oracles.fillsViewport(geom)];
     if (extra.includes('no-horizontal-overflow')) findings.push(oracles.horizontalOverflow(geom, await this.page.evaluate(scripts.overflowingElementsScript)));
     if (extra.includes('target-size')) findings.push(await this.targetSize());
-    const gated = this.gate(findings);
+    const gated = this.gate(findings, verified);
     this.fp.currentStep().findings.push(...gated);
     return gated;
   }
@@ -197,14 +223,16 @@ export class Task {
     const want = rules === 'preset@1' ? PRESET_1 : rules;
     const step = this.fp.currentStep();
     const findings: Finding[] = [];
+    const verified = await this.fp.recheckEnv();
     // 1. passive observations first (nothing here scrolls or focuses)
     const after = await this.passive();
     const anchors = this.policies.scroll === 'anchor' ? await this.page.evaluate(scripts.anchorCheckScript, { before: this.before.snapshot.scroll, tolerance: this.policies.scroll_tolerance_px }) : [];
     const stampChecks = await this.page.evaluate(scripts.stampCheckScript);
-    // 2. active probes (scrollIntoView + hit-test + trial click); geometryScript restores scroll positions
+    // 2. active probes (scrollIntoView + hit-test + trial click) inside a scroll save/restore
     const needGeometry = want.some((r) => ['reachable', 'not-occluded-by-hinge', 'fills-viewport', 'no-horizontal-overflow'].includes(r));
-    const geom = needGeometry ? await this.page.evaluate(scripts.geometryScript, this.controls) : null;
-    if (want.includes('reachable') && geom) findings.push(...oracles.reachable(geom, await this.trialClicks()));
+    const probes = needGeometry ? await this.activeProbes() : null;
+    const geom = probes?.geom ?? null;
+    if (want.includes('reachable') && probes) findings.push(...oracles.reachable(probes.geom, probes.trial));
     if (want.includes('state-preserved')) findings.push(oracles.statePreserved(this.before.snapshot, after.snapshot, this.policies, anchors, this.policies.custom ? { before: this.before.custom, after: after.custom } : undefined));
     if (want.includes('no-remount')) {
       const frames = (step.artifacts.continuity as { frames?: { missingStamps: string[] }[] } | undefined)?.frames ?? [];
@@ -215,7 +243,7 @@ export class Task {
     if (want.includes('fills-viewport') && geom) findings.push(oracles.fillsViewport(geom));
     if (want.includes('no-horizontal-overflow') && geom) findings.push(oracles.horizontalOverflow(geom, await this.page.evaluate(scripts.overflowingElementsScript)));
     if (want.includes('target-size')) findings.push(await this.targetSize());
-    const gated = this.gate(findings);
+    const gated = this.gate(findings, verified);
     step.findings.push(...gated);
     // after a transition, the new state becomes the baseline for the next step (passive again)
     this.before = await this.passive();
@@ -224,12 +252,15 @@ export class Task {
 
   /** The only real click: act on a control and verify the declared outcome. Blocked when the emulation is unverified. */
   async operate(target: string, expect: { visible?: string; hidden?: string; url?: string; text?: { selector: string; contains: string }; custom?: string }): Promise<Finding> {
-    if (!Object.values(expect).some((v) => v !== undefined)) throw new Error('operate() requires at least one declared outcome (visible, hidden, url, text or custom)');
+    const declared = Object.entries(expect).filter(([, v]) => v !== undefined);
+    const nonEmpty = declared.every(([, v]) => (typeof v === 'string' ? v.trim().length > 0 : typeof v === 'object' && v !== null && v.selector.trim().length > 0 && v.contains.trim().length > 0));
+    if (!declared.length || !nonEmpty) throw new Error('operate() requires at least one non-empty declared outcome (visible, hidden, url, text or custom)');
     const t0 = Date.now();
+    const verified = await this.fp.recheckEnv();
     const step: StepResult = { index: this.fp['nextIndex'](), label: `operate ${target}`, kind: 'operate', configuration: describe(this.fp.configuration), findings: [], artifacts: {}, durationMs: 0 };
     this.fp.steps.push(step);
     let finding: Finding;
-    if (!this.fp.envVerified()) {
+    if (!verified) {
       finding = { rule: 'operate', kind: 'open', message: `blocked: emulation not verified before operating "${target}"`, locations: [{ selector: target }] };
     } else {
       const locator = this.locator(target);

@@ -110,16 +110,24 @@ export const RECORDER_SOURCE = String.raw`
       if (el.getAttribute('placeholder')) return el.getAttribute('placeholder').trim();
     }
     if (el.matches('img') && el.getAttribute('alt')) return el.getAttribute('alt').trim();
+    // accname: only some roles take their name from content; landmarks, regions, dialogs etc. need an author-provided name
+    const role = fp.role(el);
+    const NAME_FROM_CONTENT = ['button', 'link', 'tab', 'menuitem', 'checkbox', 'radio', 'switch', 'heading', 'option', 'cell', 'gridcell', 'row', 'treeitem', 'tooltip', 'summary', null];
+    if (!NAME_FROM_CONTENT.includes(role) && !el.matches('summary,legend,caption,figcaption')) {
+      return el.getAttribute('title') ? el.getAttribute('title').trim() : '';
+    }
+    const hiddenForName = (c) => c.getAttribute('aria-hidden') === 'true' || c.hasAttribute('hidden') || (() => { const cs = getComputedStyle(c); return cs.display === 'none' || cs.visibility === 'hidden'; })();
     const fromContent = (node) => {
       let out = '';
       for (const child of node.childNodes) {
         if (child.nodeType === 3) out += child.textContent;
         else if (child.nodeType === 1) {
           const c = child;
+          if (hiddenForName(c)) continue;
           const cl = c.getAttribute('aria-label');
           if (cl) out += ' ' + cl + ' ';
           else if (c.matches('img') && c.getAttribute('alt')) out += ' ' + c.getAttribute('alt') + ' ';
-          else if (getComputedStyle(c).display !== 'none') out += fromContent(c);
+          else out += fromContent(c);
         }
       }
       return out;
@@ -173,7 +181,8 @@ export const RECORDER_SOURCE = String.raw`
     const out = [];
     for (const [id, s] of fp.stamps) {
       const node = s.ref.deref();
-      const current = fp.query(s.locator);
+      // identity is independent of visibility: a hidden control is still the same node, not a remount
+      const current = fp.query(s.locator, true);
       out.push({
         id, locator: s.locator, key: s.key,
         nodeAlive: !!node, connected: !!(node && node.isConnected),

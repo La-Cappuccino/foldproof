@@ -137,11 +137,13 @@ function finish(partial: Omit<ScenarioResult, 'verdict' | 'matchedExpectation' |
   else if (required.some((f) => f.kind === 'open' || f.kind === 'review')) verdict = 'open';
   else verdict = 'pass';
   const failedRules = new Set(all.filter((f) => f.kind === 'fail').map((f) => f.rule));
+  // an expectation is only met with complete required coverage: no required row may be open or review
+  const inconclusive = required.some((f) => f.kind === 'open' || f.kind === 'review');
   let matchedExpectation: boolean;
   if (scenario.expect.verdict === 'pass') matchedExpectation = verdict === 'pass';
   else {
     const expectedSet = new Set(scenario.expect.rules);
-    matchedExpectation = verdict === 'fail' && [...expectedSet].every((r) => failedRules.has(r)) && [...failedRules].every((r) => expectedSet.has(r));
+    matchedExpectation = verdict === 'fail' && !inconclusive && [...expectedSet].every((r) => failedRules.has(r)) && [...failedRules].every((r) => expectedSet.has(r));
   }
   return { ...partial, verdict, matchedExpectation, durationMs: Date.now() - t0 };
 }

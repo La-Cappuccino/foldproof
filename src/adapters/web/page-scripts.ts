@@ -247,6 +247,37 @@ export function stampCheckScript(): StampCheck[] {
   return (window as unknown as { __foldproof: FP }).__foldproof.checkStamps();
 }
 
+export interface SavedScroll {
+  window: { x: number; y: number };
+  containers: { key: string; top: number; left: number }[];
+}
+
+/** Record every scroll position (including zero) so active probes and trial clicks can be undone. */
+export function saveScrollScript(): SavedScroll {
+  const f = (window as unknown as { __foldproof: FP }).__foldproof;
+  const containers: SavedScroll['containers'] = [];
+  for (const el of Array.from(document.querySelectorAll<HTMLElement>('*'))) {
+    if (containers.length >= 200) break;
+    if (el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1) {
+      const cs = getComputedStyle(el);
+      if (/(auto|scroll)/.test(cs.overflowY) || /(auto|scroll)/.test(cs.overflowX)) containers.push({ key: f.key(el), top: el.scrollTop, left: el.scrollLeft });
+    }
+  }
+  return { window: { x: scrollX, y: scrollY }, containers };
+}
+
+export function restoreScrollScript(saved: SavedScroll): void {
+  const f = (window as unknown as { __foldproof: FP }).__foldproof;
+  for (const c of saved.containers) {
+    const el = (c.key.startsWith('#') ? document.querySelector(c.key) : f.query(c.key, true)[0]) as HTMLElement | null;
+    if (el) {
+      el.scrollTop = c.top;
+      el.scrollLeft = c.left;
+    }
+  }
+  window.scrollTo(saved.window.x, saved.window.y);
+}
+
 export function overflowingElementsScript(): { key: string; right: number }[] {
   const f = (window as unknown as { __foldproof: FP }).__foldproof;
   const out: { key: string; right: number }[] = [];

@@ -370,9 +370,9 @@ export const Step = z.union([
             .object({
               visible: Locator.optional(),
               hidden: Locator.optional(),
-              url: z.string().optional().describe('substring or regex /…/ the final URL must match'),
-              text: z.object({ selector: Locator, contains: z.string() }).strict().optional(),
-              custom: z.string().optional().describe('JS expression that must be truthy'),
+              url: z.string().min(1).optional().describe('substring or regex /…/ the final URL must match'),
+              text: z.object({ selector: Locator, contains: z.string().min(1) }).strict().optional(),
+              custom: z.string().min(1).optional().describe('JS expression that must be truthy'),
             })
             .strict()
             .refine((e) => Object.values(e).some((v) => v !== undefined), { message: 'operate.expect must declare at least one outcome (visible, hidden, url, text or custom)' }),

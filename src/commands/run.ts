@@ -177,7 +177,9 @@ export async function execute(
     await browser.close();
   }
   const coverage = reconcileCoverage(manifest, results);
-  const partial = { tool: { name: TOOL_NAME, version, oracleVersion: ORACLE_VERSION }, startedAt: new Date().toISOString(), baseUrl: opts.baseUrl, appBuild: opts.appBuild, results, coverage };
+  const { redactUrl } = await import('../oracles/index.js');
+  // the original base URL is used for execution only; the report carries a redacted form (no query/fragment)
+  const partial = { tool: { name: TOOL_NAME, version, oracleVersion: ORACLE_VERSION }, startedAt: new Date().toISOString(), baseUrl: redactUrl(opts.baseUrl), appBuild: opts.appBuild, results, coverage };
   let code = exitCode(partial);
   if (opts.fixtureMode) {
     // in fixture mode the gate is "did every scenario match its expectation"

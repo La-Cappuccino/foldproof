@@ -11,7 +11,9 @@ trap 'rm -rf "$WORK" "$ROOT/$TARBALL"' EXIT
 cd "$WORK"
 npm init -y >/dev/null 2>&1
 npm i --silent "$ROOT/$TARBALL" playwright@"$(node -p "require('$ROOT/node_modules/playwright/package.json').version")" >/dev/null 2>&1
-echo "installed $(node -p "require('foldproof/package.json').version") into $WORK"
+INSTALLED_VERSION="$(node -p "JSON.parse(require('fs').readFileSync('node_modules/foldproof/package.json','utf8')).version")"
+test -n "$INSTALLED_VERSION"
+echo "installed foldproof $INSTALLED_VERSION into $WORK"
 npx foldproof --version
 npx foldproof profiles validate
 npx foldproof doctor >/dev/null

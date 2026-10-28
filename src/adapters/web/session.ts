@@ -29,7 +29,7 @@ export interface ObservedSignals {
   secureContext: boolean;
   url: string;
   /** keyboard overlay approximation, when one was requested */
-  keyboardOverlay?: { present: boolean; height: number; bottom: number; visible: boolean; hit: boolean } | null;
+  keyboardOverlay?: { present: boolean; height: number; bottom: number; left: number; width: number; visible: boolean; hits: boolean[] } | null;
 }
 
 export type KeyboardMode = 'keyboard-shrink' | 'keyboard-overlay-approx';
@@ -51,6 +51,9 @@ export interface SettleResult {
 export const KEYBOARD_OVERLAY_ID = '__foldproof_keyboard';
 
 export class WebSession {
+  /** the configuration last applied; re-applied after anything that lets Playwright resend its own metrics */
+  private last: ResolvedConfiguration | null = null;
+
   private constructor(
     readonly page: Page,
     readonly cdp: CDPSession,
@@ -74,6 +77,7 @@ export class WebSession {
   }
 
   async apply(cfg: ResolvedConfiguration): Promise<AppliedConfiguration> {
+    this.last = cfg;
     const emulation: EmulationMethod[] = ['cdp-metrics'];
     let effectiveViewport = { ...cfg.viewport };
     let keyboardMode: KeyboardMode | null = null;
@@ -130,9 +134,13 @@ export class WebSession {
       if (el) {
         const r = el.getBoundingClientRect();
         const cs = getComputedStyle(el);
-        const visible = cs.display !== 'none' && cs.visibility !== 'hidden' && parseFloat(cs.opacity) > 0 && r.height > 0;
-        const probe = document.elementFromPoint(Math.min(innerWidth - 1, 10), innerHeight - Math.max(1, r.height / 2));
-        s.keyboardOverlay = { present: true, height: Math.round(r.height), bottom: Math.round(r.bottom), visible, hit: probe === el };
+        const visible = cs.display !== 'none' && cs.visibility !== 'hidden' && parseFloat(cs.opacity) > 0 && r.height > 0 && r.width > 0;
+        // hit-test across the whole requested covered region: left, centre, right × top edge, middle, bottom edge
+        const ys = [r.top + 2, r.top + r.height / 2, r.bottom - 2];
+        const xs = [2, innerWidth / 2, innerWidth - 2];
+        const hits: boolean[] = [];
+        for (const y of ys) for (const x of xs) hits.push(document.elementFromPoint(x, y) === el);
+        s.keyboardOverlay = { present: true, height: Math.round(r.height), bottom: Math.round(r.bottom), left: Math.round(r.left), width: Math.round(r.width), visible, hits };
       } else s.keyboardOverlay = null;
       return s;
     }, KEYBOARD_OVERLAY_ID);
@@ -179,8 +187,9 @@ export class WebSession {
       else {
         if (Math.abs(k.height - applied.cfg.keyboard.height) > 1) problems.push(`keyboard overlay height expected ${applied.cfg.keyboard.height}, observed ${k.height}`);
         if (Math.abs(k.bottom - observed.innerHeight) > 1) problems.push(`keyboard overlay not anchored to the bottom (bottom ${k.bottom}, viewport ${observed.innerHeight})`);
+        if (k.left > 0 || k.width < observed.innerWidth - 1) problems.push(`keyboard overlay does not span the viewport width (left ${k.left}, width ${k.width}, viewport ${observed.innerWidth})`);
         if (!k.visible) problems.push('keyboard overlay not visible (page CSS suppresses it)');
-        if (!k.hit) problems.push('keyboard overlay is not hit-testable (something covers it or pointer-events are overridden)');
+        if (k.hits.length === 0 || !k.hits.every(Boolean)) problems.push(`keyboard overlay is not hit-testable across its area (${k.hits.filter(Boolean).length}/${k.hits.length} points)`);
       }
     } else if (observed.keyboardOverlay?.present) problems.push('a keyboard overlay is present but none was requested');
     if (!observed.secureContext) problems.push('page is not a secure context: navigator.devicePosture/virtualKeyboard unavailable; serve from https or localhost');
@@ -193,8 +202,33 @@ export class WebSession {
     };
   }
 
+  /**
+   * Screenshot through OUR CDP session (Page.captureScreenshot). Playwright's page.screenshot sends device metrics
+   * through its own session and Chromium then ignores our identical re-send, silently leaving the page at the
+   * context viewport (verified 2026-10-28). Masked selectors are hidden with a temporary stylesheet.
+   */
   async screenshot(file: string, mask: string[]): Promise<void> {
-    await this.page.screenshot({ path: file, fullPage: false, mask: mask.map((m) => this.page.locator(m)), animations: 'disabled' }).catch(() => undefined);
+    const STYLE_ID = '__foldproof_mask';
+    try {
+      if (mask.length) {
+        await this.page.evaluate(
+          ({ id, selectors }) => {
+            const st = document.createElement('style');
+            st.id = id;
+            st.textContent = `${selectors.join(',')}{visibility:hidden !important}`;
+            document.documentElement.appendChild(st);
+          },
+          { id: STYLE_ID, selectors: mask },
+        );
+      }
+      const { data } = (await this.cdp.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false } as never)) as { data: string };
+      const { writeFile } = await import('node:fs/promises');
+      await writeFile(file, Buffer.from(data, 'base64'));
+    } catch {
+      /* a failed screenshot never changes a verdict */
+    } finally {
+      if (mask.length) await this.page.evaluate((id) => document.getElementById(id)?.remove(), STYLE_ID).catch(() => undefined);
+    }
   }
 
   async detach(): Promise<void> {

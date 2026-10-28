@@ -210,6 +210,30 @@ describe('resolveConfiguration + expectedSignals', () => {
     if (isResolveError(rotated)) throw new Error(rotated.error);
     expect(rotated.explicitViewport).toBeNull(); // a new frame drops the explicit size
   });
+  it('keyboard-open after a rotate keeps the rotated orientation (unchanged panel + posture)', () => {
+    const start = resolveConfiguration(p, { panel: 'inner', posture: 'flat' });
+    if (isResolveError(start)) throw new Error(start.error);
+    const rot = applyTransition(p, start, { kind: 'rotate', to: {} });
+    if (isResolveError(rot)) throw new Error(rot.error);
+    const kb = applyTransition(p, rot, { kind: 'keyboard-open', to: { keyboard: { height: 200 } } });
+    if (isResolveError(kb)) throw new Error(kb.error);
+    expect(kb.orientation).toBe('landscape');
+    expect(kb.viewport).toEqual(rot.viewport);
+  });
+  it('a square viewport is portrait for CSS and keeps the screen orientation', () => {
+    const start = resolveConfiguration(p, { panel: 'outer', posture: 'closed' });
+    if (isResolveError(start)) throw new Error(start.error);
+    const sq = applyTransition(p, start, { kind: 'resize', to: { viewport: { w: 600, h: 600 } } });
+    if (isResolveError(sq)) throw new Error(sq.error);
+    const sig = expectedSignals(sq);
+    expect(sig.cssOrientation).toBe('portrait');
+    expect(sig.screenOrientation).toBe('portrait');
+  });
+  it('an operate step must declare a non-empty outcome', () => {
+    const base0 = { foldproof: 1 as const, id: 'op0', title: 'x', profiles: ['test-fold'], task: { url: '/x', controls: ['#a'] } };
+    expect(Scenario.safeParse({ ...base0, steps: [{ operate: { target: '#a', expect: { custom: '' } } }] }).success).toBe(false);
+    expect(Scenario.safeParse({ ...base0, steps: [{ operate: { target: '#a', expect: { text: { selector: '#a', contains: '' } } } }] }).success).toBe(false);
+  });
   it('an operate step must declare an outcome', () => {
     const base = { foldproof: 1 as const, id: 'op', title: 'x', profiles: ['test-fold'], task: { url: '/x', controls: ['#a'] } };
     expect(Scenario.safeParse({ ...base, steps: [{ operate: { target: '#a', expect: {} } }] }).success).toBe(false);
