@@ -10,8 +10,8 @@ profiles and reproducible failure fixtures, not in a screenshot at one size.
 
 ## Phases
 - [x] P0 git init + worktree isolation
-- [ ] P1 Research fan-out (last30days, Perplexity, 4 agents, Context7) → docs/research/*.md
-- [ ] P2 Synthesis → SPEC-responsiveness-v1.md (goal, non-goals, slices, acceptance)
+- [x] P1 Research fan-out (last30days, Perplexity ×4, 4 agents) → docs/research/00–05 (all in Brain)
+- [x] P2 Synthesis → docs/SPEC-v1.md (goal, non-goals, slices, acceptance) — working name foldproof
 - [ ] P3 Quad-council review of the spec → fold verdict into spec → mark-it-down
 - [ ] P4 Build slice 1: profiles schema + sourced profiles + fixtures + web adapter + SKILL.md
 - [ ] P5 Verify: tests pass, adapter proves fail→fixed on fixtures, Codex review, council
