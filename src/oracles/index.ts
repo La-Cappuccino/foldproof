@@ -180,9 +180,26 @@ export function horizontalOverflow(geom: GeometryReport, offenders: { key: strin
   return { rule: 'no-horizontal-overflow', kind: over > 1 ? 'fail' : 'pass', message: over > 1 ? `document scroll width exceeds the viewport by ${over} px` : 'no horizontal overflow', details: { over, offenders } };
 }
 
-function mask(v: unknown): string {
-  const s = String(v);
-  return s.length <= 2 ? '**' : `${s[0]}…${s[s.length - 1]} (${s.length} chars)`;
+/** Exported evidence never carries any part of a value, not even its length. */
+function mask(_v: unknown): string {
+  return '<masked>';
+}
+
+/** Replace every URL inside free text with its origin + path (query and fragment carry tokens). */
+export function redactUrlsInText(s: string): string {
+  return s.replace(/https?:\/\/[^\s"'<>)\]]+/g, (m) => redactUrl(m));
+}
+
+/** Deep copy with every string URL-redacted; used on exported steps, findings and details. */
+export function redactDeep<T>(value: T): T {
+  if (typeof value === 'string') return redactUrlsInText(value) as unknown as T;
+  if (Array.isArray(value)) return value.map((v) => redactDeep(v)) as unknown as T;
+  if (value && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) out[k] = redactDeep(v);
+    return out as T;
+  }
+  return value;
 }
 
 /** Keep origin + path; drop query and fragment (they carry tokens). `forCompare` keeps the fragment-less form stable. */
@@ -200,7 +217,7 @@ export function maskSnapshot(s: StateSnapshot): Record<string, unknown> {
   return {
     url: redactUrl(s.url),
     historyLength: s.historyLength,
-    historyState: s.historyState === null || s.historyState === 'null' ? s.historyState : `<redacted ${s.historyState.length} chars>`,
+    historyState: s.historyState === null || s.historyState === 'null' ? s.historyState : '<redacted>',
     scroll: s.scroll,
     focus: s.focus,
     selection: s.selection,
