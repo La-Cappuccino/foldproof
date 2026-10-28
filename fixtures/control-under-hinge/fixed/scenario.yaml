@@ -1,0 +1,16 @@
+foldproof: 1
+id: control-under-hinge-fixed
+title: "Fixed: the toolbar stays inside the first viewport segment; nothing sits on the hinge"
+profiles: [microsoft-surface-duo]
+start: { posture: closed }
+task:
+  url: /control-under-hinge/fixed/
+  ready: { selector: "#bookmark" }
+  controls: ["#bookmark", "#next"]
+  state: { form: none, focus: none, selection: none, scroll: anchor }
+steps:
+  - transition: unfold
+    assert: preset@1
+  - operate: { target: "#bookmark", expect: { text: { selector: "#bookmark", contains: "Bookmarked" } } }
+expect: { verdict: pass }
+tags: [fixture, transition, hinge, dual-screen]

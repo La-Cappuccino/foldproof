@@ -1,0 +1,25 @@
+foldproof: 1
+id: stale-async-layout-after-round-trip-broken
+title: "Broken: unfold → fold → unfold; a stale debounced layout job rebuilds the editor 700 ms after the last unfold and loses the draft"
+profiles: [microsoft-surface-duo, google-pixel-9-pro-fold]
+start: { posture: closed }
+task:
+  url: /stale-async-layout-after-round-trip/broken/
+  ready: { selector: "#save" }
+  controls: ["#save"]
+  state: { form: all, focus: same-element, selection: exact, scroll: none }
+  setup:
+    - { fill: "#body", value: "Ring Per om avtalen" }
+    - { focus: "#body", select: [0, 4] }
+steps:
+  - transition: unfold
+    assert: []
+    settle: { min_ms: 0, max_ms: 400 }
+  - transition: fold
+    assert: []
+    settle: { min_ms: 0, max_ms: 400 }
+  - transition: unfold
+    assert: preset@1
+settle: { quiet_frames: 2, min_ms: 1200, max_ms: 4000 }
+expect: { verdict: fail, rules: [state-preserved, no-remount] }
+tags: [fixture, transition, round-trip, async]

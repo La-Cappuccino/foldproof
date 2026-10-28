@@ -337,11 +337,21 @@ export const STATIC_RULES: RuleId[] = ['no-horizontal-overflow', 'target-size'];
 
 const AssertList = z.union([z.literal('preset@1'), z.array(RuleId.exclude(['env-self-check', 'operate', 'straddles-fold-line']))]);
 
+export const SettlePolicy = z
+  .object({
+    quiet_frames: z.number().int().min(1).default(2),
+    min_ms: z.number().int().min(0).default(0).describe('observe at least this long before accepting quiescence (catches debounced handlers)'),
+    max_ms: z.number().int().min(100).default(3000),
+  })
+  .strict();
+export type SettlePolicy = z.infer<typeof SettlePolicy>;
+
 export const Step = z.union([
   z
     .object({
       transition: z.union([TransitionKind, Transition]),
       assert: AssertList.default('preset@1'),
+      settle: SettlePolicy.partial().optional().describe('per-step override of the scenario settle policy'),
     })
     .strict(),
   z
@@ -385,14 +395,7 @@ export const Scenario = z
       })
       .strict(),
     steps: z.array(Step).default([]),
-    settle: z
-      .object({
-        quiet_frames: z.number().int().min(1).default(2),
-        min_ms: z.number().int().min(0).default(0).describe('observe at least this long before accepting quiescence (catches debounced handlers)'),
-        max_ms: z.number().int().min(100).default(3000),
-      })
-      .strict()
-      .default({ quiet_frames: 2, min_ms: 0, max_ms: 3000 }),
+    settle: SettlePolicy.default({ quiet_frames: 2, min_ms: 0, max_ms: 3000 }),
     static: z.array(RuleId.extract(['no-horizontal-overflow', 'target-size'])).default([]),
     transient: z.array(Locator).default([]),
     mask: z.array(Locator).default([]).describe('selectors masked in screenshots'),

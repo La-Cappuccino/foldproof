@@ -169,21 +169,25 @@ export function applyTransition(profile: Profile, current: ResolvedConfiguration
   const to: ConfigurationTarget = { ...transition.to };
   switch (transition.kind) {
     case 'fold': {
-      if (!to.panel) to.panel = profile.panels.some((p) => p.name === 'outer') ? 'outer' : current.panel;
+      // fold = the profile's closed posture (whichever panel owns it); else half_opened on the current panel
       if (!to.posture) {
-        const closed = profile.postures.find((p) => p.name === 'closed' && p.panel === to.panel);
-        const half = profile.postures.find((p) => p.name === 'half_opened' && p.panel === to.panel);
-        to.posture = closed?.name ?? half?.name;
-        if (!to.posture) return { error: `fold: profile ${profile.id} declares no closed/half_opened posture on panel ${to.panel}` };
+        const closed = profile.postures.find((p) => p.name === 'closed' && (!to.panel || p.panel === to.panel));
+        const half = profile.postures.find((p) => p.name === 'half_opened' && p.panel === (to.panel ?? current.panel));
+        const pick = closed ?? half;
+        if (!pick) return { error: `fold: profile ${profile.id} declares no closed or half_opened posture${to.panel ? ` on panel ${to.panel}` : ''}` };
+        to.posture = pick.name;
+        to.panel = pick.panel;
       }
       break;
     }
     case 'unfold': {
-      if (!to.panel) to.panel = profile.panels.some((p) => p.name === 'inner') ? 'inner' : current.panel;
+      // unfold = the profile's flat posture (prefer the inner panel)
       if (!to.posture) {
-        const flat = profile.postures.find((p) => p.name === 'flat' && p.panel === to.panel);
-        if (!flat) return { error: `unfold: profile ${profile.id} declares no flat posture on panel ${to.panel}` };
+        const flats = profile.postures.filter((p) => p.name === 'flat' && (!to.panel || p.panel === to.panel));
+        const pick = flats.find((p) => p.panel === 'inner') ?? flats[0];
+        if (!pick) return { error: `unfold: profile ${profile.id} declares no flat posture${to.panel ? ` on panel ${to.panel}` : ''}` };
         to.posture = 'flat';
+        to.panel = pick.panel;
       }
       break;
     }

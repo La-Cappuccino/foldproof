@@ -1,0 +1,15 @@
+foldproof: 1
+id: control-under-hinge-broken
+title: "Broken: after spanning across both Surface Duo screens the Bookmark button sits on the opaque hinge"
+profiles: [microsoft-surface-duo]
+start: { posture: closed }
+task:
+  url: /control-under-hinge/broken/
+  ready: { selector: "#bookmark" }
+  controls: ["#bookmark", "#next"]
+  state: { form: none, focus: none, selection: none, scroll: anchor }
+steps:
+  - transition: unfold
+    assert: preset@1
+expect: { verdict: fail, rules: [not-occluded-by-hinge] }
+tags: [fixture, transition, hinge, dual-screen]
