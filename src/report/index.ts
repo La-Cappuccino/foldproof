@@ -16,7 +16,8 @@ export function coverageManifest(pairs: { scenario: Scenario; profile: Profile }
     rows.push({ scenarioId: scenario.id, profileId: profile.id, step: 0, rule: 'env-self-check', kind: 'expected' });
     for (const r of [...STARTUP_RULES, ...scenario.static]) rows.push({ scenarioId: scenario.id, profileId: profile.id, step: 0, rule: r, kind: 'expected' });
     scenario.steps.forEach((s, i) => {
-      rows.push({ scenarioId: scenario.id, profileId: profile.id, step: i + 1, rule: 'env-self-check', kind: 'expected' });
+      // transitions change the configuration and get a self-check; operate steps do not
+      if ('transition' in s) rows.push({ scenarioId: scenario.id, profileId: profile.id, step: i + 1, rule: 'env-self-check', kind: 'expected' });
       for (const r of stepRules(s)) rows.push({ scenarioId: scenario.id, profileId: profile.id, step: i + 1, rule: r, kind: 'expected' });
     });
   }
