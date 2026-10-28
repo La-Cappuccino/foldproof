@@ -120,6 +120,7 @@ export const Posture = z
   .object({
     name: PostureName,
     panel: PanelName,
+    orientation: Orientation.optional().describe('the orientation this posture (and its display feature) is expressed in; the resolver prefers it when a scenario gives none'),
     web: z
       .object({
         posture: z.enum(['continuous', 'folded']),
@@ -217,6 +218,12 @@ export const Profile = z
       }
       if (x.web.posture === 'folded' && !feat) {
         ctx.addIssue({ code: 'custom', message: 'a folded posture requires an active display_feature', path: ['postures', i, 'display_feature'] });
+      }
+      if (feat && x.orientation && feat.unit === 'css_px') {
+        const lg = p.logical.find((l) => l.panel === x.panel && l.orientation === x.orientation && l.unit === 'css_px');
+        if (lg && (feat.bounds.x + feat.bounds.w > lg.w + 1 || feat.bounds.y + feat.bounds.h > lg.h + 1)) {
+          ctx.addIssue({ code: 'custom', message: `display_feature "${feat.id}" bounds do not fit the ${x.orientation} logical size ${lg.w}x${lg.h} of panel ${x.panel}`, path: ['postures', i, 'orientation'] });
+        }
       }
     });
     check(p.inputs.source_ref, ['inputs', 'source_ref']);

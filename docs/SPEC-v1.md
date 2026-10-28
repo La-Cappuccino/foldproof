@@ -10,7 +10,7 @@ Give developers and AI agents reproducible, emulated evidence that a **declared 
 
 The decision this drives: "can we ship this UI to foldables, tablets, large screens and resizing windows?" answered by a machine-readable record of task continuity, not by a screenshot at 375 px.
 
-Why now (research 04): >580 M large-screen Android devices; Android removes the orientation/resizability opt-out at API 37 (Play deadline Aug 2027); Apple ships iPhone Duo since 2026-10-23 and requires Duo screenshots from April 2027; 44 verified GitHub issues cluster at transitions (keyboard overlap most common, fold/unfold fastest-growing); EN 301 549 + EAA make reflow and orientation legal requirements in the EU/EEA. Of the 19 packages inspected (research 01), none executes a transition and asserts task continuity; vendors ship code-audit skills (Apple App Resizability, Google adaptive), not the verification layer.
+Why now (research 04, corrected §2.7): >580 M large-screen Android devices; from Android 16 (API 36) orientation/resizability restrictions are ignored on sw ≥ 600 dp and the temporary opt-out ends at API 37 (Play's API 37 requirement is expected but not yet published); Apple ships iPhone Duo since 2026-10-23 and requires Duo screenshots from April 2027; 44 verified GitHub issues cluster at transitions (keyboard overlap most common, fold/unfold fastest-growing); EN 301 549 + EAA make reflow and orientation legal requirements in the EU/EEA. Of the 19 packages inspected (research 01), none executes a transition and asserts task continuity; vendors ship code-audit skills (Apple App Resizability, Google adaptive), not the verification layer.
 
 ## 2. What makes it worth a senior engineer's time (council §2)
 

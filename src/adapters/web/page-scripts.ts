@@ -202,7 +202,8 @@ export function geometryScript(locators: string[]): GeometryReport {
       ['bottom-right', r.right - inset, r.bottom - inset],
     ];
     base.hits = points.map(([point, x, y]) => {
-      if (x < 0 || y < 0 || x > innerWidth || y > innerHeight) return { point, ok: false, coveredBy: null };
+      // an invisible control has no meaningful hit-test; report the point as missed without naming a "coverer"
+      if (!base.visible || x < 0 || y < 0 || x > innerWidth || y > innerHeight) return { point, ok: false, coveredBy: null };
       const t = document.elementFromPoint(x, y);
       const ok = !!t && (t === el || el.contains(t));
       return { point, ok, coveredBy: !ok && t ? { key: f.key(t), role: f.role(t), name: t.id === '__foldproof_keyboard' ? 'keyboard-overlay-approx' : f.accName(t) } : null };

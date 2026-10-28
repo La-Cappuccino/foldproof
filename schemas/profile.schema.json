@@ -524,6 +524,14 @@
               "single"
             ]
           },
+          "orientation": {
+            "description": "the orientation this posture (and its display feature) is expressed in; the resolver prefers it when a scenario gives none",
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ]
+          },
           "web": {
             "type": "object",
             "properties": {

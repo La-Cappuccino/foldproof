@@ -636,6 +636,32 @@
                     }
                   }
                 ]
+              },
+              "settle": {
+                "description": "per-step override of the scenario settle policy",
+                "type": "object",
+                "properties": {
+                  "quiet_frames": {
+                    "default": 2,
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "min_ms": {
+                    "default": 0,
+                    "description": "observe at least this long before accepting quiescence (catches debounced handlers)",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "max_ms": {
+                    "default": 3000,
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "additionalProperties": false
               }
             },
             "required": [
@@ -715,6 +741,7 @@
     "settle": {
       "default": {
         "quiet_frames": 2,
+        "min_ms": 0,
         "max_ms": 3000
       },
       "type": "object",
@@ -723,6 +750,13 @@
           "default": 2,
           "type": "integer",
           "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "min_ms": {
+          "default": 0,
+          "description": "observe at least this long before accepting quiescence (catches debounced handlers)",
+          "type": "integer",
+          "minimum": 0,
           "maximum": 9007199254740991
         },
         "max_ms": {
